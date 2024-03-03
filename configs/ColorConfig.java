@@ -5,7 +5,9 @@ public class ColorConfig {
 
     /**The default background color. */
     public static final Color DEFAULT_BG = new Color(255, 255, 255);
-
+    
+    public static final Color DEFAULT_ACCENT_1 = new Color(205, 239, 239);
+    
     /**The default contrasting background color. */
     public static final Color DEFAULT_BG_CONTRAST = new Color(13, 6, 40);
 

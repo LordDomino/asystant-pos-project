@@ -5,22 +5,31 @@ import javax.swing.JFrame;
 
 import configs.ColorConfig;
 
-public class APPFrame extends JFrame {
+public abstract class APPFrame extends JFrame {
 
     /**The background color used by this JFrame. */
     public Color bg = ColorConfig.DEFAULT_BG;
 
     public APPFrame() {
         super();
-        initialize();
     }
 
     public APPFrame(String title) {
         super(title);
-        initialize();
     }
 
-    private void initialize() {
-        getContentPane().setBackground(this.bg);
+    protected abstract void prepare();
+
+    protected abstract void prepareComponents();
+
+    protected abstract void addComponents();
+
+    protected abstract void finalizePrepare();
+
+    protected void compile() {
+        this.prepare();
+        this.prepareComponents();
+        this.addComponents();
+        this.finalizePrepare();
     }
 }

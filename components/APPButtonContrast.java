@@ -5,6 +5,7 @@ import configs.ColorConfig;
 public class APPButtonContrast extends APPButton {
     public APPButtonContrast(String text) {
         super(text);
+        initialize();
     }
 
     public void initialize() {

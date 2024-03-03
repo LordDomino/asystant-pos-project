@@ -7,7 +7,7 @@ import java.io.File;
 import java.io.IOException;
 
 public class APPResourceLoader {
-    public static void loadFontResources() {
+    public static void loadFonts() {
         try {
             GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, new File("resources\\inter.ttf")));
