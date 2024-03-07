@@ -19,25 +19,29 @@ import components.APPFrame;
 import components.APPTextField;
 import configs.ColorConfig;
 
-public class WFLoginWindow extends APPFrame {
+public final class WFLoginWindow extends APPFrame {
 
     public JPanel loginPanel = new JPanel(new GridBagLayout());
     
     private GridBagConstraints gbc = new GridBagConstraints();
 
     public Color bg = ColorConfig.DEFAULT_ACCENT_1;
-    public int textBoxWidth = 10;
+    public int textBoxWidth = 0;
     
     // Components
-    public JLabel loginLabel = new JLabel("Asystant - POS System");
+    public JLabel titleText = new JLabel("Asystant - POS System");
     public JLabel loginUserLabel = new JLabel("User");
     public JLabel passwordLabel = new JLabel("Password");
     public JTextField loginUserField = new APPTextField(textBoxWidth);
     public JPasswordField passwordField = new JPasswordField(textBoxWidth);
     public JButton submitButton = new APPButton("Log In"); 
-    public JPanel paddingPanelA = new JPanel();
-    public JPanel paddingPanelB = new JPanel();
-    public JPanel loginTitlePanel = new JPanel();
+    public JButton backButton = new APPButton("Back");
+
+    // Styling components
+    private JPanel contentAreaPanel = new JPanel(new GridBagLayout());
+    private JPanel titleCardPanel = new JPanel(new GridBagLayout());
+    private JPanel fieldsPanel = new JPanel(new GridBagLayout());
+    private JPanel buttonsPanel = new JPanel(new GridBagLayout());
     
     public WFLoginWindow() {
         super("Login");
@@ -51,10 +55,13 @@ public class WFLoginWindow extends APPFrame {
     }
     
     public void prepareComponents() {
-        loginPanel.setBackground(this.bg);
-        loginTitlePanel.setBackground(ColorConfig.DEFAULT_BG);
-        paddingPanelA.setBackground(ColorConfig.DEFAULT_BG_CONTRAST);
-        paddingPanelB.setBackground(ColorConfig.DEFAULT_BG_CONTRAST);
+        contentAreaPanel.setBackground(ColorConfig.DEFAULT_BG_CONTRAST);
+        titleCardPanel.setBackground(Color.RED);
+        fieldsPanel.setBackground(Color.GREEN);
+        buttonsPanel.setBackground(Color.BLUE);
+
+        // loginPanel.setBackground(ColorConfig.DEFAULT_BG_CONTRAST);
+        // loginTitlePanel.setBackground(ColorConfig.DEFAULT_BG);
 
         passwordField.setBorder(new CompoundBorder(
             new LineBorder(ColorConfig.DEFAULT_BG_CONTRAST),
@@ -70,112 +77,178 @@ public class WFLoginWindow extends APPFrame {
     }
     
     public void addComponents() {
+        // All styling JFrames will go here
+
+        // Content area panel
         gbc.anchor = GridBagConstraints.CENTER;
-        gbc.fill = GridBagConstraints.NONE;
-        gbc.gridx = 1;
-        gbc.gridy = 0;
-        gbc.gridheight = 1;
-        gbc.gridwidth = 1;
-        gbc.weightx = 0;
-        gbc.weighty = 0;
-        this.add(loginPanel, gbc);
-        
-        gbc.anchor = GridBagConstraints.CENTER;
-        gbc.fill = GridBagConstraints.BOTH;
+        gbc.fill = GridBagConstraints.VERTICAL;
         gbc.gridx = 0;
         gbc.gridy = 0;
+        gbc.insets = new Insets(0, 50, 0, 50);
+        gbc.ipadx = 0;
+        gbc.ipady = 0;
         gbc.gridheight = 1;
         gbc.gridwidth = 1;
         gbc.weightx = 1;
         gbc.weighty = 1;
-        this.add(paddingPanelA, gbc);
+        this.add(contentAreaPanel, gbc);
 
+        // Title card panel
         gbc.anchor = GridBagConstraints.CENTER;
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.gridx = 2;
-        gbc.gridy = 0;
-        gbc.gridheight = 1;
-        gbc.gridwidth = 1;
-        gbc.weightx = 1;
-        gbc.weighty = 1;
-        this.add(paddingPanelB, gbc);
-
-        
-        gbc.anchor = GridBagConstraints.NORTH;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.gridheight = 1;
-        gbc.gridwidth = 1;
-        gbc.weightx = 1;
-        gbc.weighty = 1;
-        loginTitlePanel.add(loginLabel, gbc);
-
-        gbc.anchor = GridBagConstraints.NORTH;
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.gridx = 0;
-        gbc.gridy = 0;
+        gbc.gridy = 1;
         gbc.insets = new Insets(0, 0, 0, 0);
+        gbc.ipadx = 0;
+        gbc.ipady = 0;
         gbc.gridheight = 1;
-        gbc.gridwidth = 2;
-        gbc.weightx = 0;
+        gbc.gridwidth = 1;
+        gbc.weightx = 1;
         gbc.weighty = 0;
-        loginPanel.add(loginTitlePanel, gbc);
-
-        gbc.anchor = GridBagConstraints.EAST;
-        gbc.fill = GridBagConstraints.NONE;
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.insets = new Insets(10, 30, 0, 0);
-        gbc.gridheight = 1;
-        gbc.gridwidth = 1;
-        gbc.weightx = 0;
-        gbc.weighty = 1;
-        loginPanel.add(loginUserLabel, gbc);
-
-        gbc.anchor = GridBagConstraints.EAST;
-        gbc.fill = GridBagConstraints.NONE;
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        gbc.insets = new Insets(10, 30,0, 0);
-        gbc.gridheight = 1;
-        gbc.gridwidth = 1;
-        gbc.weightx = 0;
-        gbc.weighty = 1;
-        loginPanel.add(passwordLabel, gbc);	  
-
-        gbc.anchor = GridBagConstraints.WEST;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.gridx = 1;
-        gbc.gridy = 1;
-        gbc.insets = new Insets(10, 10, 0, 30);
-        gbc.gridheight = 1;
-        gbc.gridwidth = 1;
-        gbc.weightx = 1;
-        gbc.weighty = 1;
-        loginPanel.add(loginUserField, gbc);
-
-        gbc.anchor = GridBagConstraints.WEST;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.insets = new Insets(10, 10, 0, 30);
-        gbc.gridx = 1;
-        gbc.gridy = 2;
-        gbc.gridheight = 1;
-        gbc.gridwidth = 1;
-        gbc.weightx = 1;
-        gbc.weighty = 1;
-        loginPanel.add(passwordField, gbc);
+        contentAreaPanel.add(titleCardPanel, gbc);
         
+        // Fields panel
         gbc.anchor = GridBagConstraints.CENTER;
-        gbc.fill = GridBagConstraints.NONE;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.ipadx = 0;
+        gbc.ipady = 0;
+        gbc.gridheight = 1;
+        gbc.gridwidth = 1;
+        gbc.weightx = 1;
+        gbc.weighty = 0;
+        contentAreaPanel.add(fieldsPanel, gbc);
+
+        // Buttons panel
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridx = 0;
         gbc.gridy = 3;
-        gbc.insets = new Insets(20, 0,0, 0);
-        gbc.ipadx = 10;
+        gbc.insets = new Insets(0, 0, 0, 0);
+        gbc.ipadx = 0;
+        gbc.ipady = 0;
         gbc.gridheight = 1;
-        gbc.gridwidth = 2;
+        gbc.gridwidth = 1;
         gbc.weightx = 1;
         gbc.weighty = 1;
-        loginPanel.add(submitButton, gbc);
+        contentAreaPanel.add(buttonsPanel, gbc);
+        
+        // Title text
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.insets = new Insets(0, 10, 0, 10);
+        gbc.ipadx = 0;
+        gbc.ipady = 0;
+        gbc.gridheight = 1;
+        gbc.gridwidth = 1;
+        gbc.weightx = 1;
+        gbc.weighty = 1;
+        titleCardPanel.add(titleText, gbc);
+
+        // gbc.anchor = GridBagConstraints.NORTH;
+        // gbc.fill = GridBagConstraints.BOTH;
+        // gbc.gridx = 0;
+        // gbc.gridy = 0;
+        // gbc.insets = new Insets(0, 0, 0, 0);
+        // gbc.gridheight = 1;
+        // gbc.gridwidth = 2;
+        // gbc.weightx = 1;
+        // gbc.weighty = 0;
+        // loginPanel.add(loginTitlePanel, gbc);
+
+        gbc.anchor = GridBagConstraints.EAST;
+        gbc.fill = GridBagConstraints.VERTICAL;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.insets = new Insets(0, 0, 10, 0);
+        gbc.ipadx = 0;
+        gbc.ipady = 0;
+        gbc.gridheight = 1;
+        gbc.gridwidth = 1;
+        gbc.weightx = 0;
+        gbc.weighty = 1;
+        fieldsPanel.add(loginUserLabel, gbc);
+
+        gbc.anchor = GridBagConstraints.EAST;
+        gbc.fill = GridBagConstraints.VERTICAL;
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.insets = new Insets(0, 0,0, 10);
+        gbc.gridheight = 1;
+        gbc.gridwidth = 1;
+        gbc.weightx = 0;
+        gbc.weighty = 1;
+        fieldsPanel.add(passwordLabel, gbc);
+
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.insets = new Insets(0, 0, 10, 0);
+        gbc.gridheight = 1;
+        gbc.gridwidth = 1;
+        gbc.weightx = 1;
+        gbc.weighty = 1;
+        fieldsPanel.add(loginUserField, gbc);
+
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(0, 0, 0, 0);
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        gbc.gridheight = 1;
+        gbc.gridwidth = 1;
+        gbc.weightx = 1;
+        gbc.weighty = 1;
+        fieldsPanel.add(passwordField, gbc);
+        
+        // gbc.anchor = GridBagConstraints.CENTER;
+        // gbc.fill = GridBagConstraints.BOTH;
+        // gbc.gridx = 0;
+        // gbc.gridy = 3;
+        // gbc.insets = new Insets(0, 0, 0, 0);
+        // gbc.gridheight = 1;
+        // gbc.gridwidth = 1;
+        // gbc.weightx = 1;
+        // gbc.weighty = 1;
+        // loginPanel.add(new JPanel(), gbc);
+
+        // gbc.anchor = GridBagConstraints.CENTER;
+        // gbc.fill = GridBagConstraints.BOTH;
+        // gbc.gridx = 2;
+        // gbc.gridy = 3;
+        // gbc.insets = new Insets(0, 0, 0, 0);
+        // gbc.gridheight = 1;
+        // gbc.gridwidth = 1;
+        // gbc.weightx = 1;
+        // gbc.weighty = 1;
+        // loginPanel.add(new JPanel(), gbc);
+
+        // gbc.anchor = GridBagConstraints.CENTER;
+        // gbc.fill = GridBagConstraints.HORIZONTAL;
+        // gbc.gridx = 1;
+        // gbc.gridy = 3;
+        // gbc.insets = new Insets(20, 0,0, 0);
+        // gbc.gridheight = 1;
+        // gbc.gridwidth = 2;
+        // gbc.weightx = 1;
+        // gbc.weighty = 1;
+        // loginPanel.add(submitButton, gbc);
+
+        // gbc.anchor = GridBagConstraints.CENTER;
+        // gbc.fill = GridBagConstraints.NONE;
+        // gbc.gridx = 1;
+        // gbc.gridy = 4;
+        // gbc.insets = new Insets(0, 0,0, 0);
+        // gbc.gridheight = 1;
+        // gbc.gridwidth = 2;
+        // gbc.weightx = 1;
+        // gbc.weighty = 1;
+        // loginPanel.add(backButton, gbc);
     }
     
     public void finalizePrepare() {

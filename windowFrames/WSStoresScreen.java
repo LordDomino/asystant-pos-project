@@ -2,23 +2,27 @@ package windowFrames;
 
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.GridBagConstraints;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 
 import components.APPButton;
-import components.APPScreen;
+import components.APPFrame;
 import configs.ColorConfig;
 
-public class WSStoresScreen extends APPScreen {
+public final class WSStoresScreen extends APPFrame {
 
     // Components
     public JLabel header = new JLabel("Select a store to operate");
     public JPanel contr_main = new JPanel(new GridBagLayout());
     public JPanel contr_stores = new JPanel(new GridBagLayout());
-    public JButton STORE_canteen = new APPButton("Canteen", new WFLoginWindow(), true);
+    public JButton STORE_canteen = new APPButton("Canteen");
     public JButton addNewStore = new APPButton("New store");
 
     public WSStoresScreen() {
@@ -36,6 +40,15 @@ public class WSStoresScreen extends APPScreen {
     public void prepareComponents() {
         contr_main.setBackground(this.bg);
         contr_stores.setBackground(this.bg);
+
+        STORE_canteen.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                JFrame source = (JFrame) SwingUtilities.getWindowAncestor(STORE_canteen);
+                WFLoginWindow target = new WFLoginWindow();
+                target.setVisible(true);
+                source.dispose();
+            }
+        });
     }
 
     public void addComponents() {
@@ -98,6 +111,8 @@ public class WSStoresScreen extends APPScreen {
     }
 
     public void finalizePrepare() {
+        pack();
         setMinimumSize(getPreferredSize());
+        setLocationRelativeTo(null);
     }
 }
