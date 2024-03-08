@@ -1,4 +1,4 @@
-package windowFrames;
+package gui.windowFrames;
 
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -16,7 +16,7 @@ import components.APPButton;
 import components.APPFrame;
 import configs.ColorConfig;
 
-public final class WSStoresScreen extends APPFrame {
+public final class WFStoresScreen extends APPFrame {
 
     // Components
     public JLabel header = new JLabel("Select a store to operate");
@@ -25,7 +25,7 @@ public final class WSStoresScreen extends APPFrame {
     public JButton STORE_canteen = new APPButton("Canteen");
     public JButton addNewStore = new APPButton("New store");
 
-    public WSStoresScreen() {
+    public WFStoresScreen() {
         super();
         compile();
     }

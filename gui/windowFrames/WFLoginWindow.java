@@ -1,4 +1,4 @@
-package windowFrames;
+package gui.windowFrames;
 
 import java.awt.Color;
 import java.awt.GridBagConstraints;
@@ -69,17 +69,19 @@ public final class WFLoginWindow extends APPFrame {
             new LineBorder(ColorConfig.DEFAULT_BG_CONTRAST),
             new LineBorder(ColorConfig.DEFAULT_BG, 2)));
     
-        // submitButton.addActionListener(new ActionListener() {
-        //     public void actionPerformed(ActionEvent e) {
-        //         JFrame frame = (JFrame) SwingUtilities.getRoot(submitButton);
-        //         MainWindow.getInstance().setVisible(true);
-        //         frame.dispose();
-        //     }	
-        // });
+        submitButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                JFrame source = (JFrame) SwingUtilities.getRoot(submitButton);
+                APPFrame target = new WFDashboard();
+                target.setVisible(true);
+                source.dispose();
+            }	
+        });
+
         backButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 JFrame source = (JFrame) SwingUtilities.getRoot(backButton);
-                WSStoresScreen target = new WSStoresScreen();
+                WFStoresScreen target = new WFStoresScreen();
                 target.setVisible(true);
                 source.dispose();
             }
