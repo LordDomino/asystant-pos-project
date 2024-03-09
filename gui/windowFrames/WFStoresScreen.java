@@ -17,13 +17,10 @@ import components.APPFrame;
 import configs.ColorConfig;
 
 public final class WFStoresScreen extends APPFrame {
-<<<<<<< HEAD:gui/windowFrames/WFStoresScreen.java
-=======
 
     public enum StoreMode {
         CANTEEN,
     }
->>>>>>> main:windowFrames/WFStoresScreen.java
 
     // Components
     public JLabel header = new JLabel("Select a store to operate");
