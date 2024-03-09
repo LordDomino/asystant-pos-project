@@ -21,7 +21,7 @@ import components.APPButton;
 import components.APPFrame;
 import components.APPTextField;
 import configs.ColorConfig;
-import windowFrames.WFStoresScreen.StoreMode;
+import gui.windowFrames.WFStoresScreen.StoreMode;
 
 public final class WFLoginWindow extends APPFrame {
 
@@ -50,13 +50,13 @@ public final class WFLoginWindow extends APPFrame {
         compile();
     }
 
-    protected void prepare() {
+    public void prepare() {
         getContentPane().setBackground(ColorConfig.DEFAULT_BG_CONTRAST);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new GridBagLayout());
     }
     
-    protected void prepareComponents() {
+    public void prepareComponents() {
         contentAreaPanel.setBackground(this.bg);
         titleCardPanel.setBackground(this.bg);
         fieldsPanel.setBackground(this.bg);
@@ -85,7 +85,7 @@ public final class WFLoginWindow extends APPFrame {
         });
     }
     
-    protected void addComponents() {
+    public void addComponents() {
         GridBagConstraints gbc = new GridBagConstraints();
         // All styling JFrames will go here
 
@@ -228,7 +228,7 @@ public final class WFLoginWindow extends APPFrame {
         buttonsPanel.add(backButton, gbc);
     }
     
-    protected void finalizePrepare() {
+    public void finalizePrepare() {
         pack();
         setResizable(false);
         setLocationRelativeTo(null);

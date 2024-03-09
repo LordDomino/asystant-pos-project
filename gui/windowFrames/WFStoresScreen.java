@@ -41,14 +41,14 @@ public final class WFStoresScreen extends APPFrame {
      * This runs component-related methods such as
      * {@code}setBackground(){@code} and {@code}setLayout(){@code}.
      */
-    protected void prepare() {
+    public void prepare() {
         this.bg = ColorConfig.DEFAULT_ACCENT_1;
 
         getContentPane().setBackground(ColorConfig.DEFAULT_BG_CONTRAST);
         setLayout(new GridBagLayout());
     }
 
-    protected void prepareComponents() {
+    public void prepareComponents() {
         contr_main.setBackground(this.bg);
         contr_stores.setBackground(this.bg);
 
@@ -64,7 +64,7 @@ public final class WFStoresScreen extends APPFrame {
         });
     }
 
-    protected void addComponents() {
+    public void addComponents() {
         GridBagConstraints gbc = new GridBagConstraints();
 
         gbc.anchor = GridBagConstraints.CENTER;
@@ -123,7 +123,7 @@ public final class WFStoresScreen extends APPFrame {
         add(contr_main, gbc);
     }
 
-    protected void finalizePrepare() {
+    public void finalizePrepare() {
         pack();
         setMinimumSize(getPreferredSize());
         setLocationRelativeTo(null);
