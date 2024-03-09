@@ -1,4 +1,4 @@
-package windowFrames;
+package gui.windowFrames;
 
 import java.awt.Color;
 import java.awt.GridBagConstraints;
@@ -64,13 +64,12 @@ public final class WFLoginWindow extends APPFrame {
 
         passwordField.setBorder(new CompoundBorder(
             new LineBorder(ColorConfig.DEFAULT_BG_CONTRAST),
-            new LineBorder(ColorConfig.DEFAULT_BG, 2))
-        );
-
+            new LineBorder(ColorConfig.DEFAULT_BG, 2)));
+    
         submitButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 JFrame source = (JFrame) SwingUtilities.getRoot(submitButton);
-                WFDashboard target = new WFDashboard();
+                APPFrame target = new WFDashboard();
                 target.setVisible(true);
                 source.dispose();
             }	

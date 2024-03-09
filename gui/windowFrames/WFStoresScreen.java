@@ -1,4 +1,4 @@
-package windowFrames;
+package gui.windowFrames;
 
 import java.awt.GridBagLayout;
 import java.awt.Insets;

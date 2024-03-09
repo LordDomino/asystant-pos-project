@@ -1,8 +1,8 @@
 import javax.swing.JFrame;
 
-import windowFrames.WFStoresScreen;
 import configs.APPResourceLoader;
 import configs.StylesConfig;
+import gui.windowFrames.WFStoresScreen;
 
 public class Application {
 

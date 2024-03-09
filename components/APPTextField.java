@@ -7,6 +7,7 @@ import javax.swing.border.LineBorder;
 import configs.ColorConfig;
 
 public class APPTextField extends JTextField {
+
     public APPTextField() {
         initialize();
     } 

@@ -5,7 +5,7 @@ import javax.swing.JFrame;
 
 import configs.ColorConfig;
 
-public abstract class APPFrame extends JFrame {
+public abstract class APPFrame extends JFrame implements Customizable {
 
     /**The background color used by this JFrame. */
     public Color bg = ColorConfig.DEFAULT_BG;
@@ -18,13 +18,13 @@ public abstract class APPFrame extends JFrame {
         super(title);
     }
 
-    protected abstract void prepare();
+    public abstract void prepare();
 
-    protected abstract void prepareComponents();
+    public abstract void prepareComponents();
 
-    protected abstract void addComponents();
+    public abstract void addComponents();
 
-    protected abstract void finalizePrepare();
+    public abstract void finalizePrepare();
 
     protected void compile() {
         this.prepare();
