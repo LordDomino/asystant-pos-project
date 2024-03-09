@@ -21,12 +21,11 @@ import components.APPButton;
 import components.APPFrame;
 import components.APPTextField;
 import configs.ColorConfig;
+import windowFrames.WFStoresScreen.StoreMode;
 
 public final class WFLoginWindow extends APPFrame {
 
-    public JPanel loginPanel = new JPanel(new GridBagLayout());
-    
-    private GridBagConstraints gbc = new GridBagConstraints();
+    protected StoreMode storeMode;
 
     public Color bg = ColorConfig.DEFAULT_ACCENT_1;
     public int textBoxWidth = 10;
@@ -40,7 +39,7 @@ public final class WFLoginWindow extends APPFrame {
     public JButton submitButton = new APPButton("Log In"); 
     public JButton backButton = new APPButton("Back");
 
-    // Styling components
+    // Layout components
     private JPanel contentAreaPanel = new JPanel(new GridBagLayout());
     private JPanel titleCardPanel = new JPanel(new GridBagLayout());
     private JPanel fieldsPanel = new JPanel(new GridBagLayout());
@@ -51,19 +50,17 @@ public final class WFLoginWindow extends APPFrame {
         compile();
     }
 
-    public void prepare() {
+    protected void prepare() {
         getContentPane().setBackground(ColorConfig.DEFAULT_BG_CONTRAST);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new GridBagLayout());
     }
     
-    public void prepareComponents() {
+    protected void prepareComponents() {
         contentAreaPanel.setBackground(this.bg);
         titleCardPanel.setBackground(this.bg);
         fieldsPanel.setBackground(this.bg);
         buttonsPanel.setBackground(this.bg);
-        // loginPanel.setBackground(ColorConfig.DEFAULT_BG_CONTRAST);
-        // loginTitlePanel.setBackground(ColorConfig.DEFAULT_BG);
 
         passwordField.setBorder(new CompoundBorder(
             new LineBorder(ColorConfig.DEFAULT_BG_CONTRAST),
@@ -77,18 +74,19 @@ public final class WFLoginWindow extends APPFrame {
                 source.dispose();
             }	
         });
-
         backButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 JFrame source = (JFrame) SwingUtilities.getRoot(backButton);
                 WFStoresScreen target = new WFStoresScreen();
+                target.setLocationRelativeTo(source);
                 target.setVisible(true);
                 source.dispose();
             }
         });
     }
     
-    public void addComponents() {
+    protected void addComponents() {
+        GridBagConstraints gbc = new GridBagConstraints();
         // All styling JFrames will go here
 
         // Content area panel
@@ -230,9 +228,15 @@ public final class WFLoginWindow extends APPFrame {
         buttonsPanel.add(backButton, gbc);
     }
     
-    public void finalizePrepare() {
+    protected void finalizePrepare() {
         pack();
-        setLocationRelativeTo(null);
         setResizable(false);
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
+
+    protected void setExpectedStore(StoreMode store) {
+        this.storeMode = store;
+        // 'getExpectedCredentials()' to get the expected user/pass credits
     }
 }
