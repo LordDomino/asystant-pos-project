@@ -16,7 +16,11 @@ import components.APPButton;
 import components.APPFrame;
 import configs.ColorConfig;
 
-public final class WSStoresScreen extends APPFrame {
+public final class WFStoresScreen extends APPFrame {
+
+    public enum StoreMode {
+        CANTEEN,
+    }
 
     // Components
     public JLabel header = new JLabel("Select a store to operate");
@@ -25,19 +29,26 @@ public final class WSStoresScreen extends APPFrame {
     public JButton STORE_canteen = new APPButton("Canteen");
     public JButton addNewStore = new APPButton("New store");
 
-    public WSStoresScreen() {
+    public WFStoresScreen() {
         super();
         compile();
     }
 
-    public void prepare() {
+    /**
+     * Prepares this current component before children components are
+     * added.
+     * 
+     * This runs component-related methods such as
+     * {@code}setBackground(){@code} and {@code}setLayout(){@code}.
+     */
+    protected void prepare() {
         this.bg = ColorConfig.DEFAULT_ACCENT_1;
 
-        setBackground(this.bg);
+        getContentPane().setBackground(ColorConfig.DEFAULT_BG_CONTRAST);
         setLayout(new GridBagLayout());
     }
 
-    public void prepareComponents() {
+    protected void prepareComponents() {
         contr_main.setBackground(this.bg);
         contr_stores.setBackground(this.bg);
 
@@ -45,13 +56,15 @@ public final class WSStoresScreen extends APPFrame {
             public void actionPerformed(ActionEvent e) {
                 JFrame source = (JFrame) SwingUtilities.getWindowAncestor(STORE_canteen);
                 WFLoginWindow target = new WFLoginWindow();
+                target.setExpectedStore(StoreMode.CANTEEN);
+                target.setLocationRelativeTo(source);
                 target.setVisible(true);
                 source.dispose();
             }
         });
     }
 
-    public void addComponents() {
+    protected void addComponents() {
         GridBagConstraints gbc = new GridBagConstraints();
 
         gbc.anchor = GridBagConstraints.CENTER;
@@ -68,7 +81,7 @@ public final class WSStoresScreen extends APPFrame {
         gbc.fill = GridBagConstraints.NONE;
         gbc.gridx = 1;
         gbc.gridy = 1;
-        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.insets = new Insets(5, 20, 5, 5);
         gbc.gridheight = 1;
         gbc.gridwidth = 1;
         gbc.weightx = 0;
@@ -79,7 +92,7 @@ public final class WSStoresScreen extends APPFrame {
         gbc.fill = GridBagConstraints.NONE;
         gbc.gridx = 2;
         gbc.gridy = 1;
-        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.insets = new Insets(5, 5, 5, 20);
         gbc.gridheight = 1;
         gbc.gridwidth = 1;
         gbc.weightx = 0;
@@ -110,9 +123,10 @@ public final class WSStoresScreen extends APPFrame {
         add(contr_main, gbc);
     }
 
-    public void finalizePrepare() {
+    protected void finalizePrepare() {
         pack();
         setMinimumSize(getPreferredSize());
         setLocationRelativeTo(null);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 }
