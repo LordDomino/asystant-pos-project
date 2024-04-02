@@ -6,7 +6,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -19,11 +18,11 @@ import javax.swing.border.CompoundBorder;
 import javax.swing.border.LineBorder;
 
 import components.APPButton;
-import components.APPFrame;
+import components.APP_Frame;
 import components.APPTextField;
 import configs.ColorConfig;
 
-public final class WFLoginWindow extends APPFrame {
+public final class WF_LoginWindow extends APP_Frame {
 
     public Color bg = ColorConfig.DEFAULT_ACCENT_1;
     public int textBoxWidth = 10;
@@ -43,7 +42,7 @@ public final class WFLoginWindow extends APPFrame {
     private JPanel fieldsPanel = new JPanel(new GridBagLayout());
     private JPanel buttonsPanel = new JPanel(new GridBagLayout());
     
-    public WFLoginWindow() {
+    public WF_LoginWindow() {
         super("Login");
         compile();
     }
@@ -67,7 +66,7 @@ public final class WFLoginWindow extends APPFrame {
         submitButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 JFrame source = (JFrame) SwingUtilities.getRoot(submitButton);
-                APPFrame target = new WFDashboard();
+                APP_Frame target = new WF_Dashboard();
                 target.setVisible(true);
                 source.dispose();
             }	
@@ -229,9 +228,4 @@ public final class WFLoginWindow extends APPFrame {
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
-
-    // protected void setExpectedStore(StoreMode store) {
-    //     this.storeMode = store;
-    //     // 'getExpectedCredentials()' to get the expected user/pass credits
-    // }
 }

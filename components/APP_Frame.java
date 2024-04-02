@@ -5,16 +5,16 @@ import javax.swing.JFrame;
 
 import configs.ColorConfig;
 
-public abstract class APPFrame extends JFrame implements Customizable {
+public abstract class APP_Frame extends JFrame {
 
     /**The background color used by this JFrame. */
     public Color bg = ColorConfig.DEFAULT_BG;
 
-    public APPFrame() {
+    public APP_Frame() {
         super();
     }
 
-    public APPFrame(String title) {
+    public APP_Frame(String title) {
         super(title);
     }
 
@@ -26,10 +26,10 @@ public abstract class APPFrame extends JFrame implements Customizable {
 
     public abstract void finalizePrepare();
 
-    protected void compile() {
-        this.prepare();
-        this.prepareComponents();
-        this.addComponents();
-        this.finalizePrepare();
+    public void compile() {
+        prepare();
+        prepareComponents();
+        addComponents();
+        finalizePrepare();
     }
 }

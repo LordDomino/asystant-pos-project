@@ -2,14 +2,14 @@ package gui.windowFrames;
 
 import javax.swing.JPanel;
 
-import components.APPFrame;
+import components.APP_Frame;
 import configs.ColorConfig;
 
-public class WFDashboard extends APPFrame {
+public class WF_Dashboard extends APP_Frame {
 
     protected JPanel calculatorPanel;
 
-    public WFDashboard() {
+    public WF_Dashboard() {
         super("Dashboard");
         compile();
     }
