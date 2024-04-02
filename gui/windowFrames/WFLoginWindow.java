@@ -21,11 +21,8 @@ import components.APPButton;
 import components.APPFrame;
 import components.APPTextField;
 import configs.ColorConfig;
-import windowFrames.WFStoresScreen.StoreMode;
 
 public final class WFLoginWindow extends APPFrame {
-
-    protected StoreMode storeMode;
 
     public Color bg = ColorConfig.DEFAULT_ACCENT_1;
     public int textBoxWidth = 10;
@@ -50,13 +47,13 @@ public final class WFLoginWindow extends APPFrame {
         compile();
     }
 
-    protected void prepare() {
+    public void prepare() {
         getContentPane().setBackground(ColorConfig.DEFAULT_BG_CONTRAST);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new GridBagLayout());
     }
     
-    protected void prepareComponents() {
+    public void prepareComponents() {
         contentAreaPanel.setBackground(this.bg);
         titleCardPanel.setBackground(this.bg);
         fieldsPanel.setBackground(this.bg);
@@ -77,15 +74,12 @@ public final class WFLoginWindow extends APPFrame {
         backButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 JFrame source = (JFrame) SwingUtilities.getRoot(backButton);
-                WFStoresScreen target = new WFStoresScreen();
-                target.setLocationRelativeTo(source);
-                target.setVisible(true);
-                source.dispose();
+                source.dispatchEvent(new Windo);
             }
         });
     }
     
-    protected void addComponents() {
+    public void addComponents() {
         GridBagConstraints gbc = new GridBagConstraints();
         // All styling JFrames will go here
 
@@ -228,15 +222,15 @@ public final class WFLoginWindow extends APPFrame {
         buttonsPanel.add(backButton, gbc);
     }
     
-    protected void finalizePrepare() {
+    public void finalizePrepare() {
         pack();
         setResizable(false);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
-    protected void setExpectedStore(StoreMode store) {
-        this.storeMode = store;
-        // 'getExpectedCredentials()' to get the expected user/pass credits
-    }
+    // protected void setExpectedStore(StoreMode store) {
+    //     this.storeMode = store;
+    //     // 'getExpectedCredentials()' to get the expected user/pass credits
+    // }
 }
