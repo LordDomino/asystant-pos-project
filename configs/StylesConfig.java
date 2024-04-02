@@ -14,7 +14,7 @@ public class StylesConfig {
         setUIFont(StylesConfig.defaultNormal);
     }
 
-    public static void setUIFont (FontUIResource f) {
+    public static void setUIFont(FontUIResource f) {
         Enumeration<Object> keys = UIManager.getDefaults().keys();
         while (keys.hasMoreElements()) {
             Object key = keys.nextElement();
