@@ -12,7 +12,7 @@ public class T_ItemMenu {
         WP_ItemMenu panel = new WP_ItemMenu();
 
         frame.add(panel);
-        // frame.pack();
+        frame.pack();
         frame.setMinimumSize(frame.getSize());
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
