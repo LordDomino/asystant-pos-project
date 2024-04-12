@@ -19,8 +19,8 @@ public class APPTextField extends JTextField {
 
     public void initialize() {
         setBorder(new CompoundBorder(
-            new LineBorder(ColorConfig.DEFAULT_BG_CONTRAST),
-            new LineBorder(ColorConfig.DEFAULT_BG, 2)
+            new LineBorder(ColorConfig.CONTRAST),
+            new LineBorder(ColorConfig.BG, 2)
         ));
     }
 }

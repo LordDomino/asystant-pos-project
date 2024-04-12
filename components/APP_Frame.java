@@ -8,7 +8,7 @@ import configs.ColorConfig;
 public abstract class APP_Frame extends JFrame {
 
     /**The background color used by this JFrame. */
-    public Color bg = ColorConfig.DEFAULT_BG;
+    public Color bg = ColorConfig.BG;
 
     public APP_Frame() {
         super();

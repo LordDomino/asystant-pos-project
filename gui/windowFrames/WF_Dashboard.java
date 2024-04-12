@@ -17,6 +17,7 @@ public class WF_Dashboard extends APP_Frame {
     protected JPanel ribbonPanel;
     protected JPanel centerPanel = new JPanel(new GridBagLayout());
     protected JPanel rightPanel = new JPanel(new GridBagLayout());
+
     protected JPanel itemMenu = new WP_ItemMenu();
     protected JPanel checkoutPanel = new WP_CheckoutPanel();
     protected JPanel calculator = new WP_Calculator();
@@ -27,7 +28,7 @@ public class WF_Dashboard extends APP_Frame {
     }
 
     public void prepare() {
-        getContentPane().setBackground(ColorConfig.DEFAULT_ACCENT_1);
+        getContentPane().setBackground(ColorConfig.ACCENT_1);
         setLayout(new GridBagLayout());
     }
 

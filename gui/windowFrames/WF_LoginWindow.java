@@ -17,14 +17,15 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.LineBorder;
 
-import components.APPButton;
+import components.APP_DefaultButton;
 import components.APP_Frame;
 import components.APPTextField;
+import components.APP_AccentButton;
 import configs.ColorConfig;
 
 public final class WF_LoginWindow extends APP_Frame {
 
-    public Color bg = ColorConfig.DEFAULT_ACCENT_1;
+    public Color bg = ColorConfig.ACCENT_1;
     public int textBoxWidth = 10;
     
     // Components
@@ -33,8 +34,8 @@ public final class WF_LoginWindow extends APP_Frame {
     public JLabel passwordLabel = new JLabel("Password");
     public JTextField loginUserField = new APPTextField(textBoxWidth);
     public JPasswordField passwordField = new JPasswordField(textBoxWidth);
-    public JButton submitButton = new APPButton("Log In"); 
-    public JButton backButton = new APPButton("Back");
+    public JButton submitButton = new APP_AccentButton("Log In"); 
+    public JButton backButton = new APP_AccentButton("Back");
 
     // Layout components
     private JPanel contentAreaPanel = new JPanel(new GridBagLayout());
@@ -48,7 +49,7 @@ public final class WF_LoginWindow extends APP_Frame {
     }
 
     public void prepare() {
-        getContentPane().setBackground(ColorConfig.DEFAULT_BG_CONTRAST);
+        getContentPane().setBackground(ColorConfig.CONTRAST);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new GridBagLayout());
     }
@@ -60,8 +61,8 @@ public final class WF_LoginWindow extends APP_Frame {
         buttonsPanel.setBackground(this.bg);
 
         passwordField.setBorder(new CompoundBorder(
-            new LineBorder(ColorConfig.DEFAULT_BG_CONTRAST),
-            new LineBorder(ColorConfig.DEFAULT_BG, 2)));
+            new LineBorder(ColorConfig.CONTRAST),
+            new LineBorder(ColorConfig.BG, 2)));
     
         submitButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {

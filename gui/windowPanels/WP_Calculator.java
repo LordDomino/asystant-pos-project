@@ -9,6 +9,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import components.APP_DefaultButton;
 import components.APP_Panel;
 
 public class WP_Calculator extends APP_Panel {
@@ -18,18 +19,18 @@ public class WP_Calculator extends APP_Panel {
 
     protected JLabel outputText = new JLabel("Output");
 
-    protected JButton btn_1 = new JButton("1");
-    protected JButton btn_2 = new JButton("2");
-    protected JButton btn_3 = new JButton("3");
-    protected JButton btn_4 = new JButton("4");
-    protected JButton btn_5 = new JButton("5");
-    protected JButton btn_6 = new JButton("6");
-    protected JButton btn_7 = new JButton("7");
-    protected JButton btn_8 = new JButton("8");
-    protected JButton btn_9 = new JButton("9");
-    protected JButton btn_0 = new JButton("0");
-    protected JButton btn_00 = new JButton("00");
-    protected JButton btn_DOT = new JButton(".");
+    protected JButton btn_1 = new APP_DefaultButton("1", false);
+    protected JButton btn_2 = new APP_DefaultButton("2", false);
+    protected JButton btn_3 = new APP_DefaultButton("3");
+    protected JButton btn_4 = new APP_DefaultButton("4");
+    protected JButton btn_5 = new APP_DefaultButton("5");
+    protected JButton btn_6 = new APP_DefaultButton("6");
+    protected JButton btn_7 = new APP_DefaultButton("7");
+    protected JButton btn_8 = new APP_DefaultButton("8");
+    protected JButton btn_9 = new APP_DefaultButton("9");
+    protected JButton btn_0 = new APP_DefaultButton("0");
+    protected JButton btn_00 = new APP_DefaultButton("00");
+    protected JButton btn_DOT = new APP_DefaultButton(".");
 
     public WP_Calculator() {
         super();

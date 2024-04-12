@@ -14,7 +14,7 @@ public class CalculatorPanel extends JPanel implements Customizable {
     }
 
     public void prepare() {
-        setBackground(ColorConfig.DEFAULT_BG);
+        setBackground(ColorConfig.BG);
     }
 
     public void prepareComponents() {}

@@ -1,20 +1,20 @@
 package gui.windowPanels;
 
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import javax.swing.JButton;
+import javax.swing.SwingConstants;
 
+import components.APP_ItemButton;
 import components.APP_Panel;
 import configs.ColorConfig;
 
 public class WP_ItemMenu extends APP_Panel {
     
-    public JButton menuItem1 = new JButton("<html>Strawberry<p>Php25.00</html>");
-    public JButton menuItem2 = new JButton("Item 2");
-    public JButton menuItem3 = new JButton("<html>Strawberry<p>Php25.00<p>2pcs</html>");
+    public JButton menuItem1 = new APP_ItemButton("<html><top>Strawberry<p>Php25.00</html>");
+    public JButton menuItem2 = new APP_ItemButton("Item 2");
+    public JButton menuItem3 = new APP_ItemButton("<html>Strawberry<p>Php25.00<p>2pcs</html>");
 
     public WP_ItemMenu() {
         super(new GridLayout(0, 2, 5, 5));
@@ -22,13 +22,10 @@ public class WP_ItemMenu extends APP_Panel {
     }
 
     public void prepareComponents() {
-        menuItem1.setMargin(new Insets(10, 10, 10, 10));
-        menuItem2.setMargin(new Insets(10, 10, 10, 10));
-        menuItem3.setMargin(new Insets(10, 10, 10, 10));
     }
 
     public void prepare() {
-        setBackground(ColorConfig.DEFAULT_BG_MID);
+        setBackground(ColorConfig.BG);
     }
 
     public void addComponents() {

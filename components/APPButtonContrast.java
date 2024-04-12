@@ -2,15 +2,15 @@ package components;
 
 import configs.ColorConfig;
 
-public class APPButtonContrast extends APPButton {
+public class APPButtonContrast extends APP_DefaultButton {
     public APPButtonContrast(String text) {
         super(text);
         initialize();
     }
 
     public void initialize() {
-        setBackground(ColorConfig.DEFAULT_BUTTON_BG_CONTRAST);
-        setForeground(ColorConfig.DEFAULT_BUTTON_FG_TEXT);
+        setBackground(ColorConfig.CONTRAST_BUTTON_BG);
+        setForeground(ColorConfig.ACCENT_BUTTON_FG);
         setFocusPainted(false);
         setBorderPainted(false);
     }

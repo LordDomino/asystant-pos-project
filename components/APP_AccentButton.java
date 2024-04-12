@@ -6,17 +6,17 @@ import javax.swing.JFrame;
 import configs.ColorConfig;
 import configs.StylesConfig;
 
-public class APPButton extends JButton {
+public class APP_AccentButton extends JButton {
 
-    public APPButton(String text) {
+    public APP_AccentButton(String text) {
         super(text);
         initialize();
     }
 
     public void initialize() {
         // Colors
-        setBackground(ColorConfig.DEFAULT_BUTTON_BG);
-        setForeground(ColorConfig.DEFAULT_BUTTON_FG_TEXT);
+        setBackground(ColorConfig.ACCENT_BUTTON_BG);
+        setForeground(ColorConfig.ACCENT_BUTTON_FG);
         setFocusPainted(false);
         setBorderPainted(false);
 
@@ -24,7 +24,7 @@ public class APPButton extends JButton {
         setFont(StylesConfig.defaultButton);
     }
 
-    public APPButton(String text, JFrame targetOnClick, boolean dispose) {
+    public APP_AccentButton(String text, JFrame targetOnClick, boolean dispose) {
         super(text);
         initialize();
     }
