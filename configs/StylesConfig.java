@@ -12,6 +12,10 @@ public class StylesConfig {
     public static final FontUIResource defaultButton = new FontUIResource(new Font("Inter", Font.BOLD, 14));
     public static final FontUIResource itemButton = new FontUIResource(new Font("Inter", Font.BOLD, 16));
 
+    public static final Font ITEM_BUTTON_FONT = new Font("Inter", Font.BOLD, 14);
+    public static final Font OUTPUT_FONT = new Font("Inter", Font.BOLD, 16);
+    public static final Font CALCULATOR_FONT = new Font("Inter", Font.BOLD, 16);
+
     public static void setupUI() {
         setUIFont(StylesConfig.defaultNormal);
     }

@@ -1,6 +1,5 @@
 package gui.windowPanels;
 
-import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -8,9 +7,12 @@ import java.awt.Insets;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.border.MatteBorder;
 
-import components.APP_DefaultButton;
+import components.APP_CalculatorButton;
 import components.APP_Panel;
+import configs.ColorConfig;
+import configs.StylesConfig;
 
 public class WP_Calculator extends APP_Panel {
     
@@ -19,18 +21,30 @@ public class WP_Calculator extends APP_Panel {
 
     protected JLabel outputText = new JLabel("Output");
 
-    protected JButton btn_1 = new APP_DefaultButton("1", false);
-    protected JButton btn_2 = new APP_DefaultButton("2", false);
-    protected JButton btn_3 = new APP_DefaultButton("3");
-    protected JButton btn_4 = new APP_DefaultButton("4");
-    protected JButton btn_5 = new APP_DefaultButton("5");
-    protected JButton btn_6 = new APP_DefaultButton("6");
-    protected JButton btn_7 = new APP_DefaultButton("7");
-    protected JButton btn_8 = new APP_DefaultButton("8");
-    protected JButton btn_9 = new APP_DefaultButton("9");
-    protected JButton btn_0 = new APP_DefaultButton("0");
-    protected JButton btn_00 = new APP_DefaultButton("00");
-    protected JButton btn_DOT = new APP_DefaultButton(".");
+    protected JButton btn_AC         = new APP_CalculatorButton("AC");
+    protected JButton btn_plus_minus = new APP_CalculatorButton("+/-");
+    protected JButton btn_percent    = new APP_CalculatorButton("%");
+    protected JButton btn_divide     = new APP_CalculatorButton("\u00f7");
+
+    protected JButton btn_7          = new APP_CalculatorButton("7");
+    protected JButton btn_8          = new APP_CalculatorButton("8");
+    protected JButton btn_9          = new APP_CalculatorButton("9");
+    protected JButton btn_multiply   = new APP_CalculatorButton("\u00d7");
+
+    protected JButton btn_4          = new APP_CalculatorButton("4");
+    protected JButton btn_5          = new APP_CalculatorButton("5");
+    protected JButton btn_6          = new APP_CalculatorButton("6");
+    protected JButton btn_subtract   = new APP_CalculatorButton("\u2212");
+    
+    protected JButton btn_1          = new APP_CalculatorButton("1");
+    protected JButton btn_2          = new APP_CalculatorButton("2");
+    protected JButton btn_3          = new APP_CalculatorButton("3");
+    protected JButton btn_add        = new APP_CalculatorButton("\u002b");
+
+    protected JButton btn_0          = new APP_CalculatorButton("0");
+    protected JButton btn_00         = new APP_CalculatorButton("00");
+    protected JButton btn_DOT        = new APP_CalculatorButton(".");
+    protected JButton btn_equals     = new APP_CalculatorButton("=");
 
     public WP_Calculator() {
         super();
@@ -38,19 +52,24 @@ public class WP_Calculator extends APP_Panel {
     }
 
     public void prepareComponents() {
-        outputPanel.setBackground(Color.BLUE);
-        buttonsPanel.setBackground(Color.YELLOW);
-        outputText.setOpaque(true);
-        outputText.setBackground(Color.MAGENTA);
+        outputPanel.setBackground(ColorConfig.ACCENT_1);
+        buttonsPanel.setBackground(ColorConfig.BG);
+
+        outputText.setHorizontalAlignment(JLabel.RIGHT);
+        outputText.setFont(StylesConfig.OUTPUT_FONT);
+        outputText.setForeground(ColorConfig.CONTRAST);
+        outputText.setBorder(new MatteBorder(0, 0, 1, 0, ColorConfig.ACCENT_3));
     }
 
-    public void prepare() {}
+    public void prepare() {
+        setBackground(ColorConfig.BG);
+    }
 
     public void addComponents() {
         GridBagConstraints gbc = new GridBagConstraints();
 
         gbc.anchor = GridBagConstraints.EAST;
-        gbc.fill = GridBagConstraints.NONE;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.weightx = 1;
@@ -60,14 +79,16 @@ public class WP_Calculator extends APP_Panel {
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.gridx = 0;
         gbc.gridy = 1;
+        gbc.insets = new Insets(2, 2, 2, 2);
         add(buttonsPanel, gbc);
         
         // OUTPUT PANEL
         gbc.anchor = GridBagConstraints.EAST;
-        gbc.fill = GridBagConstraints.NONE;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.weightx = 0;
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.weightx = 1;
         gbc.weighty = 0;
         outputPanel.add(outputText, gbc);
         
@@ -76,7 +97,7 @@ public class WP_Calculator extends APP_Panel {
         gbc.fill = GridBagConstraints.BOTH;
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.insets = new Insets(1, 1, 1, 1);
+        gbc.insets = new Insets(2, 2, 2, 2);
         gbc.weightx = 1;
         gbc.weighty = 1;
         buttonsPanel.add(btn_7, gbc);
