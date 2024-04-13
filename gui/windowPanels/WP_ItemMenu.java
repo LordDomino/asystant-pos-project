@@ -12,9 +12,9 @@ import configs.ColorConfig;
 
 public class WP_ItemMenu extends APP_Panel {
     
-    public JButton menuItem1 = new APP_ItemButton("<html><top>Strawberry<p>Php25.00</html>");
-    public JButton menuItem2 = new APP_ItemButton("Item 2");
-    public JButton menuItem3 = new APP_ItemButton("<html>Strawberry<p>Php25.00<p>2pcs</html>");
+    public JButton menuItem1 = new APP_ItemButton("Strawberry", 205);
+    public JButton menuItem2 = new APP_ItemButton("Item 2", 200);
+    public JButton menuItem3 = new APP_ItemButton("Strawberry", 200);
 
     public WP_ItemMenu() {
         super(new GridLayout(0, 2, 5, 5));
