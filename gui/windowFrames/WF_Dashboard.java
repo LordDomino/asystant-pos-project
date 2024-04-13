@@ -1,6 +1,5 @@
 package gui.windowFrames;
 
-import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -62,16 +61,18 @@ public class WF_Dashboard extends APP_Frame {
         gbc.weighty = 1;
         add(leftPanel, gbc);
         
+        gbc.anchor = GridBagConstraints.NORTHWEST;
         gbc.fill = GridBagConstraints.NONE;
         gbc.gridx = 1;
         gbc.gridy = 0;
+        gbc.weightx = 1;
         add(centerPanel, gbc);
         
         gbc.anchor = GridBagConstraints.EAST;
         gbc.fill = GridBagConstraints.VERTICAL;
         gbc.gridx = 2;
         gbc.gridy = 0;
-        gbc.weightx = 1;
+        gbc.weightx = 0;
         gbc.weighty = 1;
         add(rightPanel, gbc);
         

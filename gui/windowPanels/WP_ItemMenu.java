@@ -4,7 +4,6 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.GridBagConstraints;
 import javax.swing.JButton;
-import javax.swing.SwingConstants;
 
 import components.APP_ItemButton;
 import components.APP_Panel;

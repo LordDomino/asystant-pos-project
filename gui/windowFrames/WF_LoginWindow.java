@@ -17,7 +17,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.LineBorder;
 
-import components.APP_DefaultButton;
 import components.APP_Frame;
 import components.APPTextField;
 import components.APP_AccentButton;
