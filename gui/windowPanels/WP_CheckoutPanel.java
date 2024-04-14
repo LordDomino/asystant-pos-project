@@ -1,18 +1,15 @@
 package gui.windowPanels;
 
-import java.awt.Color;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
 
 import javax.swing.JLabel;
+import javax.swing.JTable;
+import javax.swing.JScrollPane;
 
 import components.APP_Panel;
 import configs.ColorConfig;
 import configs.StylesConfig;
-
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
-
-import javax.swing.JTable;
-import javax.swing.JScrollPane;
 
 public class WP_CheckoutPanel extends APP_Panel {
 

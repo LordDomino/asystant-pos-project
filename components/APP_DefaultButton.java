@@ -1,14 +1,7 @@
 package components;
 
-import java.awt.Color;
-import java.awt.Insets;
-
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.border.CompoundBorder;
-import javax.swing.border.LineBorder;
-import javax.swing.border.MatteBorder;
 
 import configs.ColorConfig;
 import configs.StylesConfig;
