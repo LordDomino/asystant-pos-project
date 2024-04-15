@@ -6,6 +6,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.ResultSet;
+import java.sql.Statement;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -21,6 +23,8 @@ import components.APP_Frame;
 import components.APPTextField;
 import components.APP_AccentButton;
 import configs.ColorConfig;
+import sql.SQLConnector;
+import userAccountSystem.LoginManager;
 
 public final class WF_LoginWindow extends APP_Frame {
 
@@ -65,10 +69,38 @@ public final class WF_LoginWindow extends APP_Frame {
     
         submitButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                JFrame source = (JFrame) SwingUtilities.getRoot(submitButton);
-                APP_Frame target = new WF_Dashboard();
-                target.setVisible(true);
-                source.dispose();
+                boolean permitSuperAdminLogin = false;  // IMPORTANT! This is the boolean flag for permitting login as the SUPER ADMIN
+                boolean permitAdminLogin = false;
+                boolean permitUserLogin = false;
+
+                // Retrieve the credentials
+                final String username = loginUserField.getText();
+                final String password = new String(passwordField.getPassword());
+
+                // To retrieve the user accounts credentials from the database,
+                // establish a SQL connection first
+                SQLConnector.establishSQLConnection();
+
+                try {
+                    // Attempt to login super administrator
+                    permitSuperAdminLogin = LoginManager.attemptSuperAdminLogin(username, password);
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                }
+
+                if (permitSuperAdminLogin) {
+                    JFrame source = (JFrame) SwingUtilities.getRoot(submitButton);
+                    APP_Frame target = new WF_Dashboard();
+                    target.setVisible(true);
+                    source.dispose();
+                } else if (permitAdminLogin) {
+                    // Execute when admin login
+                } else if (permitUserLogin) {
+                    // Execute when user login
+                } else {
+                    // Execute when all user account type login attempts fail
+                    // Perform counter operation
+                }
             }	
         });
         backButton.addActionListener(new ActionListener() {
