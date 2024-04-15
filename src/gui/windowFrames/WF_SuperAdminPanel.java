@@ -124,8 +124,10 @@ public class WF_SuperAdminPanel extends APP_Frame {
     }
 
     public void finalizePrepare() {
-        // No finalization needed in this method
-
+        pack();
+        setResizable(false);
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // Method to open the user management frame
     }
