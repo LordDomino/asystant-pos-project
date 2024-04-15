@@ -52,7 +52,7 @@ public class WF_SuperAdminPanel extends APP_Frame {
     }
     
     public void addComponents() {
-        
+
         GridBagConstraints gbc = new GridBagConstraints();
         
         gbc.anchor = GridBagConstraints.CENTER;
@@ -128,6 +128,8 @@ public class WF_SuperAdminPanel extends APP_Frame {
 
 
         // Method to open the user management frame
+    }
+    
     private void openUserManagementFrame() {
         // Code to open the user management frame 
     }
