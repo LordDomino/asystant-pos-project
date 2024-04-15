@@ -6,8 +6,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.ResultSet;
-import java.sql.Statement;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -90,7 +88,7 @@ public final class WF_LoginWindow extends APP_Frame {
 
                 if (permitSuperAdminLogin) {
                     JFrame source = (JFrame) SwingUtilities.getRoot(submitButton);
-                    APP_Frame target = new WF_Dashboard();
+                    JFrame target = LoginManager.getCurrentAccessLevelTargetJFrame();
                     target.setVisible(true);
                     source.dispose();
                 } else if (permitAdminLogin) {
