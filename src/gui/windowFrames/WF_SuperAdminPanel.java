@@ -8,6 +8,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class WF_SuperAdminPanel extends APP_Frame {
+    
+    public JPanel buttonsPanel = new JPanel();
+    public JButton userManagementButton = new JButton("User Management");
+    public JButton dashboardButton = new JButton("Dashboard");
 
     public WF_SuperAdminPanel() {
         super("Super Administrator Panel");
@@ -16,8 +20,7 @@ public class WF_SuperAdminPanel extends APP_Frame {
 
     @Override
     public void prepareComponents() {
-        JButton userManagementButton = new JButton("User Management");
-        JButton dashboardButton = new JButton("Dashboard");
+        buttonsPanel.setLayout(new GridLayout(1, 2)); // Layout for two buttons vertically
 
         // Add action listeners to the buttons
         userManagementButton.addActionListener(new ActionListener() {
@@ -33,26 +36,23 @@ public class WF_SuperAdminPanel extends APP_Frame {
                 openDashboardFrame();
             }
         });
-
-        // Add buttons to the frame
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new GridLayout(2, 1)); // Layout for two buttons vertically
-        buttonPanel.add(userManagementButton);
-        buttonPanel.add(dashboardButton);
-        add(buttonPanel, BorderLayout.CENTER); // Add buttons to the center of the frame
     }
-
-
+    
+    
     public void prepare() {
         // No additional preparation needed in this method
     }
-
+    
     public void addComponents() {
-        // No additional preparation needed in this method
+        // Add buttons to the frame
+        buttonsPanel.add(userManagementButton);
+        buttonsPanel.add(dashboardButton);
+        add(buttonsPanel, BorderLayout.CENTER); // Add buttons to the center of the frame
     }
 
     public void finalizePrepare() {
         // No finalization needed in this method
+    }
 
         // Method to open the user management frame
     private void openUserManagementFrame() {
@@ -64,4 +64,3 @@ public class WF_SuperAdminPanel extends APP_Frame {
         // Code to open the dashboard frame 
     }
 }
-   

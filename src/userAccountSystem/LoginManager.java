@@ -14,7 +14,7 @@ public class LoginManager {
     /**The current attempted access level that the LoginManager will use to
      * facilitate login attempts based on the given access level.
      */
-    private static int CURRENT_ACCESS_LEVEL = 0;
+    private static int CURRENT_ACCESS_LEVEL_MODE = 0;
 
     /**The current target JFrame of the attempted access level that the
      * LoginManager will send in case of a successful login attempt of the
@@ -36,20 +36,20 @@ public class LoginManager {
         if (SA_username.equals(username) && SA_password.equals(password)) {
             // Super admin access is permitted only when
             // the username and password matches credentials in DB
-            setCurrentAccessLevel(1, new WF_SuperAdminPanel());
+            setCurrentAccessLevelModeConfig(1, new WF_SuperAdminPanel());
             return true;
         } else {
             return false;
         }
     }
 
-    private static void setCurrentAccessLevel(int accessLevel, JFrame targetJFrame) {
-        LoginManager.CURRENT_ACCESS_LEVEL = accessLevel;
+    private static void setCurrentAccessLevelModeConfig(int accessLevel, JFrame targetJFrame) {
+        LoginManager.CURRENT_ACCESS_LEVEL_MODE = accessLevel;
         LoginManager.CURRENT_ACCESS_LEVEL_TARGET_JFRAME = targetJFrame;
     }
 
-    public static int getCurrentAccessLevel() {
-        return CURRENT_ACCESS_LEVEL;
+    public static int getCurrentAccessLevelMode() {
+        return CURRENT_ACCESS_LEVEL_MODE;
     }
 
     public static JFrame getCurrentAccessLevelTargetJFrame() {
