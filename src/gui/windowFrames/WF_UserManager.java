@@ -6,9 +6,11 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 
-
+import components.APP_AccentButton;
 import components.APP_Frame;
+import configs.ColorConfig;
 
 public class WF_UserManager extends APP_Frame {
 
@@ -22,7 +24,11 @@ public class WF_UserManager extends APP_Frame {
 
     public JScrollPane scrollPane = new JScrollPane(userTable);
 
-    public JButton addButton = new JButton("Add");
+    public JButton addButton = new APP_AccentButton("Add");
+
+    public JButton editButton = new APP_AccentButton("Edit");
+
+    public JButton deleteButton = new APP_AccentButton("Delete");
 
 
     public WF_UserManager () {
@@ -31,6 +37,7 @@ public class WF_UserManager extends APP_Frame {
     }
 
     public void prepareComponents() {
+        getContentPane().setBackground(ColorConfig.ACCENT_3);
 
      
 
@@ -42,7 +49,7 @@ public class WF_UserManager extends APP_Frame {
 
         GridBagConstraints gbc = new GridBagConstraints();
 
-        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.anchor = GridBagConstraints.NORTHWEST;
         gbc.gridx = 0;
         gbc.gridy = 0;
         add(buttonsPanel, gbc);
@@ -52,17 +59,27 @@ public class WF_UserManager extends APP_Frame {
         gbc.gridy = 0;
         buttonsPanel.add(addButton, gbc);
 
-        gbc.gridx = 0;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.gridx = 1;
         gbc.gridy = 0;
+        buttonsPanel.add(editButton, gbc);
+
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.gridx = 2;
+        gbc.gridy = 0;
+        buttonsPanel.add(deleteButton, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 1;
         add(scrollPane, gbc);
     }
 
     public void prepare() {
-
+        setLayout(new GridBagLayout());
     }
 
     public void finalizePrepare() {
-
+        this.pack();
     }
 }
 
@@ -112,6 +129,7 @@ class EditPopupWindow extends APP_Frame {
     }
 
     public void finalizePrepare() {
-
+ 
+        
     }
 }
