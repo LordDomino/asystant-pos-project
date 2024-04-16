@@ -109,16 +109,7 @@ public class WF_SuperAdminPanel extends APP_Frame {
         buttonsPanel.add(dashboardButton);
         add(buttonsPanel, BorderLayout.CENTER); // Add buttons to the center of the frame
     }
-
-    public void finalizePrepare() {
-        pack();
-        setResizable(false);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        // Method to open the user management frame
-    }
-    
+  
     private void openUserManagementFrame() {
         // Code to open the user management frame 
     }
