@@ -1,12 +1,16 @@
 package gui.windowFrames;
 
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.JScrollPane;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import java.awt.GridBagConstraints;
-
+import java.awt.Insets;
 
 import components.APP_Frame;
 
@@ -68,7 +72,20 @@ public class WF_UserManager extends APP_Frame {
 
 class AddPopupWindow extends APP_Frame {
 
-    AddPopupWindow() {
+    JLabel header = new JLabel("Add a new user account");
+
+    JLabel usernameLabel = new JLabel("Username");
+    JLabel passwordLabel = new JLabel("Password");
+    JLabel accessLevelLabel = new JLabel("Account access level");
+    JLabel activatedLabel = new JLabel("Activated");
+
+    JTextField usernameField = new JTextField();
+    JTextField passwordField = new JTextField();
+
+    String[] accessLevelTypes = {"Admin", "User"};
+    JComboBox<String> accessLevelComboBox = new JComboBox<String>(accessLevelTypes);
+
+    public AddPopupWindow() {
         super();
         compile();
     }
@@ -79,7 +96,12 @@ class AddPopupWindow extends APP_Frame {
     }
 
     public void addComponents() {
+        GridBagConstraints gbc = new GridBagConstraints();
 
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.insets = new Insets(20, 20, 10, 20);
+        add(header, gbc);
     }
 
     public void prepare() {
@@ -88,6 +110,11 @@ class AddPopupWindow extends APP_Frame {
 
     public void finalizePrepare() {
 
+    }
+
+    public static void main(String[] args) {
+        JFrame testFrame = new AddPopupWindow();
+        testFrame.setVisible(true);
     }
 
 }
