@@ -83,9 +83,6 @@ public class WF_SuperAdminPanel extends APP_Frame {
         gbc.weighty = 0;
         userManagementButton.add(dashboardButton, gbc);
         
-        
-    
-
     
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.fill = GridBagConstraints.VERTICAL;
@@ -98,7 +95,7 @@ public class WF_SuperAdminPanel extends APP_Frame {
         gbc.gridwidth = 1;
         gbc.weightx = 1;
         gbc.weighty = 0;
-        contentAreaPanel.add(buttonsPanel, gbc);
+        userManagementButton.add(buttonsPanel, gbc);
     }
 
     public void finalizePrepare() {
