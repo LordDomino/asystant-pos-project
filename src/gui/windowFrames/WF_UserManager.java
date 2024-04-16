@@ -20,9 +20,9 @@ import configs.ColorConfig;
 
 public class WF_UserManager extends APP_Frame {
 
-    public JPanel buttonsPanel = new JPanel();
+    public JPanel buttonsPanel = new JPanel(new GridBagLayout());
 
-    String[] dataFields = {"username", "password", "access level", "activation"};
+    String[] dataFields = {"Username", "Password", "Access Level", "Activation Status"};
 
     Object[][] sampleData = {{"lancer826", "woahz", "User", true}};
     
@@ -38,54 +38,61 @@ public class WF_UserManager extends APP_Frame {
 
 
     public WF_UserManager () {
-        super();
+        super("User Management Window");
         compile();
     }
-
-    public void prepareComponents() {
-        getContentPane().setBackground(ColorConfig.ACCENT_3);
-
-     
-
-
-
-    }
-
-    public void addComponents() {
-
-        GridBagConstraints gbc = new GridBagConstraints();
-
-        gbc.anchor = GridBagConstraints.NORTHWEST;
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        add(buttonsPanel, gbc);
-
-        gbc.anchor = GridBagConstraints.WEST;
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        buttonsPanel.add(addButton, gbc);
-
-        gbc.anchor = GridBagConstraints.WEST;
-        gbc.gridx = 1;
-        gbc.gridy = 0;
-        buttonsPanel.add(editButton, gbc);
-
-        gbc.anchor = GridBagConstraints.WEST;
-        gbc.gridx = 2;
-        gbc.gridy = 0;
-        buttonsPanel.add(deleteButton, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        add(scrollPane, gbc);
-    }
-
+    
     public void prepare() {
+        getContentPane().setBackground(ColorConfig.ACCENT_1);
         setLayout(new GridBagLayout());
     }
 
+    public void prepareComponents() {
+        buttonsPanel.setOpaque(false);
+    }
+
+    public void addComponents() {
+        GridBagConstraints gbc = new GridBagConstraints();
+
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.insets = new Insets(10, 10, 0, 10);
+        add(buttonsPanel, gbc);
+        
+        gbc.anchor = GridBagConstraints.NORTH;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.insets = new Insets(0, 0, 0, 0);
+        buttonsPanel.add(addButton, gbc);
+        
+        gbc.anchor = GridBagConstraints.NORTH;
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.insets = new Insets(0, 10, 0, 0);
+        buttonsPanel.add(editButton, gbc);
+        
+        gbc.anchor = GridBagConstraints.NORTH;
+        gbc.gridx = 2;
+        gbc.gridy = 0;
+        gbc.insets = new Insets(0, 10, 0, 0);
+        buttonsPanel.add(deleteButton, gbc);
+        
+        gbc.anchor = GridBagConstraints.SOUTH;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.weightx = 1;
+        gbc.weighty = 1;
+        add(scrollPane, gbc);
+    }
+
     public void finalizePrepare() {
-        this.pack();
+        pack();
+        setLocationRelativeTo(null);
     }
 }
 
