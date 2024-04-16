@@ -6,7 +6,7 @@ import java.sql.Statement;
 
 import javax.swing.JFrame;
 
-import gui.windowFrames.WF_SuperAdminPanel;
+import gui.windowFrames.WF_SuperAdminScreen;
 import sql.SQLConnector;
 
 public class LoginManager {
@@ -36,7 +36,7 @@ public class LoginManager {
         if (SA_username.equals(username) && SA_password.equals(password)) {
             // Super admin access is permitted only when
             // the username and password matches credentials in DB
-            setCurrentAccessLevelModeConfig(1, new WF_SuperAdminPanel());
+            setCurrentAccessLevelModeConfig(1, new WF_SuperAdminScreen());
             return true;
         } else {
             return false;

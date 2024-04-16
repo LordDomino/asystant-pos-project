@@ -8,13 +8,13 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class WF_SuperAdminPanel extends APP_Frame {
+public class WF_SuperAdminScreen extends APP_Frame {
     
-    public JPanel buttonsPanel = new JPanel();
+    public JPanel buttonsPanel = new JPanel();    
     public JButton userManagementButton = new JButton("User Management");
     public JButton dashboardButton = new JButton("Dashboard");
 
-    public WF_SuperAdminPanel() {
+    public WF_SuperAdminScreen() {
         super("Super Administrator Panel");
         compile();
     }
@@ -25,7 +25,8 @@ public class WF_SuperAdminPanel extends APP_Frame {
     }
 
     public void prepareComponents() {
-        buttonsPanel.setLayout(new GridBagLayout()); // Layout for two buttons vertically
+        buttonsPanel.setLayout(new GridBagLayout());
+        buttonsPanel.setOpaque(false);
 
         // Set accent button background color
         userManagementButton.setBackground(ColorConfig.ACCENT_BUTTON_BG);
@@ -52,27 +53,26 @@ public class WF_SuperAdminPanel extends APP_Frame {
     }
     
     public void addComponents() {
-
         GridBagConstraints gbc = new GridBagConstraints();
         
         gbc.anchor = GridBagConstraints.CENTER;
-        gbc.fill = GridBagConstraints.VERTICAL;
+        gbc.fill = GridBagConstraints.BOTH;
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.insets = new Insets(0, 50, 0, 50);
+        gbc.insets = new Insets(0, 0, 0, 0);
         gbc.ipadx = 0;
         gbc.ipady = 0;
         gbc.gridheight = 1;
         gbc.gridwidth = 1;
         gbc.weightx = 1;
         gbc.weighty = 1;
-        this.add(buttonsPanel, gbc);
+        add(buttonsPanel, gbc);
 
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.insets = new Insets(20, 30, 0, 30);
+        gbc.insets = new Insets(0, 0, 0, 0);
         gbc.ipadx = 0;
         gbc.ipady = 0;
         gbc.gridheight = 1;
@@ -83,14 +83,14 @@ public class WF_SuperAdminPanel extends APP_Frame {
 
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.fill = GridBagConstraints.VERTICAL;
-        gbc.gridx = 0;
-        gbc.gridy = 3;
-        gbc.insets = new Insets(20, 30, 20, 30);
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.insets = new Insets(0, 0, 0, 0);
         gbc.ipadx = 0;
         gbc.ipady = 0;
         gbc.gridheight = 1;
         gbc.gridwidth = 1;
-        gbc.weightx = 1;
+        gbc.weightx = 0;
         gbc.weighty = 0;
         buttonsPanel.add(userManagementButton, gbc);
     }
