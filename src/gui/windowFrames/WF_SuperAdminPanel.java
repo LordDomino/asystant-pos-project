@@ -21,7 +21,7 @@ public class WF_SuperAdminPanel extends APP_Frame {
 
     @Override
     public void prepareComponents() {
-        buttonsPanel.setLayout(new GridLayout(1, 2)); // Layout for two buttons vertically
+        buttonsPanel.setLayout(new GridBagLayout()); // Layout for two buttons vertically
 
         // Set accent button background color
         userManagementButton.setBackground(ColorConfig.ACCENT_BUTTON_BG);
@@ -49,7 +49,7 @@ public class WF_SuperAdminPanel extends APP_Frame {
     
     
     public void prepare() {
-        // No additional preparation needed in this method
+        setLayout(new GridBagLayout());
     }
     
     public void addComponents() {
@@ -67,9 +67,8 @@ public class WF_SuperAdminPanel extends APP_Frame {
         gbc.gridwidth = 1;
         gbc.weightx = 1;
         gbc.weighty = 1;
-        this.add(userManagementButton, gbc);
+        this.add(buttonsPanel, gbc);
 
-        
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridx = 0;
@@ -81,9 +80,8 @@ public class WF_SuperAdminPanel extends APP_Frame {
         gbc.gridwidth = 1;
         gbc.weightx = 1;
         gbc.weighty = 0;
-        userManagementButton.add(dashboardButton, gbc);
-        
-    
+        buttonsPanel.add(dashboardButton, gbc);
+
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.fill = GridBagConstraints.VERTICAL;
         gbc.gridx = 0;
@@ -95,7 +93,7 @@ public class WF_SuperAdminPanel extends APP_Frame {
         gbc.gridwidth = 1;
         gbc.weightx = 1;
         gbc.weighty = 0;
-        userManagementButton.add(buttonsPanel, gbc);
+        buttonsPanel.add(userManagementButton, gbc);
     }
 
     public void finalizePrepare() {
@@ -103,13 +101,8 @@ public class WF_SuperAdminPanel extends APP_Frame {
         setResizable(false);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        // Add buttons to the frame
-        buttonsPanel.add(userManagementButton);
-        buttonsPanel.add(dashboardButton);
-        add(buttonsPanel, BorderLayout.CENTER); // Add buttons to the center of the frame
     }
-  
+
     private void openUserManagementFrame() {
         // Code to open the user management frame 
     }
