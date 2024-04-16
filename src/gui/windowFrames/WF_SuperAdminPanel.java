@@ -18,8 +18,12 @@ public class WF_SuperAdminPanel extends APP_Frame {
         super("Super Administrator Panel");
         compile();
     }
+    
+    public void prepare() {
+        setLayout(new GridBagLayout());
+        setBackground(ColorConfig.ACCENT_1);
+    }
 
-    @Override
     public void prepareComponents() {
         buttonsPanel.setLayout(new GridBagLayout()); // Layout for two buttons vertically
 
@@ -45,11 +49,6 @@ public class WF_SuperAdminPanel extends APP_Frame {
                 openDashboardFrame();
             }
         });
-    }
-    
-    
-    public void prepare() {
-        setLayout(new GridBagLayout());
     }
     
     public void addComponents() {
