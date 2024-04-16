@@ -1,6 +1,7 @@
 package gui.windowFrames;
 
 import components.APP_Frame;
+import configs.ColorConfig;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,12 +24,12 @@ public class WF_SuperAdminPanel extends APP_Frame {
         buttonsPanel.setLayout(new GridLayout(1, 2)); // Layout for two buttons vertically
 
         // Set accent button background color
-        userManagementButton.setBackground(new Color(205, 239, 239));
-        dashboardButton.setBackground(new Color(205, 239, 239));
+        userManagementButton.setBackground(ColorConfig.ACCENT_BUTTON_BG);
+        dashboardButton.setBackground(ColorConfig.ACCENT_BUTTON_BG);
 
         // Set accent button foreground (text) color
-        userManagementButton.setForeground(Color.BLACK); // Adjust this to the appropriate foreground color
-        dashboardButton.setForeground(Color.BLACK); // Adjust this to the appropriate foreground color
+        userManagementButton.setForeground(ColorConfig.ACCENT_BUTTON_FG); // Adjust this to the appropriate foreground color
+        dashboardButton.setForeground(ColorConfig.ACCENT_BUTTON_FG); // Adjust this to the appropriate foreground color
 
         // Add action listeners to the buttons
         userManagementButton.addActionListener(new ActionListener() {
@@ -66,7 +67,7 @@ public class WF_SuperAdminPanel extends APP_Frame {
         gbc.gridwidth = 1;
         gbc.weightx = 1;
         gbc.weighty = 1;
-        this.add(contentAreaPanel, gbc);
+        this.add(userManagementButton, gbc);
 
         
         gbc.anchor = GridBagConstraints.CENTER;
@@ -80,23 +81,12 @@ public class WF_SuperAdminPanel extends APP_Frame {
         gbc.gridwidth = 1;
         gbc.weightx = 1;
         gbc.weighty = 0;
-        contentAreaPanel.add(titleCardPanel, gbc);
+        userManagementButton.add(dashboardButton, gbc);
         
         
-        gbc.anchor = GridBagConstraints.CENTER;
-        gbc.fill = GridBagConstraints.VERTICAL;
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.insets = new Insets(10, 30, 0, 30);
-        gbc.ipadx = 0;
-        gbc.ipady = 0;
-        gbc.gridheight = 1;
-        gbc.gridwidth = 1;
-        gbc.weightx = 0;
-        gbc.weighty = 0;
-        contentAreaPanel.add(fieldsPanel, gbc);
+    
 
-        l
+    
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.fill = GridBagConstraints.VERTICAL;
         gbc.gridx = 0;
