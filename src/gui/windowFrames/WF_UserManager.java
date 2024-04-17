@@ -9,6 +9,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -16,9 +17,7 @@ import java.awt.Insets;
 
 import components.APP_AccentButton;
 import components.APP_Frame;
-import configs.APPResourceLoader;
 import configs.ColorConfig;
-import configs.StylesConfig;
 
 public class WF_UserManager extends APP_Frame {
 
@@ -116,7 +115,7 @@ class AddPopupWindow extends APP_Frame {
     JCheckBox activatedCheckBox = new JCheckBox("", false);
 
     public AddPopupWindow() {
-        super("Add New Account");
+        super();
         compile();
     }
 
@@ -179,9 +178,6 @@ class AddPopupWindow extends APP_Frame {
     }
 
     public static void main(String[] args) {
-        APPResourceLoader.loadFonts(); // load custom fonts
-        StylesConfig.setupUI();        // then register them as the default fonts
-        
         JFrame testFrame = new AddPopupWindow();
         testFrame.pack();
         testFrame.setVisible(true);
@@ -191,13 +187,25 @@ class AddPopupWindow extends APP_Frame {
 
 class EditPopupWindow extends APP_Frame {
 
+    public JPanel editForm = new JPanel(new GridBagLayout());
+    public JLabel usernameEditLabel = new JLabel("Username");
+    public JLabel passwordEditLabel = new JLabel("Password");
+    public JLabel accessEditLabel = new JLabel("Account access level");
+    public JLabel activatedEditLabel = new JLabel("Activated");
+
+    public JTextField usernameEditField = new JTextField();
+    public JPasswordField passwordEditField = new JPasswordField();
+    public String[] accessEditField = {"Admin", "User"};
+    public JComboBox<String> accessLevelComboBoxEdit = new JComboBox<String>(accessEditField);
+    JCheckBox activatedCheckBoxEdit = new JCheckBox("", false);
+
     EditPopupWindow(){
-        super("Edit account properties");
-        compile();
+    super();
+    compile();
     }
 
     public void prepareComponents() {
-        
+        setLayout(new GridBagLayout());
     }
 
     public void addComponents() {
