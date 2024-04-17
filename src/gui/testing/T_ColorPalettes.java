@@ -4,9 +4,9 @@ import javax.swing.*;
 import javax.swing.JFrame;
 import java.awt.*;
 import java.awt.Color;
-public class T_ColorPalletes{
+
+public class T_ColorPalettes {
     public static void main(String[] args) {
-      
         // Create JFrame
         JFrame frame = new JFrame("Color Palettes Testing");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -19,16 +19,16 @@ public class T_ColorPalletes{
         JLabel label4 = new JLabel("Label 4");
 
         // Set background colors for JLabels
-        label1.setBackground(Pallete.BG);
-        label2.setBackground(Pallete.ACCENT_1);
-        label3.setBackground(Pallete.ACCENT_2);
-        label4.setBackground(Pallete.ACCENT_3);
+        label1.setBackground(Palette.BG);
+        label2.setBackground(Palette.ACCENT_1);
+        label3.setBackground(Palette.ACCENT_2);
+        label4.setBackground(Palette.ACCENT_3);
 
         // Set foreground colors for JLabels
-        label1.setForeground(Pallete.FG);
-        label2.setForeground(Pallete.FG);
-        label3.setForeground(Pallete.FG);
-        label4.setForeground(Pallete.FG);
+        label1.setForeground(Palette.FG);
+        label2.setForeground(Palette.FG);
+        label3.setForeground(Palette.FG);
+        label4.setForeground(Palette.FG);
 
         // Set opaque to true for JLabels to make background colors visible
         label1.setOpaque(true);
@@ -42,14 +42,14 @@ public class T_ColorPalletes{
         JButton contrastButton = new JButton("Contrast");
 
         // Set background colors for JButtons
-        defaultButton.setBackground(Pallete.DEFAULT_BUTTON_BG);
-        accentButton.setBackground(Pallete.ACCENT_BUTTON_BG);
-        contrastButton.setBackground(Pallete.CONTRAST_BUTTON_BG);
+        defaultButton.setBackground(Palette.DEFAULT_BUTTON_BG);
+        accentButton.setBackground(Palette.ACCENT_BUTTON_BG);
+        contrastButton.setBackground(Palette.CONTRAST_BUTTON_BG);
 
         // Set foreground colors for JButtons
-        defaultButton.setForeground(Pallete.DEFAULT_BUTTON_FG);
-        accentButton.setForeground(Pallete.ACCENT_BUTTON_FG);
-        contrastButton.setForeground(Pallete.CONTRAST_BUTTON_FG);
+        defaultButton.setForeground(Palette.DEFAULT_BUTTON_FG);
+        accentButton.setForeground(Palette.ACCENT_BUTTON_FG);
+        contrastButton.setForeground(Palette.CONTRAST_BUTTON_FG);
 
         // Add JLabels and JButtons to the frame
         frame.add(label1);
@@ -64,14 +64,13 @@ public class T_ColorPalletes{
         frame.setSize(300, 200);
         frame.setLocationRelativeTo(null); // Center the frame on the screen
         frame.setVisible(true);
-        
-  }
- }
+    }
+}
 
 
 
 
-class Pallete {
+class Palette {
     /** The default background color. */
     public static final Color BG = new Color(255, 255, 255);
     

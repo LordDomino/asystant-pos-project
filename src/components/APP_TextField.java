@@ -6,20 +6,20 @@ import javax.swing.border.LineBorder;
 
 import configs.ColorConfig;
 
-public class APPTextField extends JTextField {
+public class APP_TextField extends JTextField {
 
-    public APPTextField() {
+    public APP_TextField() {
         initialize();
     } 
 
-    public APPTextField(int columns) {
+    public APP_TextField(int columns) {
         super(columns);
         initialize();
     }
 
-    public void initialize() {
+    private void initialize() {
         setBorder(new CompoundBorder(
-            new LineBorder(ColorConfig.CONTRAST),
+            new LineBorder(ColorConfig.ACCENT_3),
             new LineBorder(ColorConfig.BG, 2)
         ));
     }

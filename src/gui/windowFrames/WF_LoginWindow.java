@@ -1,7 +1,7 @@
 package gui.windowFrames;
 
-import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -21,35 +21,40 @@ import javax.swing.border.CompoundBorder;
 import javax.swing.border.LineBorder;
 
 import components.APP_Frame;
-import components.APPTextField;
+import components.APP_PasswordField;
+import components.APP_TextField;
 import components.APP_AccentButton;
 import configs.ColorConfig;
+import configs.InsetsConfig;
+import configs.StylesConfig;
 import sql.SQLConnector;
 import userAccountSystem.LoginManager;
 import utils.GUIHelpers;
 
 public final class WF_LoginWindow extends APP_Frame {
 
-    public Color bg = ColorConfig.ACCENT_1;
     public int textBoxWidth = 10;
-
-    // Components
-    public JLabel titleText = new JLabel("Asystant - POS System");
-    public JLabel usernameLabel = new JLabel("User");
-    public JLabel passwordLabel = new JLabel("Password");
-
-    public JTextField usernameField = new APPTextField(textBoxWidth);
-    public JPasswordField passwordField = new JPasswordField(textBoxWidth);
-    public JTextField[] fields = {usernameField, passwordField};
-
-    public JButton loginButton = new APP_AccentButton("Log In");
-    public JButton quitButton = new APP_AccentButton("Quit");
 
     // Layout components
     private JPanel contentAreaPanel = new JPanel(new GridBagLayout());
     private JPanel titleCardPanel = new JPanel(new GridBagLayout());
     private JPanel fieldsPanel = new JPanel(new GridBagLayout());
     private JPanel buttonsPanel = new JPanel(new GridBagLayout());
+
+    // Components
+    public JLabel titleText = new JLabel("Asystant - POS System");
+    public JLabel subtitleText = new JLabel("Developed by Grade 12 ICT (S.Y. 2023-24)");
+    public JLabel versionInfo = new JLabel("Version x.x.x.1");
+
+    public JLabel usernameLabel = new JLabel("Username");
+    public JLabel passwordLabel = new JLabel("Password");
+
+    public JTextField usernameField = new APP_TextField(textBoxWidth);
+    public JPasswordField passwordField = new APP_PasswordField(textBoxWidth);
+    public JTextField[] fields = {usernameField, passwordField};
+
+    public JButton loginButton = new APP_AccentButton("Log In");
+    public JButton quitButton = new APP_AccentButton("Quit");
 
     public WF_LoginWindow() {
         super("Login");
@@ -63,19 +68,28 @@ public final class WF_LoginWindow extends APP_Frame {
     }
 
     public void prepareComponents() {
-        contentAreaPanel.setBackground(this.bg);
-        titleCardPanel.setBackground(this.bg);
-        fieldsPanel.setBackground(this.bg);
-        buttonsPanel.setBackground(this.bg);
+        
+        // General preparations
+        GUIHelpers.setButtonTriggerOnAllFields(loginButton, fields);
+
+
+
+        // Preparations per component
+        contentAreaPanel.setBackground(ColorConfig.ACCENT_1);
+        titleCardPanel.setOpaque(false);
+        fieldsPanel.setOpaque(false);
+        buttonsPanel.setOpaque(false);
+
+        titleText.setFont(StylesConfig.HEADING1);
+        subtitleText.setFont(StylesConfig.DETAIL);
+        versionInfo.setFont(StylesConfig.DETAIL);
 
         passwordField.setBorder(new CompoundBorder(
             new LineBorder(ColorConfig.CONTRAST),
             new LineBorder(ColorConfig.BG, 2)
         ));
 
-        GUIHelpers.setButtonTriggerOnAllFields(loginButton, fields);
         loginButton.setEnabled(false);
-
         loginButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 boolean permitLogin = false;  // The boolean flag for allowing SUPER ADMIN access
@@ -130,6 +144,7 @@ public final class WF_LoginWindow extends APP_Frame {
                 }
             }
         });
+
         quitButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 JFrame source = (JFrame) SwingUtilities.getRoot(quitButton);
@@ -143,147 +158,116 @@ public final class WF_LoginWindow extends APP_Frame {
         // All styling JFrames will go here
 
         // Content area panel
-        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.anchor = GridBagConstraints.WEST;
         gbc.fill = GridBagConstraints.VERTICAL;
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.insets = new Insets(0, 50, 0, 50);
-        gbc.ipadx = 0;
-        gbc.ipady = 0;
-        gbc.gridheight = 1;
-        gbc.gridwidth = 1;
         gbc.weightx = 1;
         gbc.weighty = 1;
-        this.add(contentAreaPanel, gbc);
+        add(contentAreaPanel, gbc);
 
-        // Title card panel
-        gbc.anchor = GridBagConstraints.CENTER;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.insets = new Insets(20, 30, 0, 30);
-        gbc.ipadx = 0;
-        gbc.ipady = 0;
-        gbc.gridheight = 1;
-        gbc.gridwidth = 1;
-        gbc.weightx = 1;
-        gbc.weighty = 0;
-        contentAreaPanel.add(titleCardPanel, gbc);
+        {
+            // Title card panel
+            gbc.anchor = GridBagConstraints.CENTER;
+            gbc.fill = GridBagConstraints.HORIZONTAL;
+            gbc.gridx = 0;
+            gbc.gridy = 0;
+            gbc.insets = new Insets(InsetsConfig.XXL, 30, 0, 30);
+            gbc.weightx = 1;
+            gbc.weighty = 0;
+            contentAreaPanel.add(titleCardPanel, gbc);
 
-        // Fields panel
-        gbc.anchor = GridBagConstraints.CENTER;
-        gbc.fill = GridBagConstraints.VERTICAL;
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.insets = new Insets(10, 30, 0, 30);
-        gbc.ipadx = 0;
-        gbc.ipady = 0;
-        gbc.gridheight = 1;
-        gbc.gridwidth = 1;
-        gbc.weightx = 0;
-        gbc.weighty = 0;
-        contentAreaPanel.add(fieldsPanel, gbc);
+            {
+                // Title text
+                gbc.anchor = GridBagConstraints.CENTER;
+                gbc.fill = GridBagConstraints.NONE;
+                gbc.gridx = 0;
+                gbc.gridy = 0;
+                gbc.insets = new Insets(0, 0, 0, 0);
+                gbc.weightx = 0;
+                gbc.weighty = 0;
+                titleCardPanel.add(titleText, gbc);
 
-        // Buttons panel
-        gbc.anchor = GridBagConstraints.CENTER;
-        gbc.fill = GridBagConstraints.VERTICAL;
-        gbc.gridx = 0;
-        gbc.gridy = 3;
-        gbc.insets = new Insets(20, 30, 20, 30);
-        gbc.ipadx = 0;
-        gbc.ipady = 0;
-        gbc.gridheight = 1;
-        gbc.gridwidth = 1;
-        gbc.weightx = 1;
-        gbc.weighty = 0;
-        contentAreaPanel.add(buttonsPanel, gbc);
+                gbc.gridy = 1;
+                gbc.insets = new Insets(InsetsConfig.S, 0, 0, 0);
+                titleCardPanel.add(subtitleText, gbc);
 
-        // Title text
-        gbc.anchor = GridBagConstraints.CENTER;
-        gbc.fill = GridBagConstraints.NONE;
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.insets = new Insets(0, 0, 0, 0);
-        gbc.ipadx = 0;
-        gbc.ipady = 0;
-        gbc.gridheight = 1;
-        gbc.gridwidth = 1;
-        gbc.weightx = 1;
-        gbc.weighty = 1;
-        titleCardPanel.add(titleText, gbc);
+                gbc.gridy = 2;
+                gbc.insets = new Insets(InsetsConfig.XS, 0, 0, 0);
+                titleCardPanel.add(versionInfo, gbc);
+            }
 
-        gbc.anchor = GridBagConstraints.EAST;
-        gbc.fill = GridBagConstraints.VERTICAL;
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.insets = new Insets(0, 0, 10, 10);
-        gbc.ipadx = 0;
-        gbc.ipady = 0;
-        gbc.gridheight = 1;
-        gbc.gridwidth = 1;
-        gbc.weightx = 1;
-        gbc.weighty = 1;
-        fieldsPanel.add(usernameLabel, gbc);
+            // Fields panel
+            gbc.anchor = GridBagConstraints.CENTER;
+            gbc.fill = GridBagConstraints.NONE;
+            gbc.gridx = 0;
+            gbc.gridy = 1;
+            gbc.insets = new Insets(InsetsConfig.XXL, InsetsConfig.XXL, 0, InsetsConfig.XXL);
+            gbc.weightx = 0;
+            gbc.weighty = 0;
+            contentAreaPanel.add(fieldsPanel, gbc);
 
-        gbc.anchor = GridBagConstraints.EAST;
-        gbc.fill = GridBagConstraints.VERTICAL;
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.insets = new Insets(0, 0,0, 10);
-        gbc.gridheight = 1;
-        gbc.gridwidth = 1;
-        gbc.weightx = 1;
-        gbc.weighty = 1;
-        fieldsPanel.add(passwordLabel, gbc);
+            {
+                gbc.anchor = GridBagConstraints.WEST;
+                gbc.fill = GridBagConstraints.NONE;
+                gbc.weightx = 1;
+                gbc.weighty = 1;
 
-        gbc.anchor = GridBagConstraints.WEST;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.gridx = 1;
-        gbc.gridy = 0;
-        gbc.insets = new Insets(0, 0, 10, 0);
-        gbc.gridheight = 1;
-        gbc.gridwidth = 1;
-        gbc.weightx = 1;
-        gbc.weighty = 1;
-        fieldsPanel.add(usernameField, gbc);
+                gbc.gridx = 0;
+                gbc.gridy = 0;
+                gbc.insets = new Insets(0, 0, 0, 0);
+                fieldsPanel.add(usernameLabel, gbc);
+                
+                gbc.gridx = 0;
+                gbc.gridy = 1;
+                gbc.insets = new Insets(InsetsConfig.S, 0,0, 0);
+                fieldsPanel.add(passwordLabel, gbc);
 
-        gbc.anchor = GridBagConstraints.WEST;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.insets = new Insets(0, 0, 0, 0);
-        gbc.gridx = 1;
-        gbc.gridy = 1;
-        gbc.gridheight = 1;
-        gbc.gridwidth = 1;
-        gbc.weightx = 1;
-        gbc.weighty = 1;
-        fieldsPanel.add(passwordField, gbc);
+                gbc.gridx = 1;
+                gbc.gridy = 0;
+                gbc.insets = new Insets(0, InsetsConfig.L, 0, 0);
+                fieldsPanel.add(usernameField, gbc);
+                
+                gbc.gridx = 1;
+                gbc.gridy = 1;
+                gbc.insets = new Insets(InsetsConfig.S, InsetsConfig.L, 0, 0);
+                fieldsPanel.add(passwordField, gbc);
+            }
 
-        gbc.anchor = GridBagConstraints.CENTER;
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.insets = new Insets(0, 0, 5, 0);
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.gridheight = 1;
-        gbc.gridwidth = 1;
-        gbc.weightx = 1;
-        gbc.weighty = 1;
-        buttonsPanel.add(loginButton, gbc);
+            // Buttons panel
+            gbc.anchor = GridBagConstraints.CENTER;
+            gbc.fill = GridBagConstraints.NONE;
+            gbc.gridx = 0;
+            gbc.gridy = 3;
+            gbc.insets = new Insets(InsetsConfig.XL, 0, InsetsConfig.XXL, 0);
+            gbc.weightx = 1;
+            gbc.weighty = 0;
+            contentAreaPanel.add(buttonsPanel, gbc);
 
-        gbc.anchor = GridBagConstraints.CENTER;
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.insets = new Insets(0, 0, 0, 0);
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.gridheight = 1;
-        gbc.gridwidth = 1;
-        gbc.weightx = 1;
-        gbc.weighty = 1;
-        buttonsPanel.add(quitButton, gbc);
+            {
+                gbc.anchor = GridBagConstraints.CENTER;
+                gbc.fill = GridBagConstraints.HORIZONTAL;
+                gbc.gridx = 0;
+                gbc.gridy = 0;
+                gbc.insets = new Insets(0, 0, 0, 0);
+                gbc.weightx = 1;
+                gbc.weighty = 1;
+                buttonsPanel.add(loginButton, gbc);
+
+                gbc.gridx = 0;
+                gbc.gridy = 1;
+                gbc.insets = new Insets(InsetsConfig.S, 0, 0, 0);
+                buttonsPanel.add(quitButton, gbc);
+            }
+        }
     }
 
     public void finalizePrepare() {
         pack();
-        // setResizable(false);
+        setSize(new Dimension(getSize().width, (int) Math.round(getSize().height * 1.5)));
+        setMinimumSize(getSize());
+        setResizable(false);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }

@@ -15,20 +15,16 @@ public class APP_DefaultButton extends JButton {
 
     public APP_DefaultButton(String text) {
         super(text);
-        initialize(true);
+        initialize();
     }
 
-    public APP_DefaultButton(String text, boolean paintBorder) {
-        super(text);
-        initialize(paintBorder);
-    }
 
-    public void initialize(boolean paintBorder) {
+    public void initialize() {
         // Colors
         setBackground(ColorConfig.DEFAULT_BUTTON_BG);
         setForeground(ColorConfig.DEFAULT_BUTTON_FG);
         setFocusPainted(false);
-        setBorderPainted(paintBorder);
+        setBorderPainted(true);
         
         setBorder(BorderFactory.createCompoundBorder(
             new LineBorder(ColorConfig.DEFAULT_BUTTON_OUTLINE, 1, false),
@@ -41,6 +37,6 @@ public class APP_DefaultButton extends JButton {
 
     public APP_DefaultButton(String text, JFrame targetOnClick, boolean dispose) {
         super(text);
-        initialize(true);
+        initialize();
     }
 }

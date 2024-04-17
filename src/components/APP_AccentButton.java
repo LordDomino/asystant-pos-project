@@ -21,11 +21,11 @@ public class APP_AccentButton extends JButton {
         setBackground(ColorConfig.ACCENT_BUTTON_BG);
         setForeground(ColorConfig.ACCENT_BUTTON_FG);
         setFocusPainted(false);
-        setBorderPainted(false);
+        setBorderPainted(true);
 
         setBorder(BorderFactory.createCompoundBorder(
             new LineBorder(ColorConfig.ACCENT_BUTTON_OUTLINE, 1, false),
-            new EmptyBorder(6, 12, 6, 12)
+            new EmptyBorder(4, 16, 4, 16)
         ));
 
         // Font

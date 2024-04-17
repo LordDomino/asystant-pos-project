@@ -26,6 +26,11 @@ public final class StylesConfig {
 
     public static void setupUI() {
         setUIFont(StylesConfig.defaultNormal);
+        setUIColors();
+    }
+
+    private static void setUIColors() {
+        UIManager.put("Label.foreground", ColorConfig.FG);
     }
 
     public static void setUIFont (FontUIResource f) {

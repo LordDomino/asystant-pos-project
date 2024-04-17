@@ -18,6 +18,7 @@ import components.APP_AccentButton;
 import components.APP_Frame;
 import configs.APPResourceLoader;
 import configs.ColorConfig;
+import configs.InsetsConfig;
 import configs.StylesConfig;
 
 public class WF_UserManager extends APP_Frame {
@@ -100,6 +101,9 @@ public class WF_UserManager extends APP_Frame {
 
 class AddPopupWindow extends APP_Frame {
 
+    String[] accessLevelTypes = {"Admin", "User"};
+
+    // Components
     JLabel header = new JLabel("Add a new user account");
     JPanel form = new JPanel(new GridBagLayout());
 
@@ -110,10 +114,10 @@ class AddPopupWindow extends APP_Frame {
 
     JTextField usernameField = new JTextField(10);
     JTextField passwordField = new JTextField(10);
-
-    String[] accessLevelTypes = {"Admin", "User"};
     JComboBox<String> accessLevelComboBox = new JComboBox<String>(accessLevelTypes);
     JCheckBox activatedCheckBox = new JCheckBox("", false);
+
+    JButton submitButton = new APP_AccentButton("Submit");
 
     public AddPopupWindow() {
         super("Add New Account");
@@ -122,10 +126,15 @@ class AddPopupWindow extends APP_Frame {
 
 
     public void prepareComponents() {
-        
+        header.setFont(StylesConfig.HEADING3);
+        form.setOpaque(false);
+
+        accessLevelComboBox.setBackground(ColorConfig.BG);
+        activatedCheckBox.setOpaque(false);
     }
     
     public void prepare() {
+        getContentPane().setBackground(ColorConfig.ACCENT_1);
         setLayout(new GridBagLayout());
     }
 
@@ -135,43 +144,53 @@ class AddPopupWindow extends APP_Frame {
         gbc.anchor = GridBagConstraints.WEST;
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.insets = new Insets(20, 20, 0, 20);
+        gbc.insets = new Insets(InsetsConfig.XXL, InsetsConfig.XXL, 0, InsetsConfig.XXL);
+        gbc.weightx = 1;
+        gbc.weighty = 1;
         add(header, gbc);
 
         gbc.gridy = 1;
-        gbc.insets = new Insets(10, 20, 20, 20);
+        gbc.insets = new Insets(InsetsConfig.L, InsetsConfig.XXL, 0, InsetsConfig.XXL);
         add(form, gbc);
 
+        {
+            gbc.gridx = 0;
+            gbc.gridy = 0;
+            gbc.insets = new Insets(0, 0, 0, 0);
+            form.add(usernameLabel, gbc);
+
+            gbc.gridy = 1;
+            gbc.insets = new Insets(InsetsConfig.XS, 0, 0, 0);
+            form.add(passwordLabel, gbc);
+
+            gbc.gridy = 2;
+            form.add(accessLevelLabel, gbc);
+
+            gbc.gridy = 3;
+            form.add(activatedLabel, gbc);
+
+            gbc.fill = GridBagConstraints.HORIZONTAL;
+            gbc.gridx = 1;
+            gbc.gridy = 0;
+            gbc.insets = new Insets(InsetsConfig.XS, InsetsConfig.L, 0, 0);
+            form.add(usernameField, gbc);
+
+            gbc.gridy = 1;
+            form.add(passwordField, gbc);
+
+            gbc.gridy = 2;
+            form.add(accessLevelComboBox, gbc);
+
+            gbc.gridy = 3;
+            form.add(activatedCheckBox, gbc);
+        }
+        
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.fill = GridBagConstraints.NONE;
         gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.insets = new Insets(0, 0, 0, 0);
-        form.add(usernameLabel, gbc);
-
-        gbc.gridy = 1;
-        gbc.insets = new Insets(5, 0, 0, 0);
-        form.add(passwordLabel, gbc);
-
         gbc.gridy = 2;
-        gbc.insets = new Insets(5, 0, 0, 0);
-        form.add(accessLevelLabel, gbc);
-
-        gbc.gridy = 3;
-        form.add(activatedLabel, gbc);
-
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.gridx = 1;
-        gbc.gridy = 0;
-        gbc.insets = new Insets(5, 10, 0, 0);
-        form.add(usernameField, gbc);
-
-        gbc.gridy = 1;
-        form.add(passwordField, gbc);
-
-        gbc.gridy = 2;
-        form.add(accessLevelComboBox, gbc);
-
-        gbc.gridy = 3;
-        form.add(activatedCheckBox, gbc);
+        gbc.insets = new Insets(InsetsConfig.XL, InsetsConfig.XXL, InsetsConfig.XXL, InsetsConfig.XXL);
+        add(submitButton, gbc);
     }
 
     public void finalizePrepare() {
@@ -184,7 +203,9 @@ class AddPopupWindow extends APP_Frame {
         
         JFrame testFrame = new AddPopupWindow();
         testFrame.pack();
+        testFrame.setLocationRelativeTo(null);
         testFrame.setVisible(true);
+        testFrame.setResizable(false);
     }
 
 }
@@ -209,7 +230,7 @@ class EditPopupWindow extends APP_Frame {
     }
 
     public void finalizePrepare() {
- 
+
         
     }
 }
