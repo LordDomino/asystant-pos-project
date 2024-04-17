@@ -52,7 +52,7 @@ public class APP_ItemButton extends JButton {
         add(priceLabel);
 
         // Font
-        setFont(StylesConfig.defaultButton);
+        setFont(StylesConfig.BUTTON);
 
         addMouseListener(new MouseAdapter() {
             public void mouseEntered(MouseEvent e) {

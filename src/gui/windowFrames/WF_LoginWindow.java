@@ -18,12 +18,16 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+import javax.swing.border.TitledBorder;
 
 import components.APP_Frame;
 import components.APP_PasswordField;
 import components.APP_TextField;
 import components.APP_AccentButton;
+import components.APP_ContrastButton;
+import components.APP_DefaultButton;
 import configs.ColorConfig;
 import configs.InsetsConfig;
 import configs.StylesConfig;
@@ -54,7 +58,7 @@ public final class WF_LoginWindow extends APP_Frame {
     public JTextField[] fields = {usernameField, passwordField};
 
     public JButton loginButton = new APP_AccentButton("Log In");
-    public JButton quitButton = new APP_AccentButton("Quit");
+    public JButton quitButton = new APP_ContrastButton("Quit");
 
     public WF_LoginWindow() {
         super("Login");
@@ -78,6 +82,16 @@ public final class WF_LoginWindow extends APP_Frame {
         contentAreaPanel.setBackground(ColorConfig.ACCENT_1);
         titleCardPanel.setOpaque(false);
         fieldsPanel.setOpaque(false);
+        fieldsPanel.setBorder(new CompoundBorder(
+            new TitledBorder(
+                new LineBorder(ColorConfig.ACCENT_2),
+                "Login",
+                TitledBorder.CENTER,
+                TitledBorder.TOP, 
+                StylesConfig.HEADING3
+            ),
+            new EmptyBorder(new Insets(10, 10, 10, 10))
+        ));
         buttonsPanel.setOpaque(false);
 
         titleText.setFont(StylesConfig.HEADING1);
@@ -173,7 +187,7 @@ public final class WF_LoginWindow extends APP_Frame {
             gbc.fill = GridBagConstraints.HORIZONTAL;
             gbc.gridx = 0;
             gbc.gridy = 0;
-            gbc.insets = new Insets(InsetsConfig.XXL, 30, 0, 30);
+            gbc.insets = new Insets(InsetsConfig.XXL, 30, InsetsConfig.XXL, 30);
             gbc.weightx = 1;
             gbc.weighty = 0;
             contentAreaPanel.add(titleCardPanel, gbc);
@@ -203,7 +217,7 @@ public final class WF_LoginWindow extends APP_Frame {
             gbc.fill = GridBagConstraints.NONE;
             gbc.gridx = 0;
             gbc.gridy = 1;
-            gbc.insets = new Insets(InsetsConfig.XXL, InsetsConfig.XXL, 0, InsetsConfig.XXL);
+            gbc.insets = new Insets(0, InsetsConfig.XXL, 0, InsetsConfig.XXL);
             gbc.weightx = 0;
             gbc.weighty = 0;
             contentAreaPanel.add(fieldsPanel, gbc);
@@ -211,6 +225,8 @@ public final class WF_LoginWindow extends APP_Frame {
             {
                 gbc.anchor = GridBagConstraints.WEST;
                 gbc.fill = GridBagConstraints.NONE;
+                gbc.ipadx = 0;
+                gbc.ipady = 0;
                 gbc.weightx = 1;
                 gbc.weighty = 1;
 
@@ -267,7 +283,6 @@ public final class WF_LoginWindow extends APP_Frame {
         pack();
         setSize(new Dimension(getSize().width, (int) Math.round(getSize().height * 1.5)));
         setMinimumSize(getSize());
-        setResizable(false);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }

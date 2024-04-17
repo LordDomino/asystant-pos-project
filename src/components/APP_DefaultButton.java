@@ -28,11 +28,11 @@ public class APP_DefaultButton extends JButton {
         
         setBorder(BorderFactory.createCompoundBorder(
             new LineBorder(ColorConfig.DEFAULT_BUTTON_OUTLINE, 1, false),
-            new EmptyBorder(6, 12, 6, 12)
+            new EmptyBorder(4, 16, 4, 16)
         ));
 
         // Font
-        setFont(StylesConfig.defaultButton);
+        setFont(StylesConfig.BUTTON);
     }
 
     public APP_DefaultButton(String text, JFrame targetOnClick, boolean dispose) {

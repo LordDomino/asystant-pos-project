@@ -1,7 +1,10 @@
 package gui.windowFrames;
 
+import components.APP_AccentButton;
 import components.APP_Frame;
 import configs.ColorConfig;
+import configs.InsetsConfig;
+import configs.StylesConfig;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,9 +13,16 @@ import java.awt.event.ActionListener;
 
 public class WF_SuperAdminScreen extends APP_Frame {
     
-    public JPanel buttonsPanel = new JPanel();    
-    public JButton userManagementButton = new JButton("User Management");
-    public JButton dashboardButton = new JButton("Dashboard");
+    // Layout components
+    public final JPanel headerPanel = new JPanel(new GridBagLayout());
+
+    // Components
+    public final JLabel header = new JLabel("Welcome");
+    public final JLabel userGreeting = new JLabel("<html>You are logged in as <b>super administrator</b>.");
+
+    public final JPanel buttonsPanel = new JPanel();    
+    public final JButton userManagementButton = new APP_AccentButton("User Management");
+    public final JButton dashboardButton = new APP_AccentButton("Dashboard");
 
     public WF_SuperAdminScreen() {
         super("Super Administrator Panel");
@@ -20,13 +30,19 @@ public class WF_SuperAdminScreen extends APP_Frame {
     }
     
     public void prepare() {
+        getContentPane().setBackground(ColorConfig.ACCENT_1);
         setLayout(new GridBagLayout());
-        setBackground(ColorConfig.ACCENT_1);
     }
 
     public void prepareComponents() {
+
+        headerPanel.setOpaque(false);
         buttonsPanel.setLayout(new GridBagLayout());
         buttonsPanel.setOpaque(false);
+
+        header.setFont(StylesConfig.HEADING1);
+        userGreeting.setFont(StylesConfig.DETAIL);
+
 
         // Set accent button background color
         userManagementButton.setBackground(ColorConfig.ACCENT_BUTTON_BG);
@@ -60,49 +76,50 @@ public class WF_SuperAdminScreen extends APP_Frame {
     
     public void addComponents() {
         GridBagConstraints gbc = new GridBagConstraints();
-        
-        gbc.anchor = GridBagConstraints.CENTER;
+
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.insets = new Insets(InsetsConfig.XXL, InsetsConfig.XXL,  InsetsConfig.XXL, InsetsConfig.XXL);
+        add(headerPanel, gbc);
+
+        {
+            gbc.anchor = GridBagConstraints.WEST;
+            gbc.fill = GridBagConstraints.NONE;
+            gbc.gridx = 0;
+            gbc.gridy = 0;
+            gbc.insets = new Insets(0, 0, 0, 0);
+            headerPanel.add(header, gbc);
+
+            gbc.gridy = 1;
+            gbc.insets = new Insets(InsetsConfig.XS, 0, 0, 0);
+            headerPanel.add(userGreeting, gbc);
+        }
+
         gbc.fill = GridBagConstraints.BOTH;
         gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.insets = new Insets(0, 0, 0, 0);
-        gbc.ipadx = 0;
-        gbc.ipady = 0;
-        gbc.gridheight = 1;
-        gbc.gridwidth = 1;
-        gbc.weightx = 1;
-        gbc.weighty = 1;
+        gbc.gridy = 1;
+        gbc.insets = new Insets(0, InsetsConfig.XXL, InsetsConfig.XXL, InsetsConfig.XXL);
         add(buttonsPanel, gbc);
 
-        gbc.anchor = GridBagConstraints.CENTER;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.insets = new Insets(0, 0, 0, 0);
-        gbc.ipadx = 0;
-        gbc.ipady = 0;
-        gbc.gridheight = 1;
-        gbc.gridwidth = 1;
-        gbc.weightx = 1;
-        gbc.weighty = 0;
-        buttonsPanel.add(dashboardButton, gbc);
-
-        gbc.anchor = GridBagConstraints.CENTER;
-        gbc.fill = GridBagConstraints.VERTICAL;
-        gbc.gridx = 1;
-        gbc.gridy = 0;
-        gbc.insets = new Insets(0, 0, 0, 0);
-        gbc.ipadx = 0;
-        gbc.ipady = 0;
-        gbc.gridheight = 1;
-        gbc.gridwidth = 1;
-        gbc.weightx = 0;
-        gbc.weighty = 0;
-        buttonsPanel.add(userManagementButton, gbc);
+        {
+            gbc.anchor = GridBagConstraints.CENTER;
+            gbc.gridx = 0;
+            gbc.gridy = 0;
+            gbc.insets = new Insets(0, 0, 0, 0);
+            buttonsPanel.add(dashboardButton, gbc);
+    
+            gbc.anchor = GridBagConstraints.CENTER;
+            gbc.gridx = 1;
+            gbc.insets = new Insets(0, InsetsConfig.M, 0, 0);
+            buttonsPanel.add(userManagementButton, gbc);
+        }
     }
 
     public void finalizePrepare() {
         pack();
+        setSize(new Dimension(getSize().width, (int) Math.round(getSize().height * 1.25)));
         setResizable(false);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

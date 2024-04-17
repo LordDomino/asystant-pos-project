@@ -24,10 +24,10 @@ public class APP_ContrastButton extends JButton {
 
         setBorder(BorderFactory.createCompoundBorder(
             new LineBorder(ColorConfig.CONTRAST_BUTTON_OUTLINE, 1, false),
-            new EmptyBorder(6, 12, 6, 12)
+            new EmptyBorder(4, 16, 4, 16)
         ));
 
         // Font
-        setFont(StylesConfig.defaultButton);
+        setFont(StylesConfig.BUTTON);
     }
 }

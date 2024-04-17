@@ -29,7 +29,7 @@ public class APP_AccentButton extends JButton {
         ));
 
         // Font
-        setFont(StylesConfig.defaultButton);
+        setFont(StylesConfig.BUTTON);
     }
 
     public APP_AccentButton(String text, JFrame targetOnClick, boolean dispose) {
