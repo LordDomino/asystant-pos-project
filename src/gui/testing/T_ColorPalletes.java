@@ -1,7 +1,9 @@
 package gui.testing;
 
 import javax.swing.*;
+
 import java.awt.*;
+import java.awt.Color;
 
 public class T_ColorPalletes {
     public static void main(String[] args) {
@@ -64,8 +66,6 @@ public class T_ColorPalletes {
         frame.setVisible(true);
     }
 }
-
-import java.awt.Color;
 class Pallete {
     /** The default background color. */
     public static final Color BG = new Color(255, 255, 255);
