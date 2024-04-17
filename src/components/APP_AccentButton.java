@@ -1,7 +1,10 @@
 package components;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 
 import configs.ColorConfig;
 import configs.StylesConfig;
@@ -19,6 +22,11 @@ public class APP_AccentButton extends JButton {
         setForeground(ColorConfig.ACCENT_BUTTON_FG);
         setFocusPainted(false);
         setBorderPainted(false);
+
+        setBorder(BorderFactory.createCompoundBorder(
+            new LineBorder(ColorConfig.ACCENT_BUTTON_OUTLINE, 1, false),
+            new EmptyBorder(6, 12, 6, 12)
+        ));
 
         // Font
         setFont(StylesConfig.defaultButton);

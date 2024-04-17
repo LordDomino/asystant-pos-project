@@ -1,7 +1,7 @@
 package configs;
 import java.awt.Color;
 
-public class ColorConfig {
+public final class ColorConfig {
 
     /**The default background color. */
     public static final Color BG = new Color(255, 255, 255);

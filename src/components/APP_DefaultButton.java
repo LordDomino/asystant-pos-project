@@ -1,7 +1,12 @@
 package components;
 
+import java.awt.Insets;
+
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 
 import configs.ColorConfig;
 import configs.StylesConfig;
@@ -24,6 +29,11 @@ public class APP_DefaultButton extends JButton {
         setForeground(ColorConfig.DEFAULT_BUTTON_FG);
         setFocusPainted(false);
         setBorderPainted(paintBorder);
+        
+        setBorder(BorderFactory.createCompoundBorder(
+            new LineBorder(ColorConfig.DEFAULT_BUTTON_OUTLINE, 1, false),
+            new EmptyBorder(6, 12, 6, 12)
+        ));
 
         // Font
         setFont(StylesConfig.defaultButton);

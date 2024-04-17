@@ -6,7 +6,7 @@ import java.util.Enumeration;
 import javax.swing.UIManager;
 import javax.swing.plaf.FontUIResource;
 
-public class StylesConfig {
+public final class StylesConfig {
 
     public static final FontUIResource defaultNormal = new FontUIResource(new Font("Inter", Font.PLAIN, 14));
     public static final FontUIResource defaultButton = new FontUIResource(new Font("Inter", Font.BOLD, 14));

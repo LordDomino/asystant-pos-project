@@ -1,10 +1,12 @@
 package gui.testing;
 
 import javax.swing.*;
+import javax.swing.JFrame;
 import java.awt.*;
-
-public class T_ColorPalletes {
+import java.awt.Color;
+public class T_ColorPalletes{
     public static void main(String[] args) {
+      
         // Create JFrame
         JFrame frame = new JFrame("Color Palettes Testing");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -62,8 +64,12 @@ public class T_ColorPalletes {
         frame.setSize(300, 200);
         frame.setLocationRelativeTo(null); // Center the frame on the screen
         frame.setVisible(true);
-    }
-}
+        
+  }
+ }
+
+
+
 
 class Pallete {
     /** The default background color. */
