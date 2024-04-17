@@ -10,6 +10,8 @@ public class SQLConnector {
     public static final String sqlTbl = "user_accounts";
     public static Connection connection;
 
+    public static final String[] FIELDS_user_accounts = {"username", "password", "access_level", "activated"};
+
     /**
      * Registers the class from the JAR library and establishes a port
      * connection to access MySQL.
