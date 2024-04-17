@@ -191,32 +191,32 @@ public class WF_UserManager extends APP_Frame {
         
         {
             gbc.anchor = GridBagConstraints.NORTHWEST;
-            gbc.fill = GridBagConstraints.BOTH;
+        gbc.fill = GridBagConstraints.BOTH;
 
-            gbc.gridx = 0;
-            gbc.gridy = 0;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
             gbc.gridwidth = GridBagConstraints.REMAINDER;
-            gbc.insets = new Insets(0, 0, 0, 0);
+        gbc.insets = new Insets(0, 0, 0, 0);
             buttonsPanel.add(buttonsPanelLead, gbc);
             
             gbc.gridx = 0;
             gbc.gridy = 1;
             gbc.gridwidth = 1;
             gbc.insets = new Insets(InsetsConfig.S, 0, 0, 0);
-            buttonsPanel.add(addButton, gbc);
-            
-            gbc.anchor = GridBagConstraints.NORTH;
-            gbc.gridx = 1;
+        buttonsPanel.add(addButton, gbc);
+        
+        gbc.anchor = GridBagConstraints.NORTH;
+        gbc.gridx = 1;
             gbc.gridy = 1;
             gbc.insets = new Insets(InsetsConfig.S, InsetsConfig.S, 0, 0);
-            buttonsPanel.add(editButton, gbc);
-            
-            gbc.anchor = GridBagConstraints.NORTH;
-            gbc.gridx = 2;
+        buttonsPanel.add(editButton, gbc);
+        
+        gbc.anchor = GridBagConstraints.NORTH;
+        gbc.gridx = 2;
             gbc.gridy = 1;
             gbc.insets = new Insets(InsetsConfig.S, InsetsConfig.S, 0, 0);
-            buttonsPanel.add(deleteButton, gbc);
-
+        buttonsPanel.add(deleteButton, gbc);
+        
         }
         
         gbc.anchor = GridBagConstraints.CENTER;
@@ -543,28 +543,169 @@ class AddPopupWindow extends APP_Frame {
 
 class EditPopupWindow extends APP_Frame {
 
-    public JPanel editForm = new JPanel(new GridBagLayout());
+    public WF_UserManager parentFrame;
+
+    String[] accessLevelTypes = {"Admin", "User"};
+
+    final JLabel header = new JLabel("Edit an Existing Account");
+    final JPanel editForm = new JPanel(new GridBagLayout());
+
     public JLabel usernameEditLabel = new JLabel("Username");
     public JLabel passwordEditLabel = new JLabel("Password");
     public JLabel accessEditLabel = new JLabel("Account access level");
     public JLabel activatedEditLabel = new JLabel("Activated");
 
     public JTextField usernameEditField = new JTextField();
-    public JPasswordField passwordEditField = new JPasswordField();
+    public JTextField passwordEditField = new JTextField();
     public String[] accessEditField = {"Admin", "User"};
     public JComboBox<String> accessLevelComboBoxEdit = new JComboBox<String>(accessEditField);
     JCheckBox activatedCheckBoxEdit = new JCheckBox("", false);
 
+    JButton updateButton = new JButton("Update");
+
+    JTextField[] dataField = {usernameEditField, passwordEditField};
+
+
     EditPopupWindow(){
-        super();
-        compile();
+    super("Edit Existing User Account");
+    compile();
     }
 
     public void prepareComponents() {
         setLayout(new GridBagLayout());
+        GUIHelpers.setButtonTriggerOnAllFields(updateButton, dataField);
+
+        accessLevelComboBoxEdit.setBackground(ColorConfig.BG);
+        activatedCheckBoxEdit.setOpaque(false);
+        updateButton.setEnabled(false);
+
+        updateButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+                final String updatedUsername = usernameEditField.getText();
+                final String updatedPassword = passwordEditField.getText();
+                final int updatedAccessLevel;
+                final int updatedActivationStatus;
+
+                if (accessLevelComboBoxEdit.getSelectedItem().toString().equals("Admin")) {
+                    updatedAccessLevel = 2;
+                } else if (accessLevelComboBoxEdit.getSelectedItem().toString().equals("User")) {
+                    updatedAccessLevel = 3;
+                } else {
+                    updatedAccessLevel = -1;
+                }
+                
+                if (activatedCheckBoxEdit.isSelected()) {
+                    updatedActivationStatus = 1;
+                } else {
+                    updatedActivationStatus = 0;
+                } 
+
+                final Object[] ExecutedUpdate = {updatedUsername, updatedPassword, updatedAccessLevel, updatedActivationStatus};
+                
+                try {
+                    
+                    
+                    SQLConnector.establishSQLConnection();
+        
+                    String query = "UPDATE * FROM SET " + SQLConnector.sqlTbl + " WHERE username = \"" + updatedUsername + "\";";
+        
+                    Statement statement = SQLConnector.connection.createStatement();
+                    ResultSet result = statement.executeQuery(query);
+
+                    if (result.getFetchSize() == 1) {
+                        query = "UPDATE SET " + SQLConnector.sqlTbl + " (";
+
+                        for (String field : SQLConnector.FIELDS_user_accounts) {
+                            query = query + " `" + field + "`,";
+                        }
+
+                        query = query.substring(0, query.length()-1) + " ) VALUES (";
+
+                        for (Object val : ExecutedUpdate) {
+                            if (val instanceof String) {
+                                query = query + " \"" + val + "\",";
+                            } else if (val instanceof Integer) {
+                                query = query + " " + val + ",";
+                            }
+                        }
+                        System.out.println(query);
+                        Statement statement2 = SQLConnector.connection.createStatement();
+                        statement2.executeUpdate(query);
+
+                        SQLConnector.connection.close();
+
+                        Window popUp = SwingUtilities.getWindowAncestor(updateButton);
+                        popUp.dispose();
+
+                        parentFrame.loadFromDatabase();
+
+                    } else {
+
+                    }              
+                } catch (SQLException exception) {
+
+                }
+            }
+
+            
+        });
+
+
     }
 
     public void addComponents() {
+        GridBagConstraints gbc = new GridBagConstraints();
+
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.insets = new Insets(InsetsConfig.XXL, InsetsConfig.XXL, 0, InsetsConfig.XXL);
+        gbc.weightx = 1;
+        gbc.weighty = 1;
+        add(header, gbc);
+
+        gbc.gridy = 1;
+        gbc.insets = new Insets(InsetsConfig.L, InsetsConfig.XXL, 0, InsetsConfig.XXL);
+        add(editForm, gbc);
+
+        {
+            gbc.gridx = 0;
+            gbc.gridy = 0;
+            gbc.insets = new Insets(0, 0, 0, 0);
+            editForm.add(usernameEditLabel, gbc);
+
+            gbc.gridy = 1;
+            gbc.insets = new Insets(InsetsConfig.XS, 0, 0, 0);
+            editForm.add(passwordEditLabel, gbc);
+
+            gbc.gridy = 2;
+            editForm.add(accessEditLabel, gbc);
+
+            gbc.gridy = 3;
+            editForm.add(activatedEditLabel, gbc);
+
+            gbc.fill = GridBagConstraints.HORIZONTAL;
+            gbc.gridx = 1;
+            gbc.gridy = 0;
+            gbc.insets = new Insets(InsetsConfig.XS, InsetsConfig.L, 0, 0);
+            editForm.add(usernameEditField, gbc);
+
+            gbc.gridy = 1;
+            editForm.add(passwordEditField, gbc);
+
+            gbc.gridy = 2;
+            editForm.add(accessLevelComboBoxEdit, gbc);
+
+            gbc.gridy = 3;
+            editForm.add(activatedCheckBoxEdit, gbc);
+        }
+        
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.insets = new Insets(InsetsConfig.XL, InsetsConfig.XXL, InsetsConfig.XXL, InsetsConfig.XXL);
+        add(updateButton, gbc);
 
     }
 
