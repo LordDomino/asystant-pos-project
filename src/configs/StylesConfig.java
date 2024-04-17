@@ -8,7 +8,7 @@ import javax.swing.plaf.FontUIResource;
 
 public final class StylesConfig {
 
-    public static final FontUIResource defaultNormal = new FontUIResource(new Font("Inter", Font.PLAIN, 14));
+    public static final FontUIResource defaultNormal = new FontUIResource(new Font("Inter", Font.PLAIN, 12));
     public static final FontUIResource itemButton = new FontUIResource(new Font("Inter", Font.BOLD, 16));
     
     public static final Font NORMAL = new Font("Inter", Font.PLAIN, 14);

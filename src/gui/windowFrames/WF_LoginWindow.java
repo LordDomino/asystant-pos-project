@@ -27,7 +27,6 @@ import components.APP_PasswordField;
 import components.APP_TextField;
 import components.APP_AccentButton;
 import components.APP_ContrastButton;
-import components.APP_DefaultButton;
 import configs.ColorConfig;
 import configs.InsetsConfig;
 import configs.StylesConfig;
