@@ -40,14 +40,20 @@ public class WF_SuperAdminScreen extends APP_Frame {
         userManagementButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                openUserManagementFrame();
+                JFrame target = new WF_UserManager();
+                JFrame source = (JFrame) SwingUtilities.getWindowAncestor(userManagementButton);
+                target.setVisible(true);
+                source.dispose();
             }
         });
 
         dashboardButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                openDashboardFrame();
+                JFrame target = new WF_Dashboard();
+                JFrame source = (JFrame) SwingUtilities.getWindowAncestor(userManagementButton);
+                target.setVisible(true);
+                source.dispose();
             }
         });
     }
@@ -100,14 +106,5 @@ public class WF_SuperAdminScreen extends APP_Frame {
         setResizable(false);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    }
-
-    private void openUserManagementFrame() {
-        // Code to open the user management frame 
-    }
-
-    // Method to open the dashboard frame
-    private void openDashboardFrame() {
-        // Code to open the dashboard frame 
     }
 }

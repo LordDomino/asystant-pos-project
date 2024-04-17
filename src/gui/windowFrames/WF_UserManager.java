@@ -16,7 +16,9 @@ import java.awt.Insets;
 
 import components.APP_AccentButton;
 import components.APP_Frame;
+import configs.APPResourceLoader;
 import configs.ColorConfig;
+import configs.StylesConfig;
 
 public class WF_UserManager extends APP_Frame {
 
@@ -114,7 +116,7 @@ class AddPopupWindow extends APP_Frame {
     JCheckBox activatedCheckBox = new JCheckBox("", false);
 
     public AddPopupWindow() {
-        super();
+        super("Add New Account");
         compile();
     }
 
@@ -177,6 +179,9 @@ class AddPopupWindow extends APP_Frame {
     }
 
     public static void main(String[] args) {
+        APPResourceLoader.loadFonts(); // load custom fonts
+        StylesConfig.setupUI();        // then register them as the default fonts
+        
         JFrame testFrame = new AddPopupWindow();
         testFrame.pack();
         testFrame.setVisible(true);
@@ -187,8 +192,8 @@ class AddPopupWindow extends APP_Frame {
 class EditPopupWindow extends APP_Frame {
 
     EditPopupWindow(){
-    super();
-    compile();
+        super("Edit account properties");
+        compile();
     }
 
     public void prepareComponents() {
