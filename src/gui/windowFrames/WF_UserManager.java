@@ -104,6 +104,34 @@ public class WF_UserManager extends APP_Frame {
             }
         });
 
+        editButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                EditPopupWindow popUp = new EditPopupWindow();
+                popUp.parentFrame = (WF_UserManager) SwingUtilities.getWindowAncestor(addButton);
+                
+                // access parentFrame's JTable
+                // IF conditional
+                // only 1 selected is allowed for edit
+                
+                // get index of the selected row
+                table.getSelectedRow();
+                
+                // get values from selected row in jtable
+                final String retrievedUsername = table.getValueAt(index, 0).toString(); // index 0 = username
+                final String retrievedPassword = table.getValueAt(index, 1).toString();  // index 1 = password
+                final int retrievedAccessLevel = table.getValueAt(index, 2);  // java convert object to int
+                final int retrievedActivationStatus = table.getValueAt(index, 3); // convert
+                
+                // set text in textFields
+                popUp.usernameEditField.setText(retrievedUsername);
+                // password
+                // access level
+                // activation status
+                popUp.setVisible(true);
+            }
+        });
+
         deleteButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
                 // Convert columnNames into array list and get the index of the
@@ -581,73 +609,80 @@ class EditPopupWindow extends APP_Frame {
 
         updateButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
-                final String updatedUsername = usernameEditField.getText();
-                final String updatedPassword = passwordEditField.getText();
-                final int updatedAccessLevel;
-                final int updatedActivationStatus;
+                // Retrieve inputs
+                final String retrievedUsername = usernameField.getText();
+                final String retrievedPassword = passwordField.getText();
+                final int retrievedAccessLevel;
+                final int retrievedActivationStatus;
 
-                if (accessLevelComboBoxEdit.getSelectedItem().toString().equals("Admin")) {
-                    updatedAccessLevel = 2;
-                } else if (accessLevelComboBoxEdit.getSelectedItem().toString().equals("User")) {
-                    updatedAccessLevel = 3;
+                if (accessLevelComboBox.getSelectedItem().toString().equals("Admin")) {
+                    retrievedAccessLevel = 2;
+                } else if (accessLevelComboBox.getSelectedItem().toString().equals("User")) {
+                    retrievedAccessLevel = 3;
                 } else {
-                    updatedAccessLevel = -1;
+                    retrievedAccessLevel = -1;
                 }
-                
-                if (activatedCheckBoxEdit.isSelected()) {
-                    updatedActivationStatus = 1;
-                } else {
-                    updatedActivationStatus = 0;
-                } 
 
-                final Object[] ExecutedUpdate = {updatedUsername, updatedPassword, updatedAccessLevel, updatedActivationStatus};
-                
+                if (activatedCheckBox.isSelected()) {
+                    retrievedActivationStatus = 1;
+                } else {
+                    retrievedActivationStatus = 0;
+                }
+
+                final Object[] retrieved = {retrievedUsername, retrievedPassword, retrievedAccessLevel, retrievedActivationStatus};
+
                 try {
-                    
-                    
+                    // Open database to get all registered user accounts
                     SQLConnector.establishSQLConnection();
-        
-                    String query = "UPDATE * FROM SET " + SQLConnector.sqlTbl + " WHERE username = \"" + updatedUsername + "\";";
-        
+                
+                    String query = "SELECT * FROM " + SQLConnector.sqlTbl + " WHERE username = \"" + retrievedUsername + "\";";
+                
                     Statement statement = SQLConnector.connection.createStatement();
                     ResultSet result = statement.executeQuery(query);
-
-                    if (result.getFetchSize() == 1) {
-                        query = "UPDATE SET " + SQLConnector.sqlTbl + " (";
-
+                                
+                    if (result.getFetchSize() == 0) {
+                        // No existing username has been found
+                        query = "INSERT INTO " + SQLConnector.sqlTbl + " (";
+                    
                         for (String field : SQLConnector.FIELDS_user_accounts) {
                             query = query + " `" + field + "`,";
                         }
-
+                    
                         query = query.substring(0, query.length()-1) + " ) VALUES (";
-
-                        for (Object val : ExecutedUpdate) {
+                    
+                        for (Object val : retrieved) {
                             if (val instanceof String) {
                                 query = query + " \"" + val + "\",";
                             } else if (val instanceof Integer) {
                                 query = query + " " + val + ",";
-                            }
-                        }
+                                            }
+                                        }
+                    
+                        query = query.substring(0, query.length()-1) + " );";
+                    
+                        // Preview and execute query, if there are no errors
                         System.out.println(query);
                         Statement statement2 = SQLConnector.connection.createStatement();
                         statement2.executeUpdate(query);
-
+                    
+                        // Close the connection
                         SQLConnector.connection.close();
-
-                        Window popUp = SwingUtilities.getWindowAncestor(updateButton);
+                    
+                        // Close the current pop up window
+                        Window popUp = SwingUtilities.getWindowAncestor(submitButton);
                         popUp.dispose();
-
+                    
+                        // Update table
                         parentFrame.loadFromDatabase();
-
                     } else {
-
-                    }              
+                        // An existing username has been found
+                    }
+                
                 } catch (SQLException exception) {
-
+                    // To do when exception caught
                 }
             }
 
-            
         });
 
 
