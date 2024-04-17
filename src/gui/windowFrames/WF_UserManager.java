@@ -11,7 +11,6 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPasswordField;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -109,26 +108,41 @@ public class WF_UserManager extends APP_Frame {
             public void actionPerformed(ActionEvent ae) {
                 EditPopupWindow popUp = new EditPopupWindow();
                 popUp.parentFrame = (WF_UserManager) SwingUtilities.getWindowAncestor(addButton);
-                
-                // access parentFrame's JTable
-                // IF conditional
-                // only 1 selected is allowed for edit
-                
-                // get index of the selected row
-                table.getSelectedRow();
-                
-                // get values from selected row in jtable
-                final String retrievedUsername = table.getValueAt(index, 0).toString(); // index 0 = username
-                final String retrievedPassword = table.getValueAt(index, 1).toString();  // index 1 = password
-                final int retrievedAccessLevel = table.getValueAt(index, 2);  // java convert object to int
-                final int retrievedActivationStatus = table.getValueAt(index, 3); // convert
-                
-                // set text in textFields
-                popUp.usernameEditField.setText(retrievedUsername);
-                // password
-                // access level
-                // activation status
-                popUp.setVisible(true);
+
+                if (table.getSelectionModel().getSelectedIndices().length != 1) {
+                    
+                } else {
+                    // Get the index of the selected row
+                    int rowIndex = table.getSelectedRow();
+                    
+                    // Gget values from the selected row in JTable
+                    final String retrievedUsername = table.getValueAt(rowIndex, 0).toString();
+                    final String retrievedPassword = table.getValueAt(rowIndex, 1).toString(); 
+                    final String retrievedAccessLevel = table.getValueAt(rowIndex, 2).toString();
+                    final String retrievedActivationStatus = table.getValueAt(rowIndex, 3).toString();
+                    
+                    // Preview the values in the fields
+                    popUp.usernameEditField.setText(retrievedUsername);
+                    popUp.passwordEditField.setText(retrievedPassword);
+                    
+                    // Access level
+                    if (retrievedAccessLevel == "Admin") {
+                        popUp.accessLevelComboBoxEdit.setSelectedItem("Admin");
+                    } else if (retrievedAccessLevel == "User") {
+                        popUp.accessLevelComboBoxEdit.setSelectedItem("User");
+                    } else {}
+
+                    // Activation status
+                    if (retrievedActivationStatus == "Activated") {
+                        popUp.activatedCheckBoxEdit.setSelected(true);
+                    } else if (retrievedActivationStatus == "Inactivated") {
+                        popUp.activatedCheckBoxEdit.setSelected(false);
+                    } else if (retrievedActivationStatus == "Deactivated") {
+                        popUp.activatedCheckBoxEdit.setSelected(false);
+                    }
+
+                    popUp.setVisible(true);
+                }
             }
         });
 
@@ -592,17 +606,25 @@ class EditPopupWindow extends APP_Frame {
     JButton updateButton = new JButton("Update");
 
     JTextField[] dataField = {usernameEditField, passwordEditField};
-
-
-    EditPopupWindow(){
-    super("Edit Existing User Account");
-    compile();
+    
+    
+    EditPopupWindow() {
+        super("Edit Existing User Account");
+        compile();
     }
-
+    
+    public void prepare() {
+        getContentPane().setBackground(ColorConfig.ACCENT_1);
+        setLayout(new GridBagLayout());
+    }
+    
     public void prepareComponents() {
         setLayout(new GridBagLayout());
         GUIHelpers.setButtonTriggerOnAllFields(updateButton, dataField);
 
+        editForm.setOpaque(false);
+        
+        header.setFont(StylesConfig.HEADING3);
         accessLevelComboBoxEdit.setBackground(ColorConfig.BG);
         activatedCheckBoxEdit.setOpaque(false);
         updateButton.setEnabled(false);
@@ -610,20 +632,20 @@ class EditPopupWindow extends APP_Frame {
         updateButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
                 // Retrieve inputs
-                final String retrievedUsername = usernameField.getText();
-                final String retrievedPassword = passwordField.getText();
+                final String retrievedUsername = usernameEditField.getText();
+                final String retrievedPassword = passwordEditField.getText();
                 final int retrievedAccessLevel;
                 final int retrievedActivationStatus;
 
-                if (accessLevelComboBox.getSelectedItem().toString().equals("Admin")) {
+                if (accessLevelComboBoxEdit.getSelectedItem().toString().equals("Admin")) {
                     retrievedAccessLevel = 2;
-                } else if (accessLevelComboBox.getSelectedItem().toString().equals("User")) {
+                } else if (accessLevelComboBoxEdit.getSelectedItem().toString().equals("User")) {
                     retrievedAccessLevel = 3;
                 } else {
                     retrievedAccessLevel = -1;
                 }
 
-                if (activatedCheckBox.isSelected()) {
+                if (activatedCheckBoxEdit.isSelected()) {
                     retrievedActivationStatus = 1;
                 } else {
                     retrievedActivationStatus = 0;
@@ -639,10 +661,10 @@ class EditPopupWindow extends APP_Frame {
                 
                     Statement statement = SQLConnector.connection.createStatement();
                     ResultSet result = statement.executeQuery(query);
-                                
+
                     if (result.getFetchSize() == 0) {
                         // No existing username has been found
-                        query = "INSERT INTO " + SQLConnector.sqlTbl + " (";
+                        query = "UPDATE " + SQLConnector.sqlTbl + " SET ";
                     
                         for (String field : SQLConnector.FIELDS_user_accounts) {
                             query = query + " `" + field + "`,";
@@ -669,23 +691,21 @@ class EditPopupWindow extends APP_Frame {
                         SQLConnector.connection.close();
                     
                         // Close the current pop up window
-                        Window popUp = SwingUtilities.getWindowAncestor(submitButton);
+                        Window popUp = SwingUtilities.getWindowAncestor(updateButton);
                         popUp.dispose();
                     
                         // Update table
                         parentFrame.loadFromDatabase();
                     } else {
-                        // An existing username has been found
+                        // No existing username has been found
                     }
                 
                 } catch (SQLException exception) {
                     // To do when exception caught
+                    exception.printStackTrace();
                 }
             }
-
         });
-
-
     }
 
     public void addComponents() {
@@ -744,12 +764,9 @@ class EditPopupWindow extends APP_Frame {
 
     }
 
-    public void prepare() {
-
-    }
-
     public void finalizePrepare() {
-
-        
+        pack();
+        setLocationRelativeTo(null);
+        setResizable(false);
     }
 }
