@@ -8,7 +8,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
@@ -165,7 +164,28 @@ public class WF_UserManager extends APP_Frame {
                 ArrayList<Object> dataFromSQL = new ArrayList<>();
 
                 for (String field : SQLConnector.FIELDS_user_accounts) {
-                    dataFromSQL.add(result.getObject(field));
+                    Object data = result.getObject(field);
+
+                    // Modify presentation of values based on data
+                    if (field == "activated") {
+                        if (data.equals(1) || data.equals(true)) {
+                            dataFromSQL.add("Activated");
+                        } else if (data.equals(0) || data.equals(false)) {
+                            dataFromSQL.add("Inactivated");
+                        } else if (data.equals(-1)) {
+                            dataFromSQL.add("Deactivated");
+                        }
+                    } else if (field == "access_level") {
+                        if (data.equals(2)) {
+                            dataFromSQL.add("Admin");
+                        } else if (data.equals(3)) {
+                            dataFromSQL.add("User");
+                        } else {
+                            dataFromSQL.add("Unrecognized access level: " + data);
+                        }
+                    } else {
+                        dataFromSQL.add(result.getObject(field));
+                    }
                 }
 
                 tableModel.addRow(dataFromSQL.toArray());
@@ -205,7 +225,7 @@ class AddPopupWindow extends APP_Frame {
     final JTextField[] fields = {usernameField, passwordField};
 
     public AddPopupWindow() {
-        super();
+        super("Add New User Account");
         compile();
     }
     
