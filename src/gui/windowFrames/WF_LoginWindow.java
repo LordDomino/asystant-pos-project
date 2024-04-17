@@ -136,7 +136,15 @@ public final class WF_LoginWindow extends APP_Frame {
                         permitLogin = true;
                     } else {
                         // The login cannot take place
-                        System.out.println("No account credentials found");
+                        permitLogin = false;
+
+                        Component parent = SwingUtilities.getWindowAncestor(loginButton);
+                        JOptionPane.showMessageDialog(
+                            parent,
+                            "Account of username \"" + username + "\" does not exist.",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE
+                        );
                     }
                     
                     // Counter-check for illegal usernames.
@@ -144,7 +152,9 @@ public final class WF_LoginWindow extends APP_Frame {
                     // bypassed the SQL database cannot be logged on.
                     if (!LoginManager.isUsernameLegal(username)) {
                         // Error message goes here
-                    } else if (!LoginManager.isAccountActivated(username)) {
+                    }
+                    
+                    if (!LoginManager.isAccountActivated(username)) {
                         permitLogin = false;
 
                         Component parent = SwingUtilities.getWindowAncestor(loginButton);
