@@ -127,10 +127,10 @@ public final class WF_LoginWindow extends APP_Frame {
                 }
 
                 try {
-                    if (LoginManager.validateSuperAdminCredentials(username, password)) {
+                    if (LoginManager.validateSuperAdminUsername(username)) {
                         // Attempt to login super admin
                         permitLogin = true;
-                    } else if (LoginManager.validateCredentials(username, password)) {
+                    } else if (LoginManager.validateUsername(username)) {
                         // Super admin is not accessed and LoginManager
                         // defaults to attempting login either admin or user
                         permitLogin = true;
@@ -138,12 +138,32 @@ public final class WF_LoginWindow extends APP_Frame {
                         // The login cannot take place
                         System.out.println("No account credentials found");
                     }
-
+                    
                     // Counter-check for illegal usernames.
                     // This ensures that illegal usernames that have
                     // bypassed the SQL database cannot be logged on.
                     if (!LoginManager.isUsernameLegal(username)) {
                         // Error message goes here
+                    } else if (!LoginManager.isAccountActivated(username)) {
+                        permitLogin = false;
+
+                        Component parent = SwingUtilities.getWindowAncestor(loginButton);
+                        JOptionPane.showMessageDialog(
+                            parent,
+                            "Account \"" + username + "\" is not activated. Contact administrator for activation.",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE
+                        );
+                    } else if (!LoginManager.isAccountPasswordCorrect(username, password)) {
+                        permitLogin = false;
+
+                        Component parent = SwingUtilities.getWindowAncestor(loginButton);
+                        JOptionPane.showMessageDialog(
+                            parent,
+                            "Incorrect password for \"" + username + "\".",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE
+                        );
                     }
                 } catch (SQLException exception) {
                     exception.printStackTrace();

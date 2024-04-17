@@ -37,7 +37,7 @@ public class LoginManager {
      */
     public static final char[] ILLEGAL_CHARS = {'%'};
 
-    public static final boolean validateCredentials(String username, String password) throws SQLException {
+    public static final boolean validateUsername(String username) throws SQLException {
         final String query = "SELECT * FROM " + SQLConnector.sqlTbl + " WHERE username = \"" + username + "\" LIMIT 1;";
         final Statement statement = SQLConnector.connection.createStatement();
         final ResultSet result = statement.executeQuery(query);
@@ -48,10 +48,10 @@ public class LoginManager {
 
         // Reference to the "username" and "password" columns from the result
         final String db_username = result.getString("username");
-        final String db_password = result.getString("password");
+        // final String db_password = result.getString("password");
         final int db_access_lvl = result.getInt("access_level");
 
-        if (db_username.equals(username) && db_password.equals(password)) {
+        if (db_username.equals(username)) {
             if (db_access_lvl == ACCESS_LEVEL_ADMIN) {  // Admin access
                 setCurrentAccessLevelModeConfig(ACCESS_LEVEL_ADMIN, new WF_Dashboard());
             } else if (db_access_lvl == ACCESS_LEVEL_USER) {  // User access
@@ -63,7 +63,7 @@ public class LoginManager {
         }
     }
 
-    public static final boolean validateSuperAdminCredentials(String username, String password) throws SQLException {
+    public static final boolean validateSuperAdminUsername(String username) throws SQLException {
         // Query setup
         final String query = "SELECT * FROM " + SQLConnector.sqlTbl
                             + " WHERE access_level = " + ACCESS_LEVEL_SUPERADMIN
@@ -74,9 +74,9 @@ public class LoginManager {
 
         // Reference to the "username" and "password" columns from the result
         final String SA_username = result.getString("username");
-        final String SA_password = result.getString("password");
+        // final String SA_password = result.getString("password");
 
-        if (SA_username.equals(username) && SA_password.equals(password)) {
+        if (SA_username.equals(username)) {
             // Super admin access is permitted only when
             // the username and password matches credentials in DB
             setCurrentAccessLevelModeConfig(ACCESS_LEVEL_SUPERADMIN, new WF_SuperAdminScreen());
@@ -92,6 +92,45 @@ public class LoginManager {
 
     public static final JFrame getCurrentAccessLevelTargetJFrame() {
         return CURRENT_ACCESS_LEVEL_TARGET_JFRAME;
+    }
+
+    public static final boolean isAccountActivated(String username) throws SQLException {
+        final String query = "SELECT * FROM " + SQLConnector.sqlTbl + " WHERE username = \"" + username + "\" LIMIT 1;";
+        final Statement statement = SQLConnector.connection.createStatement();
+        final ResultSet result = statement.executeQuery(query);
+        
+        result.next(); // Read row
+
+        System.out.println(result.getString("activated").toString());
+        if (result.getString("activated").equals("1")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public static final boolean isAccountPasswordCorrect(String username, String password) throws SQLException {
+        final String query = "SELECT * FROM " + SQLConnector.sqlTbl + " WHERE username = \"" + username + "\" LIMIT 1;";
+        final Statement statement = SQLConnector.connection.createStatement();
+        final ResultSet result = statement.executeQuery(query);
+
+        result.next();
+
+        final String SA_password = result.getString("password");
+
+        final int db_access_lvl = result.getInt("access_level");
+
+        if (SA_password.equals(password)) {
+            // Access is permitted only when the username's password matches credentials in DB
+            if (db_access_lvl == ACCESS_LEVEL_ADMIN) {  // Admin access
+                setCurrentAccessLevelModeConfig(ACCESS_LEVEL_ADMIN, new WF_Dashboard());
+            } else if (db_access_lvl == ACCESS_LEVEL_USER) {  // User access
+                setCurrentAccessLevelModeConfig(ACCESS_LEVEL_USER, new WF_Dashboard());
+            }
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
