@@ -1,6 +1,9 @@
 package components;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 
 import configs.ColorConfig;
 import configs.StylesConfig;
@@ -19,7 +22,12 @@ public class APP_ContrastButton extends JButton {
         setFocusPainted(false);
         setBorderPainted(false);
 
+        setBorder(BorderFactory.createCompoundBorder(
+            new LineBorder(ColorConfig.CONTRAST_BUTTON_OUTLINE, 1, false),
+            new EmptyBorder(4, 16, 4, 16)
+        ));
+
         // Font
-        setFont(StylesConfig.defaultButton);
+        setFont(StylesConfig.BUTTON);
     }
 }

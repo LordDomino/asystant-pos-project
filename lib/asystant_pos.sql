@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 15, 2024 at 03:26 PM
+-- Generation Time: Apr 17, 2024 at 08:01 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -28,7 +28,6 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `user_accounts` (
-  `id` int(3) NOT NULL,
   `username` varchar(128) NOT NULL,
   `password` varchar(256) NOT NULL,
   `access_level` int(1) NOT NULL,
@@ -39,8 +38,8 @@ CREATE TABLE `user_accounts` (
 -- Dumping data for table `user_accounts`
 --
 
-INSERT INTO `user_accounts` (`id`, `username`, `password`, `access_level`, `activated`) VALUES
-(1, '%SUPERADMIN_DEVELOPER%', '%SUPERADMIN_DEVELOPER%', 1, 1);
+INSERT INTO `user_accounts` (`username`, `password`, `access_level`, `activated`) VALUES
+('%SUPERADMIN%', '%SUPERADMIN%', 1, 1);
 
 --
 -- Indexes for dumped tables
@@ -50,17 +49,8 @@ INSERT INTO `user_accounts` (`id`, `username`, `password`, `access_level`, `acti
 -- Indexes for table `user_accounts`
 --
 ALTER TABLE `user_accounts`
-  ADD PRIMARY KEY (`id`);
-
---
--- AUTO_INCREMENT for dumped tables
---
-
---
--- AUTO_INCREMENT for table `user_accounts`
---
-ALTER TABLE `user_accounts`
-  MODIFY `id` int(3) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  ADD PRIMARY KEY (`username`) USING BTREE,
+  ADD UNIQUE KEY `username` (`username`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
