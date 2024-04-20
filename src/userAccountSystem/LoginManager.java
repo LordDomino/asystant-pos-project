@@ -8,6 +8,7 @@ import javax.swing.JFrame;
 
 import gui.windowFrames.WF_Dashboard;
 import gui.windowFrames.WF_SuperAdminScreen;
+import sql.DBReferences;
 import sql.SQLConnector;
 
 public class LoginManager {
@@ -38,7 +39,7 @@ public class LoginManager {
     public static final char[] ILLEGAL_CHARS = {'%'};
 
     public static final boolean validateUsername(String username) throws SQLException {
-        final String query = "SELECT * FROM " + SQLConnector.sqlTbl + " WHERE username = \"" + username + "\" LIMIT 1;";
+        final String query = "SELECT * FROM " + DBReferences.TBL_USER_ACCOUNTS + " WHERE username = \"" + username + "\" LIMIT 1;";
         final Statement statement = SQLConnector.connection.createStatement();
         final ResultSet result = statement.executeQuery(query);
         
@@ -65,7 +66,7 @@ public class LoginManager {
 
     public static final boolean validateSuperAdminUsername(String username) throws SQLException {
         // Query setup
-        final String query = "SELECT * FROM " + SQLConnector.sqlTbl
+        final String query = "SELECT * FROM " + DBReferences.TBL_USER_ACCOUNTS
                             + " WHERE access_level = " + ACCESS_LEVEL_SUPERADMIN
                             + " LIMIT 1";
         final Statement statement = SQLConnector.connection.createStatement();
@@ -95,7 +96,7 @@ public class LoginManager {
     }
 
     public static final boolean isAccountActivated(String username) throws SQLException {
-        final String query = "SELECT * FROM " + SQLConnector.sqlTbl + " WHERE username = \"" + username + "\" LIMIT 1;";
+        final String query = "SELECT * FROM " + DBReferences.TBL_USER_ACCOUNTS + " WHERE username = \"" + username + "\" LIMIT 1;";
         final Statement statement = SQLConnector.connection.createStatement();
         final ResultSet result = statement.executeQuery(query);
         
@@ -110,7 +111,7 @@ public class LoginManager {
     }
 
     public static final boolean isAccountPasswordCorrect(String username, String password) throws SQLException {
-        final String query = "SELECT * FROM " + SQLConnector.sqlTbl + " WHERE username = \"" + username + "\" LIMIT 1;";
+        final String query = "SELECT * FROM " + DBReferences.TBL_USER_ACCOUNTS + " WHERE username = \"" + username + "\" LIMIT 1;";
         final Statement statement = SQLConnector.connection.createStatement();
         final ResultSet result = statement.executeQuery(query);
 

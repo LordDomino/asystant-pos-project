@@ -6,8 +6,6 @@ import java.sql.SQLException;
 
 public class SQLConnector {
 
-    public static final String sqlDb = "asystant_pos";
-    public static final String sqlTbl = "user_accounts";
     public static Connection connection;
 
     public static final String[] FIELDS_user_accounts = {"username", "password", "access_level", "activated"};
@@ -28,7 +26,7 @@ public class SQLConnector {
         // The connection with the SQL database server is then
         // established using the class provided by the jar library.
         SQLConnector.connection = DriverManager.getConnection(
-            "jdbc:mysql://localhost:3306/" + SQLConnector.sqlDb, 
+            "jdbc:mysql://localhost:3306/" + DBReferences.DB, 
             "root",
             ""
         );

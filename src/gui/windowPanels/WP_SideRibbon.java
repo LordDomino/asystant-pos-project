@@ -16,6 +16,7 @@ public class WP_SideRibbon extends APP_Panel {
     protected JButton menuButton = new APP_SideRibbonButton("Menu");
     protected JButton homeButton = new APP_SideRibbonButton("Home");
     protected JButton settingsButton = new APP_SideRibbonButton("Settings");
+    protected JButton inventoryButton = new APP_SideRibbonButton("Inventory");
 
     public WP_SideRibbon() {
         super();
@@ -43,6 +44,9 @@ public class WP_SideRibbon extends APP_Panel {
 
         gbc.gridy = 2;
         add(settingsButton, gbc);
+
+        gbc.gridy = 3;
+        add(inventoryButton, gbc);
     }
 
     public void finalizePrepare() {}

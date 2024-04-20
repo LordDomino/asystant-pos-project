@@ -37,6 +37,7 @@ import components.APP_TextField;
 import configs.ColorConfig;
 import configs.InsetsConfig;
 import configs.StylesConfig;
+import sql.DBReferences;
 import sql.SQLConnector;
 import utils.GUIHelpers;
 
@@ -283,32 +284,31 @@ public class WF_UserManager extends APP_Frame {
         
         {
             gbc.anchor = GridBagConstraints.NORTHWEST;
-        gbc.fill = GridBagConstraints.BOTH;
+            gbc.fill = GridBagConstraints.BOTH;
 
-        gbc.gridx = 0;
-        gbc.gridy = 0;
+            gbc.gridx = 0;
+            gbc.gridy = 0;
             gbc.gridwidth = GridBagConstraints.REMAINDER;
-        gbc.insets = new Insets(0, 0, 0, 0);
+            gbc.insets = new Insets(0, 0, 0, 0);
             buttonsPanel.add(buttonsPanelLead, gbc);
             
             gbc.gridx = 0;
             gbc.gridy = 1;
             gbc.gridwidth = 1;
             gbc.insets = new Insets(InsetsConfig.S, 0, 0, 0);
-        buttonsPanel.add(addButton, gbc);
+            buttonsPanel.add(addButton, gbc);
         
-        gbc.anchor = GridBagConstraints.NORTH;
-        gbc.gridx = 1;
+            gbc.anchor = GridBagConstraints.NORTH;
+            gbc.gridx = 1;
             gbc.gridy = 1;
             gbc.insets = new Insets(InsetsConfig.S, InsetsConfig.S, 0, 0);
-        buttonsPanel.add(editButton, gbc);
+            buttonsPanel.add(editButton, gbc);
         
-        gbc.anchor = GridBagConstraints.NORTH;
-        gbc.gridx = 2;
+            gbc.anchor = GridBagConstraints.NORTH;
+            gbc.gridx = 2;
             gbc.gridy = 1;
             gbc.insets = new Insets(InsetsConfig.S, InsetsConfig.S, 0, 0);
-        buttonsPanel.add(deleteButton, gbc);
-        
+            buttonsPanel.add(deleteButton, gbc);
         }
         
         gbc.anchor = GridBagConstraints.CENTER;
@@ -372,7 +372,7 @@ public class WF_UserManager extends APP_Frame {
         try {
             SQLConnector.establishSQLConnection();
 
-            String query = "SELECT * FROM " + SQLConnector.sqlTbl + " WHERE username NOT LIKE \"%SUPERADMIN%\"";
+            String query = "SELECT * FROM " + DBReferences.TBL_USER_ACCOUNTS + " WHERE username NOT LIKE \"%SUPERADMIN%\"";
             Statement statement = SQLConnector.connection.createStatement(
                 ResultSet.TYPE_SCROLL_INSENSITIVE,
                 ResultSet.CONCUR_READ_ONLY
@@ -453,10 +453,10 @@ public class WF_UserManager extends APP_Frame {
 
             if (pendingSize == 1) {
                 // If only 1 row is selected, use the equal operator for SQL query
-                query = "DELETE FROM " + SQLConnector.sqlTbl + " WHERE username = \"" + pendingDeletedUsernames.get(0).get(0) + "\";";
+                query = "DELETE FROM " + DBReferences.TBL_USER_ACCOUNTS + " WHERE username = \"" + pendingDeletedUsernames.get(0).get(0) + "\";";
             } else {
                 // If more than one row is selected, use the IN keyword for SQL query
-                query = "DELETE FROM " + SQLConnector.sqlTbl + " WHERE username IN ( ";
+                query = "DELETE FROM " + DBReferences.TBL_USER_ACCOUNTS + " WHERE username IN ( ";
 
                 // Get all usernameIDs
                 for (ArrayList<String> username : pendingDeletedUsernames) {
@@ -565,14 +565,14 @@ class AddPopupWindow extends APP_Frame {
                     // Open database to get all registered user accounts
                     SQLConnector.establishSQLConnection();
 
-                    String query = "SELECT * FROM " + SQLConnector.sqlTbl + " WHERE username = \"" + retrievedUsername + "\";";
+                    String query = "SELECT * FROM " + DBReferences.TBL_USER_ACCOUNTS + " WHERE username = \"" + retrievedUsername + "\";";
 
                     Statement statement = SQLConnector.connection.createStatement();
                     ResultSet result = statement.executeQuery(query);
 
                     if (result.getFetchSize() == 0) {
                         // No existing username has been found
-                        query = "INSERT INTO " + SQLConnector.sqlTbl + " (";
+                        query = "INSERT INTO " + DBReferences.TBL_USER_ACCOUNTS + " (";
 
                         for (String field : SQLConnector.FIELDS_user_accounts) {
                             query = query + " `" + field + "`,";
@@ -765,14 +765,14 @@ class EditPopupWindow extends APP_Frame {
                     // Open database to get all registered user accounts
                     SQLConnector.establishSQLConnection();
                 
-                    String query = "SELECT * FROM " + SQLConnector.sqlTbl + " WHERE username = \"" + retrievedUsername + "\";";
+                    String query = "SELECT * FROM " + DBReferences.TBL_USER_ACCOUNTS + " WHERE username = \"" + retrievedUsername + "\";";
                 
                     Statement statement = SQLConnector.connection.createStatement();
                     ResultSet result = statement.executeQuery(query);
 
                     if (result.getFetchSize() == 0) {
                         // No existing username has been found
-                        query = "UPDATE " + SQLConnector.sqlTbl + " SET ";
+                        query = "UPDATE " + DBReferences.TBL_USER_ACCOUNTS + " SET ";
 
                         List<String> columnNames = Arrays.asList(SQLConnector.FIELDS_user_accounts);
                         List<Object> values = Arrays.asList(retrieved);

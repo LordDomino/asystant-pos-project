@@ -1,22 +1,24 @@
 package gui.windowPanels;
 
-import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.GridBagConstraints;
+import java.awt.GridLayout;
+
 import javax.swing.JButton;
 
 import components.APP_ItemButton;
 import components.APP_Panel;
 import configs.ColorConfig;
+import configs.InsetsConfig;
 
 public class WP_ItemMenu extends APP_Panel {
     
-    public JButton menuItem1 = new APP_ItemButton("Strawberry", 205);
+    public JButton menuItem1 = new APP_ItemButton("Item 1", 205);
     public JButton menuItem2 = new APP_ItemButton("Item 2", 200);
-    public JButton menuItem3 = new APP_ItemButton("Strawberry", 200);
+    public JButton menuItem3 = new APP_ItemButton("Item 3", 200);
 
     public WP_ItemMenu() {
-        super(new GridLayout(0, 2, 5, 5));
+        super(new GridLayout(2, 2, InsetsConfig.L, InsetsConfig.L));
         compile();
     }
 
@@ -34,7 +36,7 @@ public class WP_ItemMenu extends APP_Panel {
         gbc.fill = GridBagConstraints.BOTH;
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.insets = new Insets(InsetsConfig.L, InsetsConfig.L, InsetsConfig.L, InsetsConfig.L);
         gbc.weightx = 1;
         gbc.weighty = 1;
         add(menuItem1, gbc);

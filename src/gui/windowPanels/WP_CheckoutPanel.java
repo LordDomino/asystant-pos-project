@@ -36,9 +36,9 @@ public class WP_CheckoutPanel extends APP_Panel {
         table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         header.setHorizontalAlignment(JLabel.RIGHT);
         
-        header.setFont(StylesConfig.HEADER);
-        totalLabel.setFont(StylesConfig.OUTPUT_FONT);
-        totalAmount.setFont(StylesConfig.OUTPUT_FONT);
+        header.setFont(StylesConfig.LEAD);
+        totalLabel.setFont(StylesConfig.CALCULATOR_OUTPUT);
+        totalAmount.setFont(StylesConfig.CALCULATOR_OUTPUT);
         
         header.setForeground(ColorConfig.CONTRAST);
         totalLabel.setForeground(ColorConfig.CONTRAST);

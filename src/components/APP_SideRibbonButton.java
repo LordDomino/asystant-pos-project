@@ -1,31 +1,36 @@
 package components;
 
-import java.awt.Font;
-import java.awt.Insets;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.border.LineBorder;
+import javax.swing.border.EmptyBorder;
 
 import configs.ColorConfig;
 
 public class APP_SideRibbonButton extends APP_DefaultButton {
+
     public APP_SideRibbonButton(String text) {
         super(text);
-        setBorderPainted(false);
-        setBackground(ColorConfig.ACCENT_BUTTON_BG);
+        setBackground(ColorConfig.ACCENT_1);
         setForeground(ColorConfig.ACCENT_BUTTON_FG);
-        setFont(new Font("Inter", Font.PLAIN, 14));
+        setBorderPainted(false);
         setHorizontalAlignment(JButton.LEFT);
-        setMargin(new Insets(3, 5, 3, 30));
         
+        setBorder(BorderFactory.createCompoundBorder(
+            new LineBorder(ColorConfig.DEFAULT_BUTTON_OUTLINE, 1, false),
+            new EmptyBorder(10, 16, 10, 32)
+        ));
+
         addMouseListener(new MouseAdapter() {
             public void mouseEntered(MouseEvent e) {
-                setBackground(ColorConfig.ACCENT_1);
+                setBackground(ColorConfig.ACCENT_1.brighter());
             }
 
             public void mouseExited(MouseEvent e) {
-                setBackground(ColorConfig.ACCENT_BUTTON_BG);
+                setBackground(ColorConfig.ACCENT_1);
             }
         });
     }

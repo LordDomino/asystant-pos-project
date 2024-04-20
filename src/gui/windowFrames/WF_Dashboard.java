@@ -8,6 +8,7 @@ import javax.swing.JPanel;
 import javax.swing.border.MatteBorder;
 
 import components.APP_Frame;
+import components.APP_Panel;
 import configs.ColorConfig;
 import gui.windowPanels.WP_Calculator;
 import gui.windowPanels.WP_CheckoutPanel;
@@ -17,6 +18,7 @@ import gui.windowPanels.WP_SideRibbon;
 public class WF_Dashboard extends APP_Frame {
 
     protected JPanel leftPanel = new JPanel(new GridBagLayout());
+    protected JPanel viewingPanel = new JPanel(new GridBagLayout());
     protected JPanel centerPanel = new JPanel(new GridBagLayout());
     protected JPanel rightPanel = new JPanel(new GridBagLayout());
     
@@ -36,7 +38,7 @@ public class WF_Dashboard extends APP_Frame {
     }
 
     public void prepareComponents() {
-        leftPanel.setBackground(ColorConfig.ACCENT_2);
+        leftPanel.setBackground(ColorConfig.ACCENT_1);
         centerPanel.setBackground(ColorConfig.BG);
         rightPanel.setBackground(ColorConfig.ACCENT_1);
 
@@ -61,12 +63,44 @@ public class WF_Dashboard extends APP_Frame {
         gbc.weighty = 1;
         add(leftPanel, gbc);
         
+        {
+            // LEFT PANEL
+            // Side ribbon
+            gbc.anchor = GridBagConstraints.NORTH;
+            gbc.fill = GridBagConstraints.NONE;
+            gbc.gridx = 0;
+            gbc.gridy = 0;
+            gbc.weightx = 0;
+            gbc.weighty = 1;
+            leftPanel.add(sideRibbonPanel, gbc);
+        }
+        
         gbc.anchor = GridBagConstraints.NORTHWEST;
         gbc.fill = GridBagConstraints.NONE;
         gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.weightx = 1;
-        add(centerPanel, gbc);
+        add(viewingPanel, gbc);
+
+        {
+            gbc.anchor = GridBagConstraints.NORTHWEST;
+            gbc.fill = GridBagConstraints.NONE;
+            gbc.gridx = 0;
+            gbc.gridy = 0;
+            gbc.weightx = 1;
+            viewingPanel.add(centerPanel, gbc);
+        }
+        
+        {
+            // CENTER PANEL
+            // Item Menu
+            gbc.gridx = 0;
+            gbc.gridy = 0;
+            gbc.insets = new Insets(10, 10, 10, 10);
+            gbc.weightx = 0;
+            gbc.weighty = 0;
+            centerPanel.add(itemMenu, gbc);
+        }
         
         gbc.anchor = GridBagConstraints.EAST;
         gbc.fill = GridBagConstraints.VERTICAL;
@@ -77,36 +111,17 @@ public class WF_Dashboard extends APP_Frame {
         add(rightPanel, gbc);
         
         
-        // LEFT PANEL
-        // Side ribbon
-        gbc.anchor = GridBagConstraints.NORTH;
-        gbc.fill = GridBagConstraints.NONE;
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.weightx = 0;
-        gbc.weighty = 1;
-        leftPanel.add(sideRibbonPanel, gbc);
-
-
-        // CENTER PANEL
-        // Item Menu
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.insets = new Insets(10, 10, 10, 10);
-        gbc.weightx = 0;
-        gbc.weighty = 0;
-        centerPanel.add(itemMenu, gbc);
-        
-        
-        // RIGHT PANEL
-        // Checkout Panel
-        gbc.anchor = GridBagConstraints.NORTHEAST;
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.insets = new Insets(0, 0, 0, 0);
-        gbc.weightx = 0;
-        gbc.weighty = 0;
-        rightPanel.add(checkoutPanel, gbc);
+        {
+            // RIGHT PANEL
+            // Checkout Panel
+            gbc.anchor = GridBagConstraints.NORTHEAST;
+            gbc.gridx = 0;
+            gbc.gridy = 0;
+            gbc.insets = new Insets(0, 0, 0, 0);
+            gbc.weightx = 0;
+            gbc.weighty = 0;
+            rightPanel.add(checkoutPanel, gbc);
+        }
         
         // Calculator
         gbc.anchor = GridBagConstraints.SOUTHEAST;
@@ -123,4 +138,16 @@ public class WF_Dashboard extends APP_Frame {
         // setSize(500, 300);
         setLocationRelativeTo(null);
     }
+}
+
+class ViewingPanel extends APP_Panel {
+    public ViewingPanel() {
+        super();
+        compile();
+    }
+
+    public void prepareComponents() {}
+    public void prepare() {}
+    public void addComponents() {}
+    public void finalizePrepare() {}
 }

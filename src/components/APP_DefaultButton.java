@@ -1,7 +1,5 @@
 package components;
 
-import java.awt.Insets;
-
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;

@@ -56,7 +56,7 @@ public class WP_Calculator extends APP_Panel {
         buttonsPanel.setBackground(ColorConfig.BG);
 
         outputText.setHorizontalAlignment(JLabel.RIGHT);
-        outputText.setFont(StylesConfig.OUTPUT_FONT);
+        outputText.setFont(StylesConfig.CALCULATOR_OUTPUT);
         outputText.setForeground(ColorConfig.CONTRAST);
         outputText.setBorder(new MatteBorder(0, 0, 1, 0, ColorConfig.ACCENT_3));
     }
