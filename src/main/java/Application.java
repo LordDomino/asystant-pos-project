@@ -25,6 +25,5 @@ public class Application {
 
         loginFrame.setVisible(true);
         loginFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        dashboard.viewingPanel.setBackground(Color.RED);
     }
 }
