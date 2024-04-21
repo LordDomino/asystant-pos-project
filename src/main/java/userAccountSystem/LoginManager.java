@@ -6,6 +6,7 @@ import java.sql.Statement;
 
 import javax.swing.JFrame;
 
+import main.java.Main;
 import main.java.gui.windowFrames.WF_Dashboard;
 import main.java.gui.windowFrames.WF_SuperAdminScreen;
 import main.java.sql.DBReferences;
@@ -40,7 +41,7 @@ public class LoginManager {
      */
     public static final char[] ILLEGAL_CHARS = {'%'};
 
-    // public static WF_Dashboard dashboard = Main.app.;
+    public static WF_Dashboard dashboard = Main.app.dashboard;
 
     public static final boolean validateUsername(String username) throws SQLException {
         final String query = "SELECT * FROM " + DBReferences.TBL_USER_ACCOUNTS + " WHERE username = \"" + username + "\" LIMIT 1;";
@@ -58,9 +59,9 @@ public class LoginManager {
 
         if (db_username.equals(username)) {
             if (db_access_lvl == ACCESS_LEVEL_ADMIN) {  // Admin access
-                setCurrentAccessLevelModeConfig(ACCESS_LEVEL_ADMIN, new WF_Dashboard());
+                setCurrentAccessLevelModeConfig(ACCESS_LEVEL_ADMIN, dashboard);
             } else if (db_access_lvl == ACCESS_LEVEL_USER) {  // User access
-                setCurrentAccessLevelModeConfig(ACCESS_LEVEL_USER, new WF_Dashboard());
+                setCurrentAccessLevelModeConfig(ACCESS_LEVEL_USER, dashboard);
             }
             return true;
         } else {
@@ -128,9 +129,9 @@ public class LoginManager {
         if (SA_password.equals(password)) {
             // Access is permitted only when the username's password matches credentials in DB
             if (db_access_lvl == ACCESS_LEVEL_ADMIN) {  // Admin access
-                setCurrentAccessLevelModeConfig(ACCESS_LEVEL_ADMIN, new WF_Dashboard());
+                setCurrentAccessLevelModeConfig(ACCESS_LEVEL_ADMIN, dashboard);
             } else if (db_access_lvl == ACCESS_LEVEL_USER) {  // User access
-                setCurrentAccessLevelModeConfig(ACCESS_LEVEL_USER, new WF_Dashboard());
+                setCurrentAccessLevelModeConfig(ACCESS_LEVEL_USER, dashboard);
             }
             return true;
         } else {

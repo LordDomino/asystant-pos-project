@@ -4,12 +4,18 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import main.java.Main;
 import main.java.components.APP_Panel;
 import main.java.components.APP_SideRibbonButton;
+import main.java.configs.ColorConfig;
+import main.java.gui.GUIReferences;
+import main.java.gui.windowFrames.WF_Dashboard;
+import main.java.gui.windowScreens.WS_Inventory;
 
 public class WP_SideRibbon extends APP_Panel {
     
@@ -33,7 +39,8 @@ public class WP_SideRibbon extends APP_Panel {
         inventoryButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // WF_Dashboard dashboard = Main.ap
+                Main.app.dashboard.setView(GUIReferences.PANELS.get("Inventory"));
+                System.out.println("Passed");
             }
         });
     }

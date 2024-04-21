@@ -16,8 +16,8 @@ import main.java.configs.StylesConfig;
 
 public class APP_ItemButton extends JButton {
     
-    protected String itemName;
-    protected float priceTag;
+    public String itemName;
+    public float priceTag;
 
     public APP_ItemButton(String itemName, float priceTag) {
         super();

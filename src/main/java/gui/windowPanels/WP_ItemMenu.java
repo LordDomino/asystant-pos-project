@@ -1,6 +1,9 @@
 package main.java.gui.windowPanels;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.Insets;
+import java.awt.event.ActionListener;
 import java.awt.GridBagConstraints;
 import java.awt.GridLayout;
 
@@ -13,20 +16,26 @@ import main.java.configs.InsetsConfig;
 
 public class WP_ItemMenu extends APP_Panel {
     
-    public JButton menuItem1 = new APP_ItemButton("Item 1", 205);
-    public JButton menuItem2 = new APP_ItemButton("Item 2", 200);
-    public JButton menuItem3 = new APP_ItemButton("Item 3", 200);
+    public APP_ItemButton menuItem1 = new APP_ItemButton("Item 1", 205);
+    public APP_ItemButton menuItem2 = new APP_ItemButton("Item 2", 200);
+    public APP_ItemButton menuItem3 = new APP_ItemButton("Item 3", 200);
 
     public WP_ItemMenu() {
         super(new GridLayout(2, 2, InsetsConfig.L, InsetsConfig.L));
         compile();
     }
-
-    public void prepareComponents() {
-    }
-
+    
     public void prepare() {
         setBackground(ColorConfig.BG);
+    }
+
+    public void prepareComponents() {
+        menuItem1.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                menuItem1.setText("ABC");
+            }
+        });
     }
 
     public void addComponents() {

@@ -18,9 +18,8 @@ import main.java.gui.windowPanels.WP_SideRibbon;
 public class WF_Dashboard extends APP_Frame {
 
     protected JPanel leftPanel = new JPanel(new GridBagLayout());
-    protected JPanel viewingPanel = new ViewingPanel();
+    public JPanel viewingPanel = new ViewingPanel();
     protected JPanel sideRibbon = new WP_SideRibbon();
-
 
     public WF_Dashboard() {
         super("Dashboard");
@@ -34,7 +33,7 @@ public class WF_Dashboard extends APP_Frame {
 
     public void prepareComponents() {
         leftPanel.setBackground(ColorConfig.ACCENT_1);
-        viewingPanel.setBackground(ColorConfig.BG);
+        viewingPanel.setBackground(ColorConfig.ACCENT_2);
     }
 
     public void addComponents() {
@@ -67,19 +66,22 @@ public class WF_Dashboard extends APP_Frame {
 
     public void finalizePrepare() {
         pack();
-        // setSize(500, 300);
         setLocationRelativeTo(null);
     }
 
     public void setView(JPanel view) {
-        viewingPanel.setVisible(false);
+        remove(viewingPanel);;
 
         GridBagConstraints gbc = new GridBagConstraints();
+
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.gridx = 1;
         gbc.weightx = 1;
-        // add(viewingPanel, gbc);
+        add(view, gbc);
+
+        revalidate();
+        repaint();
     }
 }
 
