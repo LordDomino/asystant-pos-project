@@ -13,7 +13,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class WF_SuperAdminScreen extends APP_Frame {
-    
+
     // Layout components
     public final JPanel headerPanel = new JPanel(new GridBagLayout());
 
@@ -21,7 +21,7 @@ public class WF_SuperAdminScreen extends APP_Frame {
     public final JLabel header = new JLabel("Welcome");
     public final JLabel userGreeting = new JLabel("<html>You are logged in as <b>super administrator</b>.");
 
-    public final JPanel buttonsPanel = new JPanel();    
+    public final JPanel buttonsPanel = new JPanel();
     public final JButton userManagementButton = new APP_AccentButton("User Management");
     public final JButton dashboardButton = new APP_AccentButton("Dashboard");
 
@@ -29,7 +29,7 @@ public class WF_SuperAdminScreen extends APP_Frame {
         super("Super Administrator Panel");
         compile();
     }
-    
+
     public void prepare() {
         getContentPane().setBackground(ColorConfig.ACCENT_1);
         setLayout(new GridBagLayout());
@@ -74,7 +74,7 @@ public class WF_SuperAdminScreen extends APP_Frame {
             }
         });
     }
-    
+
     public void addComponents() {
         GridBagConstraints gbc = new GridBagConstraints();
 
@@ -110,7 +110,7 @@ public class WF_SuperAdminScreen extends APP_Frame {
             gbc.gridy = 0;
             gbc.insets = new Insets(0, 0, 0, 0);
             buttonsPanel.add(dashboardButton, gbc);
-    
+
             gbc.anchor = GridBagConstraints.CENTER;
             gbc.gridx = 1;
             gbc.insets = new Insets(0, InsetsConfig.M, 0, 0);

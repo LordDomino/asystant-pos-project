@@ -46,7 +46,7 @@ public class WF_Dashboard extends APP_Frame {
         gbc.weightx = 0;
         gbc.weighty = 1;
         add(leftPanel, gbc);
-        
+
         {
             // LEFT PANEL
             // Side ribbon
@@ -57,7 +57,7 @@ public class WF_Dashboard extends APP_Frame {
             gbc.weighty = 1;
             leftPanel.add(sideRibbon, gbc);
         }
-        
+
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.gridx = 1;
@@ -146,7 +146,7 @@ class ViewingPanel extends APP_Panel {
             gbc.weightx = 0;
             gbc.weighty = 0;
             rightPanel.add(checkoutPanel, gbc);
-            
+
             // Calculator
             gbc.anchor = GridBagConstraints.SOUTHEAST;
             gbc.fill = GridBagConstraints.NONE;

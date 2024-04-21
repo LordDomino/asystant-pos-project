@@ -45,7 +45,7 @@ public class WF_UserManager extends APP_Frame {
 
     public static final String[] columnNames = {"Username", "Password", "Access Level", "Activation Status"};
     public static ArrayList<ArrayList<String>> pendingDeletedUsernames = new ArrayList<>();
-    
+
     protected final DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0) {
         public boolean isCellEditable(int row, int column) {
             return false;
@@ -66,9 +66,11 @@ public class WF_UserManager extends APP_Frame {
     public final JLabel buttonsPanelLead = new JLabel("User account actions");
     public final JButton addButton = new APP_AccentButton("Add new user account");
     public final JButton editButton = new APP_AccentButton("Edit selected user account") {
+
+        @SuppressWarnings("unused")
         public void fireValueChanged() {  // Anonymous class hack :D
             int[] selectedIndices = table.getSelectionModel().getSelectedIndices();
-            
+
             if (selectedIndices.length == 1) {
                 setEnabled(true);
             } else {
@@ -77,9 +79,11 @@ public class WF_UserManager extends APP_Frame {
         }
     };
     public final JButton deleteButton = new APP_AccentButton("Delete user accounts") {
+
+        @SuppressWarnings("unused")
         public void fireValueChanged() {  // Anonymous class hack :D
             int[] selectedIndices = table.getSelectionModel().getSelectedIndices();
-            
+
             if (selectedIndices.length > 0) {
                 setEnabled(true);
             } else {
@@ -87,7 +91,7 @@ public class WF_UserManager extends APP_Frame {
             }
         }
     };
-    
+
     public final JTable table = new JTable(tableModel);
     public final JScrollPane scrollPane = new JScrollPane(table);
 
@@ -99,7 +103,7 @@ public class WF_UserManager extends APP_Frame {
         super("User Management Control Panel");
         compile();
     }
-    
+
     public void prepare() {
         getContentPane().setBackground(ColorConfig.ACCENT_1);
         setLayout(new GridBagLayout());
@@ -151,21 +155,21 @@ public class WF_UserManager extends APP_Frame {
                 popUp.parentFrame = (WF_UserManager) SwingUtilities.getWindowAncestor(addButton);
 
                 if (table.getSelectionModel().getSelectedIndices().length != 1) {
-                    
+
                 } else {
                     // Get the index of the selected row
                     int rowIndex = table.getSelectedRow();
-                    
+
                     // Get values from the selected row in JTable
                     final String retrievedUsername = table.getValueAt(rowIndex, 0).toString();
-                    final String retrievedPassword = table.getValueAt(rowIndex, 1).toString(); 
+                    final String retrievedPassword = table.getValueAt(rowIndex, 1).toString();
                     final String retrievedAccessLevel = table.getValueAt(rowIndex, 2).toString();
                     final String retrievedActivationStatus = table.getValueAt(rowIndex, 3).toString();
-                    
+
                     // Preview the values in the fields
                     popUp.usernameEditField.setText(retrievedUsername);
                     popUp.passwordEditField.setText(retrievedPassword);
-                    
+
                     // Access level
                     if (retrievedAccessLevel == "Admin") {
                         popUp.accessLevelComboBoxEdit.setSelectedItem("Admin");
@@ -246,7 +250,7 @@ public class WF_UserManager extends APP_Frame {
 
     protected void fireValueChanged() {
         int[] selectedIndices = table.getSelectionModel().getSelectedIndices();
-        
+
         if (selectedIndices.length == 1) {
             editButton.setEnabled(true);
         } else {
@@ -281,7 +285,7 @@ public class WF_UserManager extends APP_Frame {
         gbc.gridy = 1;
         gbc.insets = new Insets(InsetsConfig.XL, InsetsConfig.XXL, 0, InsetsConfig.XXL);
         add(buttonsPanel, gbc);
-        
+
         {
             gbc.anchor = GridBagConstraints.NORTHWEST;
             gbc.fill = GridBagConstraints.BOTH;
@@ -291,26 +295,26 @@ public class WF_UserManager extends APP_Frame {
             gbc.gridwidth = GridBagConstraints.REMAINDER;
             gbc.insets = new Insets(0, 0, 0, 0);
             buttonsPanel.add(buttonsPanelLead, gbc);
-            
+
             gbc.gridx = 0;
             gbc.gridy = 1;
             gbc.gridwidth = 1;
             gbc.insets = new Insets(InsetsConfig.S, 0, 0, 0);
             buttonsPanel.add(addButton, gbc);
-        
+
             gbc.anchor = GridBagConstraints.NORTH;
             gbc.gridx = 1;
             gbc.gridy = 1;
             gbc.insets = new Insets(InsetsConfig.S, InsetsConfig.S, 0, 0);
             buttonsPanel.add(editButton, gbc);
-        
+
             gbc.anchor = GridBagConstraints.NORTH;
             gbc.gridx = 2;
             gbc.gridy = 1;
             gbc.insets = new Insets(InsetsConfig.S, InsetsConfig.S, 0, 0);
             buttonsPanel.add(deleteButton, gbc);
         }
-        
+
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.gridx = 0;
@@ -319,7 +323,7 @@ public class WF_UserManager extends APP_Frame {
         gbc.weightx = 1;
         gbc.weighty = 1;
         add(scrollPane, gbc);
-        
+
         gbc.anchor = GridBagConstraints.SOUTHEAST;
         gbc.fill = GridBagConstraints.NONE;
         gbc.gridx = 0;
@@ -338,13 +342,13 @@ public class WF_UserManager extends APP_Frame {
             gbc.weightx = 0;
             gbc.weighty = 0;
             footerPanel.add(statusLabel, gbc);
-            
+
             gbc.anchor = GridBagConstraints.EAST;
             gbc.fill = GridBagConstraints.HORIZONTAL;
             gbc.gridx = 1;
             gbc.insets = new Insets(0, InsetsConfig.S, 0, 0);
             footerPanel.add(statusBar, gbc);
-            
+
             gbc.anchor = GridBagConstraints.EAST;
             gbc.fill = GridBagConstraints.NONE;
             gbc.gridx = 0;
@@ -389,7 +393,7 @@ public class WF_UserManager extends APP_Frame {
             int i = 0;
             while (i < n) {
                 result.next();
-                
+
                 // Skip adding the super admin credentials to the table (for security reasons).
                 // Fail safe conditional if super admin info has been passed through the filter query
                 if (result.getString("username").equals("%SUPERADMIN%")) {
@@ -520,7 +524,7 @@ class AddPopupWindow extends APP_Frame {
         super("Add New User Account");
         compile();
     }
-    
+
     public void prepare() {
         getContentPane().setBackground(ColorConfig.ACCENT_1);
         setLayout(new GridBagLayout());
@@ -530,7 +534,7 @@ class AddPopupWindow extends APP_Frame {
         GUIHelpers.setButtonTriggerOnAllFields(submitButton, fields);  // ensures that all fields are non-empty for button to enable
 
         form.setOpaque(false);
-        
+
         header.setFont(StylesConfig.HEADING3);
         accessLevelComboBox.setBackground(ColorConfig.BG);
         activatedCheckBox.setOpaque(false);
@@ -544,7 +548,7 @@ class AddPopupWindow extends APP_Frame {
                 final String retrievedPassword = passwordField.getText();
                 final int retrievedAccessLevel;
                 final int retrievedActivationStatus;
-                
+
                 if (accessLevelComboBox.getSelectedItem().toString().equals("Admin")) {
                     retrievedAccessLevel = 2;
                 } else if (accessLevelComboBox.getSelectedItem().toString().equals("User")) {
@@ -552,7 +556,7 @@ class AddPopupWindow extends APP_Frame {
                 } else {
                     retrievedAccessLevel = -1;
                 }
-                
+
                 if (activatedCheckBox.isSelected()) {
                     retrievedActivationStatus = 1;
                 } else {
@@ -664,7 +668,7 @@ class AddPopupWindow extends APP_Frame {
             gbc.gridy = 3;
             form.add(activatedCheckBox, gbc);
         }
-        
+
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.fill = GridBagConstraints.NONE;
         gbc.gridx = 0;
@@ -714,24 +718,24 @@ class EditPopupWindow extends APP_Frame {
     JButton updateButton = new JButton("Update");
 
     JTextField[] dataField = {usernameEditField, passwordEditField};
-    
-    
+
+
     EditPopupWindow() {
         super("Edit Existing User Account");
         compile();
     }
-    
+
     public void prepare() {
         getContentPane().setBackground(ColorConfig.ACCENT_1);
         setLayout(new GridBagLayout());
     }
-    
+
     public void prepareComponents() {
         setLayout(new GridBagLayout());
         GUIHelpers.setButtonTriggerOnAllFields(updateButton, dataField);
 
         editForm.setOpaque(false);
-        
+
         header.setFont(StylesConfig.HEADING3);
         accessLevelComboBoxEdit.setBackground(ColorConfig.BG);
         activatedCheckBoxEdit.setOpaque(false);
@@ -764,9 +768,9 @@ class EditPopupWindow extends APP_Frame {
                 try {
                     // Open database to get all registered user accounts
                     SQLConnector.establishSQLConnection();
-                
+
                     String query = "SELECT * FROM " + DBReferences.TBL_USER_ACCOUNTS + " WHERE username = \"" + retrievedUsername + "\";";
-                
+
                     Statement statement = SQLConnector.connection.createStatement();
                     ResultSet result = statement.executeQuery(query);
 
@@ -780,32 +784,32 @@ class EditPopupWindow extends APP_Frame {
                         for (int i = 0; i < columnNames.size(); i++) {
                             String columnName = columnNames.get(i);
                             Object value = values.get(i);
-                            
+
                             query = query + " " + columnName + " = \"" + value + "\",";
                         }
 
                         query = query.substring(0, query.length()-1);
 
                         query = query + " WHERE username = \"" + retrievedUsername + "\";";
-                    
+
                         // Preview and execute query, if there are no errors
                         System.out.println(query);
                         Statement statement2 = SQLConnector.connection.createStatement();
                         statement2.executeUpdate(query);
-                    
+
                         // Close the connection
                         SQLConnector.connection.close();
-                    
+
                         // Close the current pop up window
                         Window popUp = SwingUtilities.getWindowAncestor(updateButton);
                         popUp.dispose();
-                    
+
                         // Update table
                         parentFrame.loadFromDatabase();
                     } else {
                         // No existing username has been found
                     }
-                
+
                 } catch (SQLException exception) {
                     // To do when exception caught
                     exception.printStackTrace();
@@ -860,7 +864,7 @@ class EditPopupWindow extends APP_Frame {
             gbc.gridy = 3;
             editForm.add(activatedCheckBoxEdit, gbc);
         }
-        
+
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.fill = GridBagConstraints.NONE;
         gbc.gridx = 0;
@@ -954,31 +958,31 @@ class DeletePopUpWindow extends APP_Frame {
         gbc.weightx = 1;
         gbc.weighty = 0;
         add(headerPanel, gbc);
-        
+
         {
             gbc.anchor = GridBagConstraints.WEST;
             gbc.gridy = 0;
             gbc.insets = new Insets(0, 0, 0, 0);
             headerPanel.add(header, gbc);
-            
+
             gbc.gridy = 1;
             gbc.insets = new Insets(InsetsConfig.S, 0, 0, 0);
             headerPanel.add(info, gbc);
         }
-        
+
         gbc.fill = GridBagConstraints.BOTH;
         gbc.gridy = 1;
         gbc.insets = new Insets(InsetsConfig.M, InsetsConfig.XL, 0, InsetsConfig.XL);
         gbc.weighty = 1;
         add(scrollPane, gbc);
-        
+
         gbc.anchor = GridBagConstraints.EAST;
         gbc.fill = GridBagConstraints.NONE;
         gbc.gridy = 2;
         gbc.insets = new Insets(InsetsConfig.M, InsetsConfig.XL, InsetsConfig.XL, InsetsConfig.XL);
         gbc.weighty = 0;
         add(buttonsPanel, gbc);
-        
+
         {
             gbc.anchor = GridBagConstraints.CENTER;
             gbc.fill = GridBagConstraints.NONE;

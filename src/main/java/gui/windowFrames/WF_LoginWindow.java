@@ -71,7 +71,7 @@ public final class WF_LoginWindow extends APP_Frame {
     }
 
     public void prepareComponents() {
-        
+
         // General preparations
         GUIHelpers.setButtonTriggerOnAllFields(loginButton, fields);
 
@@ -84,7 +84,7 @@ public final class WF_LoginWindow extends APP_Frame {
                 new LineBorder(ColorConfig.ACCENT_2),
                 "Login",
                 TitledBorder.CENTER,
-                TitledBorder.TOP, 
+                TitledBorder.TOP,
                 StylesConfig.HEADING3
             ),
             new EmptyBorder(new Insets(10, 10, 10, 10))
@@ -144,14 +144,14 @@ public final class WF_LoginWindow extends APP_Frame {
                             JOptionPane.ERROR_MESSAGE
                         );
                     }
-                    
+
                     // Counter-check for illegal usernames.
                     // This ensures that illegal usernames that have
                     // bypassed the SQL database cannot be logged on.
                     if (!LoginManager.isUsernameLegal(username)) {
                         // Error message goes here
                     }
-                    
+
                     if (!LoginManager.isAccountActivated(username)) {
                         permitLogin = false;
 
@@ -261,7 +261,7 @@ public final class WF_LoginWindow extends APP_Frame {
                 gbc.gridy = 0;
                 gbc.insets = new Insets(0, 0, 0, 0);
                 fieldsPanel.add(usernameLabel, gbc);
-                
+
                 gbc.gridx = 0;
                 gbc.gridy = 1;
                 gbc.insets = new Insets(InsetsConfig.S, 0,0, 0);
@@ -271,7 +271,7 @@ public final class WF_LoginWindow extends APP_Frame {
                 gbc.gridy = 0;
                 gbc.insets = new Insets(0, InsetsConfig.L, 0, 0);
                 fieldsPanel.add(usernameField, gbc);
-                
+
                 gbc.gridx = 1;
                 gbc.gridy = 1;
                 gbc.insets = new Insets(InsetsConfig.S, InsetsConfig.L, 0, 0);
