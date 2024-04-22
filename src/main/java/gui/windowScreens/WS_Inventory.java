@@ -4,9 +4,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import java.awt.GridBagConstraints;
+
+import main.java.configs.ColorConfig;
 import main.java.configs.InsetsConfig;
 import main.java.configs.StylesConfig;
-import java.awt.Color;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 
@@ -18,19 +19,15 @@ public class WS_Inventory extends APP_Panel {
     public final JLabel header = new JLabel("Inventory");
     public final JTabbedPane tablesTabbedPane = new JTabbedPane();
 
-    public JLabel test = new JLabel("Test");
-
     public WS_Inventory() {
         super();
         compile();
-
-        add(test);
     }
 
     public void prepare() {
         // background of entire Inventory view
         // setBackground
-        setBackground(Color.WHITE);
+        setBackground(ColorConfig.BG);
     }
 
     public void prepareComponents() {
@@ -43,13 +40,17 @@ public class WS_Inventory extends APP_Panel {
         JPanel profitPanel = new JPanel();
         tablesTabbedPane.addTab("Stock", stockPanel);
         tablesTabbedPane.addTab("Profit", profitPanel);
+
+        tablesTabbedPane.setFont(StylesConfig.LEAD);
+
+        tablesTabbedPane.setBackground(ColorConfig.ACCENT_1);
     }
 
     public void addComponents() {
-       
+
         // Set layout manager
-         setLayout(new GridBagLayout());
-         GridBagConstraints gbc = new GridBagConstraints();
+        setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
         
         // margins, insets, fill, anchor, etc
         // use InsetsConfig for margins
@@ -76,7 +77,7 @@ public class WS_Inventory extends APP_Panel {
     public void finalizePrepare() {
         // this will be inputted when the stock and profit are working
     
-  }
+    }
 }
 
     
