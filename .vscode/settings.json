@@ -3,6 +3,7 @@
         "src"
     ],
     "java.project.referencedLibraries": [
-        "lib\\mysql-connector-j-8.3.0.jar"
+        "lib\\mysql-connector-j-8.3.0.jar",
+        "src/lib/mysql-connector-j-8.3.0.jar"
     ]
 }
