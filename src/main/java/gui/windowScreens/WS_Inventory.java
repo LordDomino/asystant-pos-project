@@ -81,7 +81,7 @@ public class WS_Inventory extends APP_Panel {
 
 
     public void finalizePrepare() {
-        // implementation will be done when the stock and profit are working
+        // this will be inputted when the stock and profit are working
     
   }
 }
