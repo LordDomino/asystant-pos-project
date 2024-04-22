@@ -47,13 +47,6 @@ public class WS_Inventory extends APP_Panel {
 
     public void addComponents() {
        
-        
-       
-        // jtabbedpane always has xxl margins for left and bottom,
-        // jtabbedpane m margins for top
-        // jtabbedpane always has xxl margins for left and bottom,
-        // jtabbedpane m margins for top
-         
         // Set layout manager
          setLayout(new GridBagLayout());
          GridBagConstraints gbc = new GridBagConstraints();
