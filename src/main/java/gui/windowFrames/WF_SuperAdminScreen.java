@@ -2,6 +2,7 @@ package main.java.gui.windowFrames;
 
 import javax.swing.*;
 
+import main.java.Main;
 import main.java.components.APP_AccentButton;
 import main.java.components.APP_Frame;
 import main.java.configs.ColorConfig;
@@ -67,9 +68,8 @@ public class WF_SuperAdminScreen extends APP_Frame {
         dashboardButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JFrame target = new WF_Dashboard();
                 JFrame source = (JFrame) SwingUtilities.getWindowAncestor(userManagementButton);
-                target.setVisible(true);
+                Main.app.dashboard.setVisible(true);
                 source.dispose();
             }
         });
