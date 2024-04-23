@@ -35,11 +35,53 @@ public class WS_StockTable extends APP_Panel {
 
     }
 
-    public void addComponents() {
+    public void prepare() {
 
     }
 
-    public void prepare() {
+    public void addComponents() {
+
+        setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+
+        // main panels
+        
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.NORTH;
+        this.add(header, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.anchor = GridBagConstraints.WEST;
+        this.add(inventoryPanel, gbc);
+
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        gbc.anchor = GridBagConstraints.EAST;
+        this.add(descriptionPanel, gbc);
+
+        // components
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        header.add(addButton, gbc);
+
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        header.add(editButton, gbc);
+
+        gbc.gridx = 2;
+        gbc.gridy = 0;
+        header.add(deleteButton, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 1;
+        gbc.weighty = 0;
+        inventoryPanel.add(scrollPane, gbc);
+
 
     }
     
