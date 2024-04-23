@@ -19,6 +19,8 @@ public class WS_StockTable extends APP_Panel {
 
     Object[][] placeholderObjects = {{"", "", "", "", "", "", "", ""}};
 
+    // @Potatopowers kaya mo gawin yung approach ng DefaultTableModel?
+    // see WF_UserManager for reference
     JTable inventoryTable = new JTable(placeholderObjects, inventoryFields);
     JScrollPane scrollPane = new JScrollPane(inventoryTable);
 
