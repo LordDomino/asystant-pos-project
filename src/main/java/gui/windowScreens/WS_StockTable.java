@@ -1,9 +1,11 @@
 package main.java.gui.windowScreens;
 
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 import java.awt.GridBagConstraints;
@@ -11,13 +13,16 @@ import java.awt.GridBagLayout;
 import java.util.ArrayList;
 
 import main.java.components.APP_AccentButton;
+import main.java.components.APP_Frame;
 import main.java.components.APP_Panel;
+import main.java.utils.GUIHelpers;
 
 public class WS_StockTable extends APP_Panel {
 
-    JPanel header = new JPanel();
-    JPanel inventoryPanel = new JPanel();
-    JPanel descriptionPanel = new JPanel();
+    JPanel header = new JPanel(new GridBagLayout());
+    JPanel inventoryPanel = new JPanel(new GridBagLayout());
+    JPanel descriptionPanel = new JPanel(new GridBagLayout());
+    JPanel footerPanel = new JPanel(new GridBagLayout());
 
     public static final String[] inventoryFields = {"Product Code", "Order Date", "Name", "Category", "Unit Cost", 
     "Stock Quantity", "Total Cost", "Stock Left"};
@@ -134,10 +139,6 @@ public class WS_StockTable extends APP_Panel {
         gbc.anchor = GridBagConstraints.WEST;
         this.add(inventoryPanel, gbc);
 
-        gbc.gridx = 1;
-        gbc.gridy = 1;
-        gbc.anchor = GridBagConstraints.EAST;
-        this.add(descriptionPanel, gbc);
 
         // components
 
@@ -159,6 +160,10 @@ public class WS_StockTable extends APP_Panel {
         gbc.weighty = 0;
         inventoryPanel.add(scrollPane, gbc);
 
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        inventoryPanel.add(descriptionPanel, gbc);
+
 
     }
     
@@ -167,4 +172,53 @@ public class WS_StockTable extends APP_Panel {
     }
 }
 
-class AddPopupWindow extends APP_
+class AddPopupWindow extends APP_Frame {
+
+    public WS_StockTable parentFrame;
+    
+    final JLabel header = new JLabel("Insert a new Product");
+    final JPanel form = new JPanel(new GridBagLayout());
+
+    JLabel productCodeLabel = new JLabel("Product Code");
+    JLabel orderDateLabel = new JLabel("Order Date");
+    JLabel nameLabel = new JLabel("Name");
+    JLabel categoryLabel = new JLabel("Category");
+    JLabel unitCostLabel = new JLabel("Unit Cost");
+    JLabel stockQuantityLabel = new JLabel("Stock Quantity");
+    JLabel totalCostLabel = new JLabel("Total Cost");
+    JLabel stockLeftLabel = new JLabel("Stock Left");
+
+    JTextField productCodeField = new JTextField();
+    JTextField orderDateField = new JTextField();
+    JTextField nameField = new JTextField();
+    JTextField categoryField = new JTextField();
+    JTextField unitCostField = new JTextField();
+    JTextField stockQuantityField = new JTextField();
+    JTextField stockLeftField = new JTextField();
+
+    JButton submitButton = new JButton("Submit");
+
+    final JTextField[] fields = {productCodeField, orderDateField}
+
+    public AddPopupWindow() {
+        super();
+        compile();
+    }
+
+    public void prepareComponents() {
+        GUIHelpers.setButtonTriggerOnAllFields(submitButton, null);
+    }
+
+    public void prepare() {
+
+    }
+
+    public void addComponents() {
+
+    }
+
+    public void finalizePrepare() {
+
+    }
+
+}
