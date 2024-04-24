@@ -11,6 +11,8 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -72,13 +74,12 @@ public class WS_StockTable extends APP_Panel {
         }
     };
 
+    JButton refreshButton = new APP_AccentButton("Refresh");
+
+
     public WS_StockTable () {
         super();
         compile();
-    }
-
-    public void prepareComponents() {
-
     }
 
     public void prepare() {
@@ -94,6 +95,12 @@ public class WS_StockTable extends APP_Panel {
         tablePanel.setBackground(ColorConfig.BG);
         scrollPane.setBackground(ColorConfig.BG);
         descriptionPanel.setBackground(ColorConfig.ACCENT_1);
+
+        refreshButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+                updateTable();
+            }
+        });
     } 
 
     public void addComponents() {
@@ -133,6 +140,12 @@ public class WS_StockTable extends APP_Panel {
             gbc.gridy = 1;
             gbc.insets = new Insets(InsetsConfig.S, InsetsConfig.S, 0, 0);
             buttonsPanel.add(deleteButton, gbc);
+
+            gbc.anchor = GridBagConstraints.NORTH;
+            gbc.gridx = 3;
+            gbc.gridy = 1;
+            gbc.insets = new Insets(InsetsConfig.S, InsetsConfig.S, 0, 0);
+            buttonsPanel.add(refreshButton, gbc);
         }
 
         gbc.anchor = GridBagConstraints.CENTER;
@@ -187,7 +200,7 @@ public class WS_StockTable extends APP_Panel {
             SQLConnector.establishSQLConnection();
     
             // modify query
-            String query = "SELECT * FROM " + DBReferences.TBL_STOCKS_INVENTORY;
+            String query = "SELECT product_code, name, category, unit_cost, stock_quantity FROM " + DBReferences.TBL_STOCKS_INVENTORY;
             Statement statement = SQLConnector.connection.createStatement(
                 ResultSet.TYPE_SCROLL_INSENSITIVE,
                 ResultSet.CONCUR_READ_ONLY
@@ -198,53 +211,33 @@ public class WS_StockTable extends APP_Panel {
             result.last();
             int n = result.getRow();
     
-            // Then go back to the starting point before looping
-            result.beforeFirst();
-            int i = 0;
-            while (i < n) {
-                result.next();
-                
-                String productCode = result.getString("product_code");
-                String name = result.getString("name");
-                String category = result.getString("category");
-                String unitCost = result.getString("unit_cost");
-                String stockQUantity = result.getString("stock_quantity");
-    
-                i++;
+            if (n ==0) {
+
+            } else {
+                // Then go back to the starting point before looping
+                result.beforeFirst();
+                int i = 0;
+                        
+                while (i < n) {
+                            result.next();
+                    String productCode = result.getString("product_code");
+                    String name = result.getString("name");
+                    String category = result.getString("category");
+                    String unitCost = result.getString("unit_cost");
+                    String stockQuantity = result.getString("stock_quantity");
+                         
+                    String[] rowdata = {productCode, name, category, unitCost, stockQuantity};
+
+                    inventoryModel.addRow(rowdata);
+                    i++;
+                }    
             }
+
+           
         } catch (SQLException exception) {
             exception.printStackTrace();
-        // Clear the rows
-        inventoryModel.setRowCount(0);
 
-        SQLConnector.establishSQLConnection();
-
-        // modify query
-        String query = "SELECT product_code, name, category, unit_cost, stock_quantity FROM " + DBReferences.TBL_STOCKS_INVENTORY;
-        Statement statement = SQLConnector.connection.createStatement(
-            ResultSet.TYPE_SCROLL_INSENSITIVE,
-            ResultSet.CONCUR_READ_ONLY
-        );
-        ResultSet result = statement.executeQuery(query);
-
-        // Go to last row to get the total number of rows
-        result.last();
-        int n = result.getRow();
-
-        // Then go back to the starting point before looping
-        result.beforeFirst();
-        int i = 0;
-        while (i < n) {
-            result.next();
         
-            String productCode = result.getString();
-            String name = result.getString();
-
-            if (condition) {
-                
-            }
-
-            i++;
         }
     }
 }
