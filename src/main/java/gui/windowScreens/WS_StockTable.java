@@ -183,52 +183,25 @@ public class WS_StockTable extends APP_Panel {
         SQLConnector.establishSQLConnection();
 
         // modify query
-        String query = "SELECT * FROM " + DBReferences.TBL_STOCKS_INVENTORY + " WHERE username NOT LIKE \"%SUPERADMIN%\"";
+        String query = "SELECT () FROM " + DBReferences.TBL_STOCKS_INVENTORY;
         Statement statement = SQLConnector.connection.createStatement(
             ResultSet.TYPE_SCROLL_INSENSITIVE,
             ResultSet.CONCUR_READ_ONLY
         );
         ResultSet result = statement.executeQuery(query);
+
         // Go to last row to get the total number of rows
         result.last();
         int n = result.getRow();
+
         // Then go back to the starting point before looping
         result.beforeFirst();
         int i = 0;
         while (i < n) {
             result.next();
-            // Skip adding the super admin credentials to the table (for security reasons).
-            // Fail safe conditional if super admin info has been passed through the filter query
-            if (result.getString("username").equals("%SUPERADMIN%")) {
-                System.out.println("Warning: Super admin account information bypassed SQL filter query");
-                i++;
-                continue;
-            }
-            ArrayList<Object> dataFromSQL = new ArrayList<>();
-            for (String field : SQLConnector.FIELDS_user_accounts) {
-                Object data = result.getObject(field);
-                // Modify presentation of values based on data
-                if (field == "activated") {
-                    if (data.equals(1) || data.equals(true)) {
-                        dataFromSQL.add("Activated");
-                    } else if (data.equals(0) || data.equals(false)) {
-                        dataFromSQL.add("Inactivated");
-                    } else if (data.equals(-1)) {
-                        dataFromSQL.add("Deactivated");
-                    }
-                } else if (field == "access_level") {
-                    if (data.equals(2)) {
-                        dataFromSQL.add("Admin");
-                    } else if (data.equals(3)) {
-                        dataFromSQL.add("User");
-                    } else {
-                        dataFromSQL.add("Unrecognized access level: " + data);
-                    }
-                } else {
-                    dataFromSQL.add(result.getObject(field));
-                }
-            }
-            inventoryModel.addRow(dataFromSQL.toArray());
+            
+            
+
             i++;
         }
     }
