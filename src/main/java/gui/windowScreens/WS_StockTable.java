@@ -28,8 +28,12 @@ public class WS_StockTable extends APP_Panel {
     JPanel descriptionPanel = new JPanel(new GridBagLayout());
     JPanel footerPanel = new JPanel(new GridBagLayout());
 
-    public static final String[] inventoryFields = {"Product Code", "Order Date", "Name", "Category", "Unit Cost", 
-    "Stock Quantity", "Total Cost", "Stock Left"};
+    public static final String[] inventoryFields = 
+    {"Product Code", 
+    "Name", 
+    "Category", 
+    "Unit Cost", 
+    "Stock Quantity"};
     public static final ArrayList<ArrayList<String>> pendingDeletedProducts = new ArrayList<>();
 
     // @Potatopowers kaya mo gawin yung approach ng DefaultTableModel?
@@ -72,57 +76,11 @@ public class WS_StockTable extends APP_Panel {
     }
 
     public void prepareComponents() {
-/* To be fixed.. 
-        addButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent ae) {
-            if (pendingDeletedProduct.size() >= 1) {
-                DeletePopUpWindow popUp = new DeletePopUpWindow();
-                popUp.info.setText(
-                    "<html>Adding new Products is not allowed while "
-                    + "some rows are pending to be deleted. "
-                    + "Confirm changes to pending deletions first."
-                ); 
-                popUp.setVisible(true);
-            } else {
-                AddPopupWindow popUp = new AddPopupWindow();
-                popUp.parentFrame = (WS_StockTable) SwingUtilities.getWindowAncestor(addButton);
-                popUp.setVisible(true);
-            }
-            }
-        });
-
-        editButton.addActionListener(new ActionListener()) {
-            @Override
-            public void actionPerformed(ActionEvent ae) {
-                EditPopupWindow popUp = new EditpopUpWindow();
-                popUp.parentFrame = (WS_StockTable) SwingUtilities.getWindowAncestor(addButton);
-
-                if (table.getSelectionModel().getSelectedIndices().length != 1) {
-
-                } else {
-
-                    int rowIndex = inventoryTable.getSelectedRow();
-
-                    final String retrievedProductCode = inventoryTable.getValueAt(rowIndex, 0).toString();
-                    final String retrievedOrderDate = inventoryTable.getValueAt(rowIndex, 1).toString();
-                    final String retrievedName = inventoryTable.getValueAt(rowIndex, 2).toString();
-                    final String retrievedCategory = inventoryTable.getValueAt(rowIndex, 3).toString();
-                    final String retrievedUnitCost = inventoryTable.getValueAt(rowIndex, 4).toString();
-                    final String retrievedStockQuantity = inventoryTable.getValueAt(rowIndex, 5).toString();
-                    final String retrievedTotalCost = inventoryTable.getValueAt(rowIndex, 6).toString();
-                    final String retrievedStockLeft = inventoryTable.getValueAt(rowIndex, 7).toString();
-
-                    popUp.usernameEditField.setText(retrievedProductCode);
-                    popUp.user
-                }
-            }
-        }
- */
 
     }
 
     public void prepare() {
-        
+        updateTable();
     }
 
     public void addComponents() {
@@ -183,7 +141,7 @@ public class WS_StockTable extends APP_Panel {
         SQLConnector.establishSQLConnection();
 
         // modify query
-        String query = "SELECT () FROM " + DBReferences.TBL_STOCKS_INVENTORY;
+        String query = "SELECT product_code, name, category, unit_cost, stock_quantity FROM " + DBReferences.TBL_STOCKS_INVENTORY;
         Statement statement = SQLConnector.connection.createStatement(
             ResultSet.TYPE_SCROLL_INSENSITIVE,
             ResultSet.CONCUR_READ_ONLY
@@ -199,8 +157,13 @@ public class WS_StockTable extends APP_Panel {
         int i = 0;
         while (i < n) {
             result.next();
-            
-            
+        
+            String productCode = result.getString();
+            String name = result.getString();
+
+            if (condition) {
+                
+            }
 
             i++;
         }
