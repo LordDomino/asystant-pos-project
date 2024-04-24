@@ -1,8 +1,6 @@
 package main.java.gui.windowScreens;
 
 import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
 import java.awt.GridBagConstraints;
 
 import main.java.configs.ColorConfig;
@@ -18,7 +16,7 @@ public class WS_Inventory extends APP_Panel {
 
     public final JLabel header = new JLabel("Inventory");
 
-    public final WS_StockTable stockTable = new WS_StockTable();
+    public final WS_StockTable STOCK_TABLE = new WS_StockTable();
 
     public WS_Inventory() {
         super();
@@ -50,7 +48,7 @@ public class WS_Inventory extends APP_Panel {
         gbc.weighty = 1;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.insets = new Insets(InsetsConfig.M, InsetsConfig.XXL, InsetsConfig.XXL, InsetsConfig.XXL); // xxl margins for left, right, and bottom
-        add(stockTable, gbc);
+        add(STOCK_TABLE, gbc);
     }
 
 

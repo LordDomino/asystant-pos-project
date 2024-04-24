@@ -8,6 +8,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
@@ -15,6 +16,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.ResultSet;
@@ -388,7 +390,7 @@ class AddPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
     };
 
     public AddPopupWindow() {
-        super(Main.app.dashboard, "Add new product");
+        super(Main.app.DASHBOARD, "Add new product");
         compile();
     }
 
@@ -420,7 +422,7 @@ class AddPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
                 final String retrievedProductCode   = productCodeField.getText();
                 final String retrievedName          = nameField.getText();
                 final String retrievedDescription   = descriptionField.getText();
-                final String retrievedCategory      = categoryField.getSelectedItem().toString();
+                final Object retrievedCategory      = categoryField.getSelectedItem();
                 final float retrievedUnitCost       = Float.parseFloat(unitCostField.getText());
                 final int retrievedStockQuantity    = Integer.parseInt(stockQuantityField.getText());
                 final float retrievedMarkupPrice    = Float.parseFloat(markupPriceField.getText());
@@ -437,22 +439,11 @@ class AddPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
                 String queryUnitPrice               = String.valueOf(retrievedUnitPrice);
 
                 // Check if category is empty. If so, set category to "Uncategorized"
-                if (retrievedCategory.equals("")) {
+                if (retrievedCategory == null) {
                     queryCategory = "Uncategorized";
                 } else {
-                    queryCategory = retrievedCategory;
+                    queryCategory = retrievedCategory.toString();
                 }
-
-                final String[] queryData = {
-                    queryProductCode,
-                    queryName,
-                    queryDescription,
-                    queryCategory,
-                    queryUnitCost,
-                    queryStockQuantity,
-                    queryMarkupPrice,
-                    queryUnitPrice
-                };
 
                 try {
                     SQLConnector.establishSQLConnection();
@@ -473,6 +464,12 @@ class AddPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
                         );
                     }
 
+                    SQLConnector.connection.close();
+
+                    Window popUp = SwingUtilities.getWindowAncestor(submitButton);
+                    popUp.dispose();
+
+                    Main.app.INVENTORY.STOCK_TABLE.updateTable();
                 } catch (SQLException exception) {
                     exception.printStackTrace();
                 }

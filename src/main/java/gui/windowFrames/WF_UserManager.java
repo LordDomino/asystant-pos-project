@@ -499,7 +499,7 @@ class AddPopupWindow extends APP_PopUpFrame<WF_UserManager> {
     final JTextField[] fields = {usernameField, passwordField};
 
     public AddPopupWindow() {
-        super(Main.app.userManager, "Add New User Account");
+        super(Main.app.USER_MANAGER, "Add New User Account");
         compile();
     }
 
@@ -887,7 +887,7 @@ class DeletePopUpWindow extends APP_PopUpFrame<WF_UserManager> {
     public final JButton continueButton = new APP_ContrastButton("Continue");
 
     public DeletePopUpWindow() {
-        super(Main.app.userManager, "Pending Deletion Warning");
+        super(Main.app.USER_MANAGER, "Pending Deletion Warning");
         compile();
     }
 

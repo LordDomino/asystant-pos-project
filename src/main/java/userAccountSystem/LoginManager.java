@@ -41,7 +41,7 @@ public class LoginManager {
      */
     public static final char[] ILLEGAL_CHARS = {'%'};
 
-    public static WF_Dashboard dashboard = Main.app.dashboard;
+    public static WF_Dashboard dashboard = Main.app.DASHBOARD;
 
     public static final boolean validateUsername(String username) throws SQLException {
         final String query = "SELECT * FROM " + DBReferences.TBL_USER_ACCOUNTS + " WHERE username = \"" + username + "\" LIMIT 1;";
@@ -87,8 +87,8 @@ public class LoginManager {
             // the username and password matches credentials in DB
 
             // Finally create a user manager instance
-            Main.app.superAdminScreen = new WF_SuperAdminScreen();
-            setCurrentAccessLevelModeConfig(ACCESS_LEVEL_SUPERADMIN, Main.app.superAdminScreen);
+            Main.app.SUPERADMIN_SCREEN = new WF_SuperAdminScreen();
+            setCurrentAccessLevelModeConfig(ACCESS_LEVEL_SUPERADMIN, Main.app.SUPERADMIN_SCREEN);
             return true;
         } else {
             return false;

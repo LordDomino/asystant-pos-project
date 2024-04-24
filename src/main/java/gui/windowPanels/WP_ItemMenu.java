@@ -3,11 +3,8 @@ package main.java.gui.windowPanels;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.Insets;
-import java.awt.event.ActionListener;
 import java.awt.GridBagConstraints;
 import java.awt.GridLayout;
-
-import javax.swing.JButton;
 
 import main.java.components.APP_ItemButton;
 import main.java.components.APP_Panel;

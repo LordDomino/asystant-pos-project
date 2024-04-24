@@ -35,16 +35,17 @@ public class Queries {
         }
         
         query = query.substring(0, query.length()-1) + " ) VALUES (";
-        query = query + " `" + productCode      + "`, ";
-        query = query + " `" + name             + "`, ";
-        query = query + " `" + description      + "`, ";
-        query = query + " `" + category         + "`, ";
-        query = query + " `" + unitCost         + "`, ";
-        query = query + " `" + stockQuantity    + "`, ";
-        query = query + " `" + markupPrice      + "`, ";
-        query = query + " `" + unitPrice        + "`);";
+        query = query + " \"" + productCode      + "\", ";
+        query = query + " \"" + name             + "\", ";
+        query = query + " \"" + description      + "\", ";
+        query = query + " \"" + category         + "\", ";
+        query = query + " \"" + unitCost         + "\", ";
+        query = query + " \"" + stockQuantity    + "\", ";
+        query = query + " \"" + markupPrice      + "\", ";
+        query = query + " \"" + unitPrice        + "\");";
 
         Statement statement = SQLConnector.connection.createStatement();
-        statement.executeQuery(query);
+        System.out.println(query);
+        statement.executeUpdate(query);
     }
 }
