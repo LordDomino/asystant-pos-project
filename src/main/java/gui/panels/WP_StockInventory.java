@@ -3,6 +3,7 @@ package main.java.gui.panels;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -25,6 +26,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import main.java.Main;
@@ -66,6 +68,7 @@ public class WP_StockInventory extends APP_Panel {
         "Unit Price"
     };
 
+    public static ArrayList<ArrayList<String>> pendingDeletedRows = new ArrayList<>();
     public final DefaultTableModel inventoryModel = new DefaultTableModel(inventoryFields, 0) {
         @Override
         public boolean isCellEditable(int row, int column) {
@@ -105,9 +108,32 @@ public class WP_StockInventory extends APP_Panel {
 
         @Override
         public void fireValueChanged() {
-            final int[] selectedIndices = inventoryTable.getSelectionModel().getSelectedIndices();
-            if (selectedIndices.length > 0) {
+            final int[] selRows = inventoryTable.getSelectionModel().getSelectedIndices();
+            if (selRows.length > 0) {
                 setEnabled(true);    
+
+                for (int rowID : selRows) {
+                    ArrayList<String> pendingRowValues = new ArrayList<>();
+                    pendingRowValues.add(inventoryTable.getValueAt(rowID, 0).toString());
+                    pendingRowValues.add(inventoryTable.getValueAt(rowID, 1).toString());
+                    pendingRowValues.add(inventoryTable.getValueAt(rowID, 2).toString());
+                    pendingRowValues.add(inventoryTable.getValueAt(rowID, 3).toString());
+                    pendingRowValues.add(inventoryTable.getValueAt(rowID, 4).toString());
+                    pendingRowValues.add(inventoryTable.getValueAt(rowID, 5).toString());
+                    pendingRowValues.add(inventoryTable.getValueAt(rowID, 6).toString());
+                    pendingRowValues.add(inventoryTable.getValueAt(rowID, 7).toString());
+                    pendingRowValues.add(inventoryTable.getValueAt(rowID, 8).toString());
+                    pendingRowValues.add(inventoryTable.getValueAt(rowID, 9).toString());
+                    pendingRowValues.add(inventoryTable.getValueAt(rowID, 10).toString());
+                    pendingDeletedRows.add(pendingRowValues);
+                }
+                
+                int[] selectedRows = inventoryTable.getSelectedRows();
+                if (selectedRows.length > 0) {
+                    for (int i = selectedRows.length - 1; i >= 0; i--) {
+                        inventoryModel.removeRow(selectedRows[i]);
+                    }
+                }
 
                 // pakitanggal toh nasa baba kapag ok na yung delete @Potatopowers
                 setEnabled(false);
@@ -194,6 +220,12 @@ public class WP_StockInventory extends APP_Panel {
         deleteButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                int[] selectedRows = inventoryTable.getSelectedRows();
+                if (selectedRows.length > 0) {
+                    for (int i = selectedRows.length - 1; i >= 0; i--) {
+                        inventoryModel.removeRow(selectedRows[i]);
+                    }
+                }
                 // TODO Auto-generated method stub
                 // @Potatopowers
             }
@@ -344,6 +376,52 @@ public class WP_StockInventory extends APP_Panel {
         }
     }
 }
+// Delete SQL not working..
+/*protected void purgatoryPurge() {
+    // Performing the delete (SQL-Java connection)
+    final int pendingSize = pendingDeletedRows.size();
+
+    try {
+        String query;
+        SQLConnector.establishSQLConnection();
+
+        if (pendingSize == 1) {
+            // If only 1 row is selected, use the equal operator for SQL query
+            query = "DELETE FROM " + DBReferences.TBL_STOCKS_INVENTORY + " WHERE product_code = \"" + pendingDeletedRows.get(0).get(0) + "\";";
+        } else {
+            // If more than one row is selected, use the IN keyword for SQL query
+            query = "DELETE FROM " + DBReferences.TBL_STOCKS_INVENTORY + " WHERE product_code IN ( ";
+
+            // Get all usernameIDs
+            for (ArrayList<String> product_code : pendingDeletedRows) {
+                query = query + "\"" + product_code.get(0) + "\", ";
+            }
+
+            query = query.substring(0, query.length()-2) + " );";
+        }
+
+        System.out.println(query);
+
+        Statement statement = SQLConnector.connection.createStatement();
+        statement.executeUpdate(query);
+
+        SQLConnector.connection.close();
+
+        updateFrame();
+    } catch (Exception e) {
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(
+            SwingUtilities.getWindowAncestor(deleteButton),
+            e.getMessage(),
+            "Error",
+            JOptionPane.ERROR_MESSAGE
+        );
+    }
+
+    pendingDeletedRows.clear();
+}*/
+
+
 
 class AddPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
 
@@ -460,6 +538,9 @@ class AddPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
         unitPriceField.getTextField()
     };
 
+
+
+    
     public AddPopupWindow() {
         super(Main.app.DASHBOARD, "Add new product");
         compile();
@@ -933,3 +1014,4 @@ class EditPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
         setResizable(false);
     }
 }
+
