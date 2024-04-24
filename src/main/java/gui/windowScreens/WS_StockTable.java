@@ -10,162 +10,161 @@ import javax.swing.table.DefaultTableModel;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
 import main.java.components.APP_AccentButton;
 import main.java.components.APP_Frame;
 import main.java.components.APP_Panel;
+import main.java.configs.ColorConfig;
+import main.java.configs.InsetsConfig;
 import main.java.sql.DBReferences;
 import main.java.sql.SQLConnector;
 import main.java.utils.GUIHelpers;
 
 public class WS_StockTable extends APP_Panel {
+    
+    public static final String[] inventoryFields = {
+        "Product Code",
+        "Name",
+        "Category",
+        "Unit Cost",
+        "Stock Quantity"
+    };
+    DefaultTableModel inventoryModel = new DefaultTableModel(inventoryFields, 0);
+    JTable inventoryTable = new JTable(inventoryModel);
 
-    JPanel header = new JPanel(new GridBagLayout());
-    JPanel inventoryPanel = new JPanel(new GridBagLayout());
-    JPanel descriptionPanel = new JPanel(new GridBagLayout());
-    JPanel footerPanel = new JPanel(new GridBagLayout());
+    // Layout components
+    public final JPanel headerPanel = new JPanel(new GridBagLayout());
+    public final JPanel buttonsPanel = new JPanel(new GridBagLayout());
+    public final JPanel tablePanel = new JPanel(new GridBagLayout());
+    public final JPanel footerPanel = new JPanel(new GridBagLayout());
 
-    public static final String[] inventoryFields = {"Product Code", "Order Date", "Name", "Category", "Unit Cost", 
-    "Stock Quantity", "Total Cost", "Stock Left"};
+    public final JScrollPane scrollPane = new JScrollPane(inventoryTable);
+    public final JPanel descriptionPanel = new JPanel(new GridBagLayout());
     public static final ArrayList<ArrayList<String>> pendingDeletedProducts = new ArrayList<>();
 
-    // @Potatopowers kaya mo gawin yung approach ng DefaultTableModel?
-    // see WF_UserManager for reference
-    DefaultTableModel inventoryModel = new DefaultTableModel(inventoryFields, 0);
-    
-    JTable inventoryTable = new JTable(inventoryModel);
-    JScrollPane scrollPane = new JScrollPane(inventoryTable);
+    // Components
+    JButton addButton = new APP_AccentButton("Add");
+    JButton editButton = new APP_AccentButton("Edit") {
+        public void fireValueChanged() {
+            int[] selectedIndices = inventoryTable.getSelectionModel().getSelectedIndices();
 
-    JButton addButton = new JButton("Add");
-    JButton editButton = new JButton("Edit") {
-
-    public void fireValueChanged() {
-        int[] selectedIndices = inventoryTable.getSelectionModel().getSelectedIndices();
-
-        if (selectedIndices.length ==1) {
-            setEnabled(true);    
-        } else {
-            setEnabled(false);
+            if (selectedIndices.length ==1) {
+                setEnabled(true);    
+            } else {
+                setEnabled(false);
+            }
         }
-    }
-};
-    JButton deleteButton = new APP_AccentButton("Delete") {
-
-    public void fireValueChanged() {
-        int[] selectedIndices = inventoryTable.getSelectionModel().getSelectedIndices();
-
-        if (selectedIndices.length > 0) {
-            setEnabled(true);    
-        } else {
-            setEnabled(false);
-        }
-    }
     };
+    JButton deleteButton = new APP_AccentButton("Delete"){
+        public void fireValueChanged() {
+            int[] selectedIndices = inventoryTable.getSelectionModel().getSelectedIndices();
 
+            if (selectedIndices.length > 0) {
+                setEnabled(true);    
+            } else {
+                setEnabled(false);
+            }
+        }
+    };
 
     public WS_StockTable () {
         super();
         compile();
     }
 
-    public void prepareComponents() {
-/* To be fixed.. 
-        addButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent ae) {
-            if (pendingDeletedProduct.size() >= 1) {
-                DeletePopUpWindow popUp = new DeletePopUpWindow();
-                popUp.info.setText(
-                    "<html>Adding new Products is not allowed while "
-                    + "some rows are pending to be deleted. "
-                    + "Confirm changes to pending deletions first."
-                ); 
-                popUp.setVisible(true);
-            } else {
-                AddPopupWindow popUp = new AddPopupWindow();
-                popUp.parentFrame = (WS_StockTable) SwingUtilities.getWindowAncestor(addButton);
-                popUp.setVisible(true);
-            }
-            }
-        });
-
-        editButton.addActionListener(new ActionListener()) {
-            @Override
-            public void actionPerformed(ActionEvent ae) {
-                EditPopupWindow popUp = new EditpopUpWindow();
-                popUp.parentFrame = (WS_StockTable) SwingUtilities.getWindowAncestor(addButton);
-
-                if (table.getSelectionModel().getSelectedIndices().length != 1) {
-
-                } else {
-
-                    int rowIndex = inventoryTable.getSelectedRow();
-
-                    final String retrievedProductCode = inventoryTable.getValueAt(rowIndex, 0).toString();
-                    final String retrievedOrderDate = inventoryTable.getValueAt(rowIndex, 1).toString();
-                    final String retrievedName = inventoryTable.getValueAt(rowIndex, 2).toString();
-                    final String retrievedCategory = inventoryTable.getValueAt(rowIndex, 3).toString();
-                    final String retrievedUnitCost = inventoryTable.getValueAt(rowIndex, 4).toString();
-                    final String retrievedStockQuantity = inventoryTable.getValueAt(rowIndex, 5).toString();
-                    final String retrievedTotalCost = inventoryTable.getValueAt(rowIndex, 6).toString();
-                    final String retrievedStockLeft = inventoryTable.getValueAt(rowIndex, 7).toString();
-
-                    popUp.usernameEditField.setText(retrievedProductCode);
-                    popUp.user
-                }
-            }
-        }
- */
-
-    }
-
     public void prepare() {
-        
+        updateTable();
+        setBackground(ColorConfig.BG);
+        setLayout(new GridBagLayout());
     }
+    
+    public void prepareComponents() {
+        headerPanel.setOpaque(false);
+        buttonsPanel.setOpaque(false);
+
+        tablePanel.setBackground(ColorConfig.BG);
+        scrollPane.setBackground(ColorConfig.BG);
+        descriptionPanel.setBackground(ColorConfig.ACCENT_1);
+    } 
 
     public void addComponents() {
-
-        setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-
-        // main panels
-        
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+        gbc.fill = GridBagConstraints.NONE;
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.gridwidth = 2;
-        gbc.anchor = GridBagConstraints.NORTH;
-        this.add(header, gbc);
+        gbc.insets = new Insets(InsetsConfig.XXL, InsetsConfig.XXL, 0, InsetsConfig.XXL);
+        add(headerPanel, gbc);
 
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.NONE;
         gbc.gridx = 0;
         gbc.gridy = 1;
-        gbc.anchor = GridBagConstraints.WEST;
-        this.add(inventoryPanel, gbc);
+        gbc.insets = new Insets(InsetsConfig.XL, InsetsConfig.XXL, 0, InsetsConfig.XXL);
+        add(buttonsPanel, gbc);
 
+        {
+            gbc.anchor = GridBagConstraints.NORTHWEST;
+            gbc.fill = GridBagConstraints.BOTH;
 
-        // components
+            gbc.gridx = 0;
+            gbc.gridy = 1;
+            gbc.gridwidth = 1;
+            gbc.insets = new Insets(InsetsConfig.S, 0, 0, 0);
+            buttonsPanel.add(addButton, gbc);
+
+            gbc.anchor = GridBagConstraints.NORTH;
+            gbc.gridx = 1;
+            gbc.gridy = 1;
+            gbc.insets = new Insets(InsetsConfig.S, InsetsConfig.S, 0, 0);
+            buttonsPanel.add(editButton, gbc);
+
+            gbc.anchor = GridBagConstraints.NORTH;
+            gbc.gridx = 2;
+            gbc.gridy = 1;
+            gbc.insets = new Insets(InsetsConfig.S, InsetsConfig.S, 0, 0);
+            buttonsPanel.add(deleteButton, gbc);
+        }
+
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.fill = GridBagConstraints.BOTH;
         gbc.gridx = 0;
-        gbc.gridy = 0;
-        header.add(addButton, gbc);
+        gbc.gridy = 2;
+        gbc.insets = new Insets(InsetsConfig.M, InsetsConfig.XXL, 0, InsetsConfig.XXL);
+        gbc.weightx = 1;
+        gbc.weighty = 1;
+        add(tablePanel, gbc);
 
-        gbc.gridx = 1;
-        gbc.gridy = 0;
-        header.add(editButton, gbc);
+        {
+            gbc.anchor = GridBagConstraints.NORTHWEST;
+            gbc.fill = GridBagConstraints.BOTH;
 
-        gbc.gridx = 2;
-        gbc.gridy = 0;
-        header.add(deleteButton, gbc);
+            gbc.gridx = 0;
+            gbc.gridy = 1;
+            gbc.gridwidth = 1;
+            gbc.insets = new Insets(InsetsConfig.S, 0, 0, 0);
+            tablePanel.add(scrollPane, gbc);
 
+            gbc.anchor = GridBagConstraints.NORTH;
+            gbc.gridx = 1;
+            gbc.gridy = 1;
+            gbc.insets = new Insets(InsetsConfig.S, InsetsConfig.S, 0, 0);
+            tablePanel.add(descriptionPanel, gbc);
+        }
+
+        gbc.anchor = GridBagConstraints.SOUTHEAST;
+        gbc.fill = GridBagConstraints.NONE;
         gbc.gridx = 0;
-        gbc.gridy = 0;
+        gbc.gridy = 3;
+        gbc.insets = new Insets(InsetsConfig.M, InsetsConfig.M, InsetsConfig.XXL, InsetsConfig.XXL);
         gbc.weightx = 1;
         gbc.weighty = 0;
-        inventoryPanel.add(scrollPane, gbc);
-
-        gbc.gridx = 1;
-        gbc.gridy = 0;
-        inventoryPanel.add(descriptionPanel, gbc);
+        add(footerPanel, gbc);
     }
     
     public void finalizePrepare() {
@@ -177,32 +176,40 @@ public class WS_StockTable extends APP_Panel {
     }
 
     protected void loadFromDatabase() {
-        // Clear the rows
-        inventoryModel.setRowCount(0);
-
-        SQLConnector.establishSQLConnection();
-
-        // modify query
-        String query = "SELECT () FROM " + DBReferences.TBL_STOCKS_INVENTORY;
-        Statement statement = SQLConnector.connection.createStatement(
-            ResultSet.TYPE_SCROLL_INSENSITIVE,
-            ResultSet.CONCUR_READ_ONLY
-        );
-        ResultSet result = statement.executeQuery(query);
-
-        // Go to last row to get the total number of rows
-        result.last();
-        int n = result.getRow();
-
-        // Then go back to the starting point before looping
-        result.beforeFirst();
-        int i = 0;
-        while (i < n) {
-            result.next();
-            
-            
-
-            i++;
+        try {
+            // Clear the rows
+            inventoryModel.setRowCount(0);
+    
+            SQLConnector.establishSQLConnection();
+    
+            // modify query
+            String query = "SELECT * FROM " + DBReferences.TBL_STOCKS_INVENTORY;
+            Statement statement = SQLConnector.connection.createStatement(
+                ResultSet.TYPE_SCROLL_INSENSITIVE,
+                ResultSet.CONCUR_READ_ONLY
+            );
+            ResultSet result = statement.executeQuery(query);
+    
+            // Go to last row to get the total number of rows
+            result.last();
+            int n = result.getRow();
+    
+            // Then go back to the starting point before looping
+            result.beforeFirst();
+            int i = 0;
+            while (i < n) {
+                result.next();
+                
+                String productCode = result.getString("product_code");
+                String name = result.getString("name");
+                String category = result.getString("category");
+                String unitCost = result.getString("unit_cost");
+                String stockQUantity = result.getString("stock_quantity");
+    
+                i++;
+            }
+        } catch (SQLException exception) {
+            exception.printStackTrace();
         }
     }
 }
@@ -233,7 +240,7 @@ class AddPopupWindow extends APP_Frame {
 
     JButton submitButton = new JButton("Submit");
 
-    final JTextField[] fields = {productCodeField, orderDateField}
+    final JTextField[] fields = {productCodeField, orderDateField};
 
     public AddPopupWindow() {
         super();
