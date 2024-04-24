@@ -10,11 +10,15 @@ import javax.swing.table.DefaultTableModel;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 import main.java.components.APP_AccentButton;
 import main.java.components.APP_Frame;
 import main.java.components.APP_Panel;
+import main.java.sql.DBReferences;
+import main.java.sql.SQLConnector;
 import main.java.utils.GUIHelpers;
 
 public class WS_StockTable extends APP_Panel {
@@ -118,7 +122,7 @@ public class WS_StockTable extends APP_Panel {
     }
 
     public void prepare() {
-
+        
     }
 
     public void addComponents() {
@@ -141,7 +145,6 @@ public class WS_StockTable extends APP_Panel {
 
 
         // components
-
         gbc.gridx = 0;
         gbc.gridy = 0;
         header.add(addButton, gbc);
@@ -163,12 +166,71 @@ public class WS_StockTable extends APP_Panel {
         gbc.gridx = 1;
         gbc.gridy = 0;
         inventoryPanel.add(descriptionPanel, gbc);
-
-
     }
     
     public void finalizePrepare() {
 
+    }
+
+    protected void updateTable() {
+        loadFromDatabase();
+    }
+
+    protected void loadFromDatabase() {
+        // Clear the rows
+        inventoryModel.setRowCount(0);
+
+        SQLConnector.establishSQLConnection();
+
+        // modify query
+        String query = "SELECT * FROM " + DBReferences.TBL_STOCKS_INVENTORY + " WHERE username NOT LIKE \"%SUPERADMIN%\"";
+        Statement statement = SQLConnector.connection.createStatement(
+            ResultSet.TYPE_SCROLL_INSENSITIVE,
+            ResultSet.CONCUR_READ_ONLY
+        );
+        ResultSet result = statement.executeQuery(query);
+        // Go to last row to get the total number of rows
+        result.last();
+        int n = result.getRow();
+        // Then go back to the starting point before looping
+        result.beforeFirst();
+        int i = 0;
+        while (i < n) {
+            result.next();
+            // Skip adding the super admin credentials to the table (for security reasons).
+            // Fail safe conditional if super admin info has been passed through the filter query
+            if (result.getString("username").equals("%SUPERADMIN%")) {
+                System.out.println("Warning: Super admin account information bypassed SQL filter query");
+                i++;
+                continue;
+            }
+            ArrayList<Object> dataFromSQL = new ArrayList<>();
+            for (String field : SQLConnector.FIELDS_user_accounts) {
+                Object data = result.getObject(field);
+                // Modify presentation of values based on data
+                if (field == "activated") {
+                    if (data.equals(1) || data.equals(true)) {
+                        dataFromSQL.add("Activated");
+                    } else if (data.equals(0) || data.equals(false)) {
+                        dataFromSQL.add("Inactivated");
+                    } else if (data.equals(-1)) {
+                        dataFromSQL.add("Deactivated");
+                    }
+                } else if (field == "access_level") {
+                    if (data.equals(2)) {
+                        dataFromSQL.add("Admin");
+                    } else if (data.equals(3)) {
+                        dataFromSQL.add("User");
+                    } else {
+                        dataFromSQL.add("Unrecognized access level: " + data);
+                    }
+                } else {
+                    dataFromSQL.add(result.getObject(field));
+                }
+            }
+            inventoryModel.addRow(dataFromSQL.toArray());
+            i++;
+        }
     }
 }
 
