@@ -1,11 +1,15 @@
 package main.java.gui.windowScreens;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 
 import java.awt.GridBagConstraints;
@@ -18,12 +22,19 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+import main.java.Main;
 import main.java.components.APP_AccentButton;
 import main.java.components.APP_Frame;
+import main.java.components.APP_LabeledTextField;
 import main.java.components.APP_Panel;
+import main.java.components.APP_PopUpFrame;
+import main.java.components.APP_TextField;
 import main.java.configs.ColorConfig;
 import main.java.configs.InsetsConfig;
+import main.java.configs.StylesConfig;
+import main.java.gui.windowFrames.WF_Dashboard;
 import main.java.sql.DBReferences;
+import main.java.sql.Queries;
 import main.java.sql.SQLConnector;
 import main.java.utils.GUIHelpers;
 
@@ -104,6 +115,16 @@ public class WS_StockTable extends APP_Panel {
         tablePanel.setBackground(ColorConfig.BG);
         scrollPane.setBackground(ColorConfig.BG);
         descriptionPanel.setBackground(ColorConfig.ACCENT_1);
+
+        addButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                AddPopupWindow popUp = new AddPopupWindow();
+                popUp.setLocationRelativeTo(null);
+                popUp.setVisible(true);
+            }
+        });
+
 
         refreshButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
@@ -249,53 +270,298 @@ public class WS_StockTable extends APP_Panel {
     }
 }
 
-class AddPopupWindow extends APP_Frame {
+class AddPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
 
     public WS_StockTable parentFrame;
     
-    final JLabel header = new JLabel("Insert a new Product");
-    final JPanel form = new JPanel(new GridBagLayout());
+    public final JLabel header = new JLabel("Insert a new Product");
+    public final JPanel form = new JPanel(new GridBagLayout());
 
-    JLabel productCodeLabel = new JLabel("Product Code");
-    JLabel orderDateLabel = new JLabel("Order Date");
-    JLabel nameLabel = new JLabel("Name");
-    JLabel categoryLabel = new JLabel("Category");
-    JLabel unitCostLabel = new JLabel("Unit Cost");
-    JLabel stockQuantityLabel = new JLabel("Stock Quantity");
-    JLabel totalCostLabel = new JLabel("Total Cost");
-    JLabel stockLeftLabel = new JLabel("Stock Left");
+    public final JLabel productCodeLabel        = new JLabel("Product Code");
+    public final JLabel nameLabel               = new JLabel("Name");
+    public final JLabel descriptionLabel        = new JLabel("Product description");
+    public final JLabel categoryLabel           = new JLabel("Category");
+    public final JLabel unitCostLabel           = new JLabel("Unit Cost");
+    public final JLabel stockQuantityLabel      = new JLabel("Stock Quantity");
+    public final JLabel markupPriceLabel        = new JLabel("Markup Price");
+    public final JLabel unitPriceLabel          = new JLabel("Unit Price");
 
-    JTextField productCodeField = new JTextField();
-    JTextField orderDateField = new JTextField();
-    JTextField nameField = new JTextField();
-    JTextField categoryField = new JTextField();
-    JTextField unitCostField = new JTextField();
-    JTextField stockQuantityField = new JTextField();
-    JTextField stockLeftField = new JTextField();
+    public final JTextField productCodeField            = new APP_TextField(10);
+    public final JTextField nameField                   = new APP_TextField(10);
+    public final APP_TextField descriptionField         = new APP_TextField(10);
+    public final JComboBox<String> categoryField        = new JComboBox<String>();
+    public final APP_LabeledTextField unitCostField     = new APP_LabeledTextField("Php", 10);
+    public final APP_TextField stockQuantityField       = new APP_TextField(10);
+    public final APP_LabeledTextField markupPriceField  = new APP_LabeledTextField("Php", 10);
+    public final APP_LabeledTextField unitPriceField    = new APP_LabeledTextField("Php", 10);
 
-    JButton submitButton = new JButton("Submit");
+    final DocumentListener unitCostListener = new DocumentListener() {
+        public void changedUpdate(DocumentEvent event) {
+            changed();
+        }
 
-    final JTextField[] fields = {productCodeField, orderDateField};
+        public void removeUpdate(DocumentEvent event) {
+            changed();
+        }
+
+        public void insertUpdate(DocumentEvent event) {
+            changed();
+        }
+
+        public void changed() {
+            // Always update either markup or unit price
+            if (!unitCostField.getText().equals("")) {
+                float unitCost = Float.parseFloat(unitCostField.getText());
+
+                if (!markupPriceField.getText().equals("")) {
+                    float markupPrice = Float.parseFloat(markupPriceField.getText());
+                    unitPriceField.setText(String.valueOf(unitCost + markupPrice));
+                } else if (!unitPriceField.getText().equals("")) {
+                    float unitPrice = Float.parseFloat(unitPriceField.getText());
+                    markupPriceField.setText(String.valueOf(unitPrice - unitCost));
+                }
+            }
+        }
+    };
+
+    final DocumentListener markupPriceListener = new DocumentListener() {
+        public void changedUpdate(DocumentEvent event) {
+            changed();
+        }
+
+        public void removeUpdate(DocumentEvent event) {
+            changed();
+        }
+
+        public void insertUpdate(DocumentEvent event) {
+            changed();
+        }
+
+        public void changed() {
+            // Always update unit price based on typed markup price
+            if (!unitCostField.getText().equals("") && !markupPriceField.getText().equals("")) {
+                float unitCost = Float.parseFloat(unitCostField.getText());
+                float markupPrice = Float.parseFloat(markupPriceField.getText());
+
+                unitPriceField.getTextField().getDocument().removeDocumentListener(unitPriceListener);
+                unitPriceField.setText(String.valueOf(unitCost + markupPrice));
+                unitPriceField.getTextField().getDocument().addDocumentListener(unitPriceListener);
+            }
+        }
+    };
+
+    final DocumentListener unitPriceListener = new DocumentListener() {
+        public void changedUpdate(DocumentEvent event) {
+            changed();
+        }
+
+        public void removeUpdate(DocumentEvent event) {
+            changed();
+        }
+
+        public void insertUpdate(DocumentEvent event) {
+            changed();
+        }
+
+        public void changed() {
+            // Always update unit price based on typed markup price
+            if (!unitCostField.getText().equals("") && !unitPriceField.getText().equals("")) {
+                float unitCost = Float.parseFloat(unitCostField.getText());
+                float unitPrice = Float.parseFloat(unitPriceField.getText());
+
+                markupPriceField.getTextField().getDocument().removeDocumentListener(markupPriceListener);
+                markupPriceField.setText(String.valueOf(unitPrice - unitCost));
+                markupPriceField.getTextField().getDocument().addDocumentListener(markupPriceListener);
+            }
+        }
+    };
+
+    public final JButton submitButton = new JButton("Submit");
+
+    public final JTextField[] fields = {
+        productCodeField,
+        nameField,
+        unitCostField.getTextField(),
+        stockQuantityField,
+        markupPriceField.getTextField(),
+        unitPriceField.getTextField()
+    };
 
     public AddPopupWindow() {
-        super();
+        super(Main.app.dashboard, "Add new product");
         compile();
     }
 
-    public void prepareComponents() {
-        GUIHelpers.setButtonTriggerOnAllFields(submitButton, null);
-    }
-
     public void prepare() {
+        getContentPane().setBackground(ColorConfig.ACCENT_1);
+        setLayout(new GridBagLayout());
+    }
+    
+    public void prepareComponents() {
+        GUIHelpers.setButtonTriggerOnAllFields(submitButton, fields);
+        submitButton.setEnabled(false);
 
+        header.setFont(StylesConfig.HEADING3);
+        form.setOpaque(false);
+        categoryField.setBackground(ColorConfig.BG);
+        categoryField.setEditable(true);
+
+        // Document listeners to enable functionality of auto-updating
+        // the markupPriceField and unitPriceField based on the data
+        // typed in each other and with the unitCostField
+        unitCostField.getTextField().getDocument().addDocumentListener(unitCostListener);
+        markupPriceField.getTextField().getDocument().addDocumentListener(markupPriceListener);
+        unitPriceField.getTextField().getDocument().addDocumentListener(unitPriceListener);
+
+        submitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Retrieve inputs
+                final String retrievedProductCode   = productCodeField.getText();
+                final String retrievedName          = nameField.getText();
+                final String retrievedDescription   = descriptionField.getText();
+                final String retrievedCategory      = categoryField.getSelectedItem().toString();
+                final float retrievedUnitCost       = Float.parseFloat(unitCostField.getText());
+                final int retrievedStockQuantity    = Integer.parseInt(stockQuantityField.getText());
+                final float retrievedMarkupPrice    = Float.parseFloat(markupPriceField.getText());
+                final float retrievedUnitPrice      = Float.parseFloat(unitPriceField.getText());
+
+                // Variables reserved for query
+                String queryProductCode             = retrievedProductCode;
+                String queryName                    = retrievedName;
+                String queryDescription             = retrievedDescription;
+                String queryCategory; // Do not initialize yet because category maybe empty
+                String queryUnitCost                = String.valueOf(retrievedUnitCost);
+                String queryStockQuantity           = String.valueOf(retrievedStockQuantity);
+                String queryMarkupPrice             = String.valueOf(retrievedMarkupPrice);
+                String queryUnitPrice               = String.valueOf(retrievedUnitPrice);
+
+                // Check if category is empty. If so, set category to "Uncategorized"
+                if (retrievedCategory.equals("")) {
+                    queryCategory = "Uncategorized";
+                } else {
+                    queryCategory = retrievedCategory;
+                }
+
+                final String[] queryData = {
+                    queryProductCode,
+                    queryName,
+                    queryDescription,
+                    queryCategory,
+                    queryUnitCost,
+                    queryStockQuantity,
+                    queryMarkupPrice,
+                    queryUnitPrice
+                };
+
+                try {
+                    SQLConnector.establishSQLConnection();
+                    ResultSet result = Queries.getExistingProductsOfProductCode(queryProductCode);
+
+                    if (result.getFetchSize() == 0) {
+                        // No existing product exists
+                        
+                        Queries.insertNewProduct(
+                            queryProductCode,
+                            queryName,
+                            queryDescription,
+                            queryCategory,
+                            queryUnitCost,
+                            queryStockQuantity,
+                            queryMarkupPrice,
+                            queryUnitPrice
+                        );
+                    }
+
+                } catch (SQLException exception) {
+                    exception.printStackTrace();
+                }
+            }
+        });
     }
 
     public void addComponents() {
+        GridBagConstraints gbc = new GridBagConstraints();
 
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.insets = new Insets(InsetsConfig.XXL, InsetsConfig.XXL, 0, InsetsConfig.XXL);
+        gbc.weightx = 1;
+        gbc.weighty = 1;
+        add(header, gbc);
+        
+        gbc.gridy = 1;
+        gbc.insets = new Insets(InsetsConfig.L, InsetsConfig.XXL, 0, InsetsConfig.XXL);
+        add(form, gbc);
+        
+        {
+            gbc.gridx = 0;
+            gbc.gridy = 0;
+            gbc.insets = new Insets(InsetsConfig.S, 0, 0, 0);
+            form.add(productCodeLabel, gbc);
+            
+            gbc.gridy = 1;
+            form.add(nameLabel, gbc);
+            
+            gbc.gridy = 2;
+            form.add(descriptionLabel, gbc);
+
+            gbc.gridy = 3;
+            form.add(categoryLabel, gbc);
+            
+            gbc.gridy = 4;
+            form.add(unitCostLabel, gbc);
+            
+            gbc.gridy = 5;
+            form.add(stockQuantityLabel, gbc);
+
+            gbc.gridy = 6;
+            form.add(markupPriceLabel, gbc);
+            
+            gbc.gridy = 7;
+            form.add(unitPriceLabel, gbc);
+            
+            gbc.anchor = GridBagConstraints.WEST;
+            gbc.fill = GridBagConstraints.HORIZONTAL;
+            gbc.gridx = 1;
+            gbc.gridy = 0;
+            gbc.insets = new Insets(InsetsConfig.S, InsetsConfig.L, 0, 0);
+            form.add(productCodeField, gbc);
+
+            gbc.gridy = 1;
+            form.add(nameField, gbc);
+
+            gbc.gridy = 2;
+            form.add(descriptionField, gbc);
+
+            gbc.gridy = 3;
+            form.add(categoryField, gbc);
+
+            gbc.gridy = 4;
+            form.add(unitCostField, gbc);
+
+            gbc.gridy = 5;
+            form.add(stockQuantityField, gbc);
+
+            gbc.gridy = 6;
+            form.add(markupPriceField, gbc);
+
+            gbc.gridy = 7;
+            form.add(unitPriceField, gbc);
+        }
+        
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.insets = new Insets(InsetsConfig.XL, InsetsConfig.XXL, InsetsConfig.XXL, InsetsConfig.XXL);
+        add(submitButton, gbc);
     }
 
     public void finalizePrepare() {
-
+        pack();
+        setLocationRelativeTo(null);
+        setResizable(false);
     }
-
 }

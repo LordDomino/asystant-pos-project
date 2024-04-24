@@ -8,13 +8,11 @@ public class APP_PopUpFrame<T> extends APP_Frame {
     public APP_PopUpFrame(T parent) {
         super();
         this.parent = parent;
-        compile();
     }
 
     public APP_PopUpFrame(T parent, String title) {
         super(title);
         this.parent = parent;
-        compile();
     }
 
     public void prepare() {}

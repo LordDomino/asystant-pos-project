@@ -484,17 +484,17 @@ class AddPopupWindow extends APP_PopUpFrame<WF_UserManager> {
     final JLabel header = new JLabel("Add a new user account");
     final JPanel form = new JPanel(new GridBagLayout());
 
-    JLabel usernameLabel = new JLabel("Username");
-    JLabel passwordLabel = new JLabel("Password");
-    JLabel accessLevelLabel = new JLabel("Account access level");
-    JLabel activatedLabel = new JLabel("Activated");
+    final JLabel usernameLabel = new JLabel("Username");
+    final JLabel passwordLabel = new JLabel("Password");
+    final JLabel accessLevelLabel = new JLabel("Account access level");
+    final JLabel activatedLabel = new JLabel("Activated");
 
-    JTextField usernameField = new JTextField(10);
-    JTextField passwordField = new JTextField(10);
-    JComboBox<String> accessLevelComboBox = new JComboBox<String>(accessLevelTypes);
-    JCheckBox activatedCheckBox = new JCheckBox("", false);
+    final JTextField usernameField = new JTextField(10);
+    final JTextField passwordField = new JTextField(10);
+    final JComboBox<String> accessLevelComboBox = new JComboBox<String>(accessLevelTypes);
+    final JCheckBox activatedCheckBox = new JCheckBox("", false);
 
-    JButton submitButton = new APP_AccentButton("Submit");
+    final JButton submitButton = new APP_AccentButton("Submit");
 
     final JTextField[] fields = {usernameField, passwordField};
 

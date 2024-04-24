@@ -45,7 +45,6 @@ public class WF_SuperAdminScreen extends APP_Frame {
         header.setFont(StylesConfig.HEADING1);
         userGreeting.setFont(StylesConfig.DETAIL);
 
-
         // Set accent button background color
         userManagementButton.setBackground(ColorConfig.ACCENT_BUTTON_BG);
         dashboardButton.setBackground(ColorConfig.ACCENT_BUTTON_BG);
