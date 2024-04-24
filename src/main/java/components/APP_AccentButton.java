@@ -36,4 +36,6 @@ public class APP_AccentButton extends JButton {
         super(text);
         initialize();
     }
+
+    public void fireValueChanged() {}
 }

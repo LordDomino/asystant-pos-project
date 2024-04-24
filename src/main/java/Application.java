@@ -1,5 +1,4 @@
 package main.java;
-import java.awt.Color;
 
 import javax.swing.JFrame;
 
@@ -7,6 +6,8 @@ import main.java.configs.APPResourceLoader;
 import main.java.configs.StylesConfig;
 import main.java.gui.windowFrames.WF_Dashboard;
 import main.java.gui.windowFrames.WF_LoginWindow;
+import main.java.gui.windowFrames.WF_SuperAdminScreen;
+import main.java.gui.windowFrames.WF_UserManager;
 
 public class Application {
 
@@ -15,6 +16,12 @@ public class Application {
 
     /**The dashboard instance of the app. */
     public WF_Dashboard dashboard;
+
+    /**The super admin screen. */
+    public WF_SuperAdminScreen superAdminScreen;
+
+    /**The user manager window. */
+    public WF_UserManager userManager;
 
     public void run() {
         APPResourceLoader.loadFonts(); // load custom fonts

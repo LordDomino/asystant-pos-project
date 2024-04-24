@@ -85,7 +85,10 @@ public class LoginManager {
         if (SA_username.equals(username)) {
             // Super admin access is permitted only when
             // the username and password matches credentials in DB
-            setCurrentAccessLevelModeConfig(ACCESS_LEVEL_SUPERADMIN, new WF_SuperAdminScreen());
+
+            // Finally create a user manager instance
+            Main.app.superAdminScreen = new WF_SuperAdminScreen();
+            setCurrentAccessLevelModeConfig(ACCESS_LEVEL_SUPERADMIN, Main.app.superAdminScreen);
             return true;
         } else {
             return false;

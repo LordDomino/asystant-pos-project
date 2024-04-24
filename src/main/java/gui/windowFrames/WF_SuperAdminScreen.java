@@ -58,9 +58,10 @@ public class WF_SuperAdminScreen extends APP_Frame {
         userManagementButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JFrame target = new WF_UserManager();
+                Main.app.userManager = new WF_UserManager();
                 JFrame source = (JFrame) SwingUtilities.getWindowAncestor(userManagementButton);
-                target.setVisible(true);
+
+                Main.app.userManager.setVisible(true);
                 source.dispose();
             }
         });

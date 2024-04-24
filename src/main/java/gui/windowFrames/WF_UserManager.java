@@ -7,9 +7,11 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
+import main.java.Main;
 import main.java.components.APP_AccentButton;
 import main.java.components.APP_ContrastButton;
 import main.java.components.APP_Frame;
+import main.java.components.APP_PopUpFrame;
 import main.java.components.APP_TextField;
 import main.java.configs.ColorConfig;
 import main.java.configs.InsetsConfig;
@@ -64,10 +66,10 @@ public class WF_UserManager extends APP_Frame {
     );
 
     public final JLabel buttonsPanelLead = new JLabel("User account actions");
-    public final JButton addButton = new APP_AccentButton("Add new user account");
-    public final JButton editButton = new APP_AccentButton("Edit selected user account") {
+    public final APP_AccentButton addButton = new APP_AccentButton("Add new user account");
+    public final APP_AccentButton editButton = new APP_AccentButton("Edit selected user account") {
 
-        @SuppressWarnings("unused")
+        @Override
         public void fireValueChanged() {  // Anonymous class hack :D
             int[] selectedIndices = table.getSelectionModel().getSelectedIndices();
 
@@ -77,10 +79,11 @@ public class WF_UserManager extends APP_Frame {
                 setEnabled(false);
             }
         }
-    };
-    public final JButton deleteButton = new APP_AccentButton("Delete user accounts") {
 
-        @SuppressWarnings("unused")
+    };
+    public final APP_AccentButton deleteButton = new APP_AccentButton("Delete user accounts") {
+
+        @Override
         public void fireValueChanged() {  // Anonymous class hack :D
             int[] selectedIndices = table.getSelectionModel().getSelectedIndices();
 
@@ -90,6 +93,7 @@ public class WF_UserManager extends APP_Frame {
                 setEnabled(false);
             }
         }
+
     };
 
     public final JTable table = new JTable(tableModel);
@@ -129,16 +133,14 @@ public class WF_UserManager extends APP_Frame {
             public void actionPerformed(ActionEvent ae) {
                 if (pendingDeletedUsernames.size() >= 1) {
                     DeletePopUpWindow popUp = new DeletePopUpWindow();
-                    popUp.parentFrame = (WF_UserManager) SwingUtilities.getWindowAncestor(addButton);
                     popUp.info.setText(
-                        "<html>Adding new user accounts is not allowed while "
-                        + "some rows are pending to be deleted. "
-                        + "Confirm changes to pending deletions first."
+                        "<html>Adding new user accounts is not allowed while"
+                        + " some accounts are pending to be deleted. "
+                        + " Confirm changes to pending deletions first."
                     );
                     popUp.setVisible(true);
                 } else {
                     AddPopupWindow popUp = new AddPopupWindow();
-                    popUp.parentFrame = (WF_UserManager) SwingUtilities.getWindowAncestor(addButton);
                     popUp.setVisible(true);
                 }
             }
@@ -148,7 +150,6 @@ public class WF_UserManager extends APP_Frame {
             @Override
             public void actionPerformed(ActionEvent ae) {
                 EditPopupWindow popUp = new EditPopupWindow();
-                popUp.parentFrame = (WF_UserManager) SwingUtilities.getWindowAncestor(addButton);
 
                 if (table.getSelectionModel().getSelectedIndices().length != 1) {
 
@@ -235,23 +236,13 @@ public class WF_UserManager extends APP_Frame {
         table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent event) {
                 try {
-                    editButton.getClass().getMethod("fireValueChanged").invoke(editButton);
-                    deleteButton.getClass().getMethod("fireValueChanged").invoke(deleteButton);
+                    editButton.fireValueChanged();
+                    deleteButton.fireValueChanged();
                 } catch (Exception exception) {
                     exception.printStackTrace();
                 }
             }
         });
-    }
-
-    protected void fireValueChanged() {
-        int[] selectedIndices = table.getSelectionModel().getSelectedIndices();
-
-        if (selectedIndices.length == 1) {
-            editButton.setEnabled(true);
-        } else {
-            editButton.setEnabled(false);
-        }
     }
 
     public void addComponents() {
@@ -485,12 +476,7 @@ public class WF_UserManager extends APP_Frame {
     }
 }
 
-class AddPopupWindow extends APP_Frame {
-
-    /**Reference field so this instance can have access to the
-     * WF_UserManager JFrame instance.
-     */
-    public WF_UserManager parentFrame;
+class AddPopupWindow extends APP_PopUpFrame<WF_UserManager> {
 
     String[] accessLevelTypes = {"Admin", "User"};
 
@@ -513,7 +499,7 @@ class AddPopupWindow extends APP_Frame {
     final JTextField[] fields = {usernameField, passwordField};
 
     public AddPopupWindow() {
-        super("Add New User Account");
+        super(Main.app.userManager, "Add New User Account");
         compile();
     }
 
@@ -599,7 +585,7 @@ class AddPopupWindow extends APP_Frame {
                         popUp.dispose();
 
                         // Update table
-                        parentFrame.loadFromDatabase();
+                        getParentFrame().loadFromDatabase();
                     } else {
                         // An existing username has been found
                     }
@@ -609,7 +595,7 @@ class AddPopupWindow extends APP_Frame {
                 }
 
                 // Update status bar
-                parentFrame.statusBar.setText("Created new user \"" + retrievedUsername + "\".");
+                getParentFrame().statusBar.setText("Created new user \"" + retrievedUsername + "\".");
             }
         });
     }
@@ -873,7 +859,7 @@ class EditPopupWindow extends APP_Frame {
     }
 }
 
-class DeletePopUpWindow extends APP_Frame {
+class DeletePopUpWindow extends APP_PopUpFrame<WF_UserManager> {
 
     /**Reference field so this instance can have access to the
      * WF_UserManager JFrame instance.
@@ -901,7 +887,7 @@ class DeletePopUpWindow extends APP_Frame {
     public final JButton continueButton = new APP_ContrastButton("Continue");
 
     public DeletePopUpWindow() {
-        super("Pending Deletion Warning");
+        super(Main.app.userManager, "Pending Deletion Warning");
         compile();
     }
 
@@ -924,7 +910,7 @@ class DeletePopUpWindow extends APP_Frame {
         cancelButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-                parentFrame.purgatoryPardon();
+                getParentFrame().purgatoryPardon();
                 JFrame source = (JFrame) SwingUtilities.getWindowAncestor(continueButton);
                 source.dispose();
             }
@@ -933,7 +919,7 @@ class DeletePopUpWindow extends APP_Frame {
         continueButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-                parentFrame.purgatoryPurge();
+                getParentFrame().purgatoryPurge();
                 JFrame source = (JFrame) SwingUtilities.getWindowAncestor(continueButton);
                 source.dispose();
             }

@@ -22,7 +22,6 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
-import main.java.Main;
 import main.java.components.APP_AccentButton;
 import main.java.components.APP_ContrastButton;
 import main.java.components.APP_Frame;

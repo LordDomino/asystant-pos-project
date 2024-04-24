@@ -36,7 +36,12 @@ public class WS_StockTable extends APP_Panel {
         "Unit Cost",
         "Stock Quantity"
     };
-    DefaultTableModel inventoryModel = new DefaultTableModel(inventoryFields, 0);
+    DefaultTableModel inventoryModel = new DefaultTableModel(inventoryFields, 0) {
+        @Override
+        public boolean isCellEditable(int row, int column) {
+            return false;
+        }
+    };
     JTable inventoryTable = new JTable(inventoryModel);
 
     // Layout components
@@ -47,35 +52,39 @@ public class WS_StockTable extends APP_Panel {
 
     public final JScrollPane scrollPane = new JScrollPane(inventoryTable);
     public final JPanel descriptionPanel = new JPanel(new GridBagLayout());
+    
     public static final ArrayList<ArrayList<String>> pendingDeletedProducts = new ArrayList<>();
 
     // Components
-    JButton addButton = new APP_AccentButton("Add");
-    JButton editButton = new APP_AccentButton("Edit") {
-        public void fireValueChanged() {
-            int[] selectedIndices = inventoryTable.getSelectionModel().getSelectedIndices();
+    public final APP_AccentButton addButton = new APP_AccentButton("Add");
+    public final APP_AccentButton editButton = new APP_AccentButton("Edit") {
 
+        @Override
+        public void fireValueChanged() {
+            final int[] selectedIndices = inventoryTable.getSelectionModel().getSelectedIndices();
             if (selectedIndices.length ==1) {
                 setEnabled(true);    
             } else {
                 setEnabled(false);
             }
         }
-    };
-    JButton deleteButton = new APP_AccentButton("Delete"){
-        public void fireValueChanged() {
-            int[] selectedIndices = inventoryTable.getSelectionModel().getSelectedIndices();
 
+    };
+    public final APP_AccentButton deleteButton = new APP_AccentButton("Delete") {
+
+        @Override
+        public void fireValueChanged() {
+            final int[] selectedIndices = inventoryTable.getSelectionModel().getSelectedIndices();
             if (selectedIndices.length > 0) {
                 setEnabled(true);    
             } else {
                 setEnabled(false);
             }
         }
+
     };
 
-    JButton refreshButton = new APP_AccentButton("Refresh");
-
+    public final APP_AccentButton refreshButton = new APP_AccentButton("Refresh");
 
     public WS_StockTable () {
         super();
@@ -105,6 +114,7 @@ public class WS_StockTable extends APP_Panel {
 
     public void addComponents() {
         GridBagConstraints gbc = new GridBagConstraints();
+
         gbc.anchor = GridBagConstraints.NORTHWEST;
         gbc.fill = GridBagConstraints.NONE;
         gbc.gridx = 0;
@@ -183,10 +193,8 @@ public class WS_StockTable extends APP_Panel {
         gbc.weighty = 0;
         add(footerPanel, gbc);
     }
-    
-    public void finalizePrepare() {
 
-    }
+    public void finalizePrepare() {}
 
     protected void updateTable() {
         loadFromDatabase();
@@ -196,10 +204,11 @@ public class WS_StockTable extends APP_Panel {
         try {
             // Clear the rows
             inventoryModel.setRowCount(0);
-    
+
+            // Establish the SQL connection first
             SQLConnector.establishSQLConnection();
     
-            // modify query
+            // Query setup
             String query = "SELECT product_code, name, category, unit_cost, stock_quantity FROM " + DBReferences.TBL_STOCKS_INVENTORY;
             Statement statement = SQLConnector.connection.createStatement(
                 ResultSet.TYPE_SCROLL_INSENSITIVE,
@@ -209,35 +218,33 @@ public class WS_StockTable extends APP_Panel {
     
             // Go to last row to get the total number of rows
             result.last();
-            int n = result.getRow();
+            final int n = result.getRow();
     
             if (n ==0) {
 
             } else {
                 // Then go back to the starting point before looping
                 result.beforeFirst();
+
+                // Then begin loop
                 int i = 0;
-                        
                 while (i < n) {
-                            result.next();
+                    result.next();
                     String productCode = result.getString("product_code");
                     String name = result.getString("name");
                     String category = result.getString("category");
                     String unitCost = result.getString("unit_cost");
                     String stockQuantity = result.getString("stock_quantity");
-                         
-                    String[] rowdata = {productCode, name, category, unitCost, stockQuantity};
 
-                    inventoryModel.addRow(rowdata);
+                    String[] rowData = {productCode, name, category, unitCost, stockQuantity};
+
+                    inventoryModel.addRow(rowData);
                     i++;
                 }    
             }
 
-           
         } catch (SQLException exception) {
             exception.printStackTrace();
-
-        
         }
     }
 }
