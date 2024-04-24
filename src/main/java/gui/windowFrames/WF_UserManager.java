@@ -110,11 +110,7 @@ public class WF_UserManager extends APP_Frame {
     }
 
     public void prepareComponents() {
-        try {
-            updateTable();
-        } catch (SQLException exception) {
-            // To do if table cannot be updated from initialization
-        }
+        updateTable();
 
         headerPanel.setOpaque(false);
         buttonsPanel.setOpaque(false);
@@ -365,11 +361,11 @@ public class WF_UserManager extends APP_Frame {
         setLocationRelativeTo(null);
     }
 
-    protected void updateTable() throws SQLException {
+    protected void updateTable() {
         loadFromDatabase();
     }
 
-    protected void loadFromDatabase() throws SQLException {
+    protected void loadFromDatabase() {
         // Clear the rows
         tableModel.setRowCount(0);
 
@@ -440,11 +436,7 @@ public class WF_UserManager extends APP_Frame {
     protected void purgatoryPardon() {
         pendingDeletedUsernames.clear();
         statusBar.setText("");
-        try {
-            updateTable();
-        } catch (SQLException exception) {
-            exception.printStackTrace();
-        }
+        updateTable();
     }
 
     protected void purgatoryPurge() {
