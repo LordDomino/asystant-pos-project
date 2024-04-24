@@ -1,4 +1,4 @@
-package main.java.gui.windowFrames;
+package main.java.gui.frames;
 
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -35,6 +35,8 @@ import java.awt.Insets;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -45,8 +47,11 @@ import java.util.Vector;
 
 public class WF_UserManager extends APP_Frame {
 
+    private static final String ACCOUNT_INACTIVE = "INACTIVE";
+    private static final String ACCOUNT_ACTIVATED   = "ACTIVATED";
+
     public static final String[] columnNames = {"Username", "Password", "Access Level", "Activation Status"};
-    public static ArrayList<ArrayList<String>> pendingDeletedUsernames = new ArrayList<>();
+    public static ArrayList<ArrayList<String>> pendingDeletedRows = new ArrayList<>();
 
     protected final DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0) {
         public boolean isCellEditable(int row, int column) {
@@ -58,6 +63,7 @@ public class WF_UserManager extends APP_Frame {
     public final JPanel headerPanel = new JPanel(new GridBagLayout());
     public final JPanel buttonsPanel = new JPanel(new GridBagLayout());
     public final JPanel footerPanel = new JPanel(new GridBagLayout());
+    public final JPanel footerButtonsPanel = new JPanel(new GridBagLayout());
 
     // Components
     public final JLabel header = new JLabel("Manage user accounts");
@@ -102,6 +108,7 @@ public class WF_UserManager extends APP_Frame {
     public final JLabel statusLabel = new JLabel("Status:");
     public final JTextField statusBar = new APP_TextField(30);
     public final JButton submitChangesButton = new APP_ContrastButton("Submit changes");
+    public final JButton closeButton = new APP_ContrastButton("Close");
 
     public WF_UserManager() {
         super("User Management Control Panel");
@@ -114,32 +121,37 @@ public class WF_UserManager extends APP_Frame {
     }
 
     public void prepareComponents() {
-        updateTable();
+        updateFrame();
 
         headerPanel.setOpaque(false);
         buttonsPanel.setOpaque(false);
         footerPanel.setOpaque(false);
-
+        footerButtonsPanel.setOpaque(false);
+        
         header.setFont(StylesConfig.HEADING1);
         buttonsPanelLead.setFont(StylesConfig.LEAD);
         statusBar.setEditable(false);
         statusBar.setFont(StylesConfig.NORMAL);
-
+        
         editButton.setEnabled(false);
         deleteButton.setEnabled(false);
-
+        
+        submitChangesButton.setEnabled(false);
+        
         addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-                if (pendingDeletedUsernames.size() >= 1) {
+                if (pendingDeletedRows.size() >= 1) {
                     DeletePopUpWindow popUp = new DeletePopUpWindow();
                     popUp.info.setText(
                         "<html>Adding new user accounts is not allowed while"
                         + " some accounts are pending to be deleted. "
                         + " Confirm changes to pending deletions first."
-                    );
+                        );
                     popUp.setVisible(true);
+                    submitChangesButton.setEnabled(true);
                 } else {
+                    submitChangesButton.setEnabled(false);
                     AddPopupWindow popUp = new AddPopupWindow();
                     popUp.setVisible(true);
                 }
@@ -175,11 +187,9 @@ public class WF_UserManager extends APP_Frame {
                     } else {}
 
                     // Activation status
-                    if (retrievedActivationStatus == "Activated") {
+                    if (retrievedActivationStatus == ACCOUNT_ACTIVATED) {
                         popUp.activatedCheckBoxEdit.setSelected(true);
-                    } else if (retrievedActivationStatus == "Inactivated") {
-                        popUp.activatedCheckBoxEdit.setSelected(false);
-                    } else if (retrievedActivationStatus == "Deactivated") {
+                    } else if (retrievedActivationStatus == ACCOUNT_INACTIVE) {
                         popUp.activatedCheckBoxEdit.setSelected(false);
                     }
 
@@ -189,7 +199,7 @@ public class WF_UserManager extends APP_Frame {
                 }
             }
         });
-
+        
         deleteButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
                 // Get indices of selected rows from the JTable
@@ -205,7 +215,7 @@ public class WF_UserManager extends APP_Frame {
                     pendingRowValues.add(table.getValueAt(rowID, 1).toString());
                     pendingRowValues.add(table.getValueAt(rowID, 2).toString());
                     pendingRowValues.add(table.getValueAt(rowID, 3).toString());
-                    pendingDeletedUsernames.add(pendingRowValues);
+                    pendingDeletedRows.add(pendingRowValues);
                 }
 
                 // Remove the preview rows in JTable
@@ -214,21 +224,38 @@ public class WF_UserManager extends APP_Frame {
                     for (int i = selectedRows.length - 1; i >= 0; i--) {
                         tableModel.removeRow(selectedRows[i]);
                     }
+
+                    submitChangesButton.setEnabled(true);
                 }
 
                 // Update the status status bar
-                statusBar.setText(pendingDeletedUsernames.size() + " accounts pending to be deleted.");
+                statusBar.setText(pendingDeletedRows.size() + " accounts pending to be deleted.");
             }
         });
 
         submitChangesButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-                if (pendingDeletedUsernames.size() >= 1) {
+                if (pendingDeletedRows.size() >= 1) {
                     // Open the warning pop up window if there are pending deletions
                     DeletePopUpWindow popUp = new DeletePopUpWindow();
-                    popUp.parentFrame = (WF_UserManager) SwingUtilities.getWindowAncestor(submitChangesButton);
+                    Main.app.USER_MANAGER.setEnabled(false);
                     popUp.setVisible(true);
+                }
+            }
+        });
+
+        closeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                if (pendingDeletedRows.size() >= 1) {
+                    // Open the warning pop up window if there are pending deletions
+                    DeletePopUpWindow popUp = new DeletePopUpWindow();
+                    Main.app.USER_MANAGER.setEnabled(false);
+                    popUp.isExiting = true;
+                    popUp.setVisible(true);
+                } else {
+                    returnToSuperAdminScreen();
                 }
             }
         });
@@ -342,7 +369,24 @@ public class WF_UserManager extends APP_Frame {
             gbc.gridy = 1;
             gbc.gridwidth = GridBagConstraints.REMAINDER;
             gbc.insets = new Insets(InsetsConfig.M, 0, 0, 0);
-            footerPanel.add(submitChangesButton, gbc);
+            footerPanel.add(footerButtonsPanel, gbc);
+            
+            {
+                gbc.anchor = GridBagConstraints.EAST;
+                gbc.fill = GridBagConstraints.NONE;
+                gbc.gridx = 0;
+                gbc.gridy = 0;
+                gbc.gridwidth = 1;
+                gbc.insets = new Insets(InsetsConfig.M, 0, 0, 0);
+                footerButtonsPanel.add(submitChangesButton, gbc);
+
+                gbc.anchor = GridBagConstraints.EAST;
+                gbc.fill = GridBagConstraints.NONE;
+                gbc.gridx = 1;
+                gbc.insets = new Insets(InsetsConfig.M, InsetsConfig.M, 0, 0);
+                footerButtonsPanel.add(closeButton, gbc);
+            }
+
         }
     }
 
@@ -352,8 +396,23 @@ public class WF_UserManager extends APP_Frame {
         setLocationRelativeTo(null);
     }
 
-    protected void updateTable() {
+    @SuppressWarnings("rawtypes")
+    protected void updateFrame() {
+        setEnabled(true);
         loadFromDatabase();
+
+        // Loop through the pendingDeletedUsernames and remove the
+        // rows which are in the purgatory of deleted accounts
+        for (ArrayList<String> row : pendingDeletedRows) {
+            Vector<Vector> tableData = tableModel.getDataVector();
+
+            for (int i = 0; i < tableData.size(); i++) {
+                Vector tableRow = tableData.get(i);
+                if (tableRow.get(0).equals(row.get(0))) {
+                    tableModel.removeRow(i);
+                }
+            }
+        }
     }
 
     protected void loadFromDatabase() {
@@ -397,11 +456,9 @@ public class WF_UserManager extends APP_Frame {
                     // Modify presentation of values based on data
                     if (field == "activated") {
                         if (data.equals(1) || data.equals(true)) {
-                            dataFromSQL.add("Activated");
+                            dataFromSQL.add(ACCOUNT_ACTIVATED);
                         } else if (data.equals(0) || data.equals(false)) {
-                            dataFromSQL.add("Inactivated");
-                        } else if (data.equals(-1)) {
-                            dataFromSQL.add("Deactivated");
+                            dataFromSQL.add(ACCOUNT_INACTIVE);
                         }
                     } else if (field == "access_level") {
                         if (data.equals(2)) {
@@ -425,14 +482,14 @@ public class WF_UserManager extends APP_Frame {
     }
 
     protected void purgatoryPardon() {
-        pendingDeletedUsernames.clear();
+        pendingDeletedRows.clear();
         statusBar.setText("");
-        updateTable();
+        updateFrame();
     }
 
     protected void purgatoryPurge() {
         // Performing the delete (SQL-Java connection)
-        final int pendingSize = pendingDeletedUsernames.size();
+        final int pendingSize = pendingDeletedRows.size();
 
         try {
             String query;
@@ -440,13 +497,13 @@ public class WF_UserManager extends APP_Frame {
 
             if (pendingSize == 1) {
                 // If only 1 row is selected, use the equal operator for SQL query
-                query = "DELETE FROM " + DBReferences.TBL_USER_ACCOUNTS + " WHERE username = \"" + pendingDeletedUsernames.get(0).get(0) + "\";";
+                query = "DELETE FROM " + DBReferences.TBL_USER_ACCOUNTS + " WHERE username = \"" + pendingDeletedRows.get(0).get(0) + "\";";
             } else {
                 // If more than one row is selected, use the IN keyword for SQL query
                 query = "DELETE FROM " + DBReferences.TBL_USER_ACCOUNTS + " WHERE username IN ( ";
 
                 // Get all usernameIDs
-                for (ArrayList<String> username : pendingDeletedUsernames) {
+                for (ArrayList<String> username : pendingDeletedRows) {
                     query = query + "\"" + username.get(0) + "\", ";
                 }
 
@@ -460,7 +517,7 @@ public class WF_UserManager extends APP_Frame {
 
             SQLConnector.connection.close();
 
-            updateTable();
+            updateFrame();
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(
@@ -471,8 +528,15 @@ public class WF_UserManager extends APP_Frame {
             );
         }
 
-        pendingDeletedUsernames.clear();
+        pendingDeletedRows.clear();
         statusBar.setText(pendingSize + " account(s) deleted successfully.");
+    }
+
+    protected void returnToSuperAdminScreen() {
+        Main.app.USER_MANAGER.setEnabled(true);
+        Main.app.SUPERADMIN_SCREEN.setLocationRelativeTo(null);
+        Main.app.SUPERADMIN_SCREEN.setVisible(true);
+        dispose();
     }
 }
 
@@ -585,7 +649,7 @@ class AddPopupWindow extends APP_PopUpFrame<WF_UserManager> {
                         popUp.dispose();
 
                         // Update table
-                        getParentFrame().loadFromDatabase();
+                        getParentFrame().updateFrame();;
                     } else {
                         // An existing username has been found
                     }
@@ -673,33 +737,31 @@ class AddPopupWindow extends APP_PopUpFrame<WF_UserManager> {
     }
 }
 
-class EditPopupWindow extends APP_Frame {
-
-    public WF_UserManager parentFrame;
+class EditPopupWindow extends APP_PopUpFrame<WF_UserManager> {
 
     String[] accessLevelTypes = {"Admin", "User"};
 
     final JLabel header = new JLabel("Edit an Existing Account");
     final JPanel editForm = new JPanel(new GridBagLayout());
 
-    public JLabel usernameEditLabel = new JLabel("Username");
-    public JLabel passwordEditLabel = new JLabel("Password");
-    public JLabel accessEditLabel = new JLabel("Account access level");
-    public JLabel activatedEditLabel = new JLabel("Activated");
+    public final JLabel usernameEditLabel = new JLabel("Username");
+    public final JLabel passwordEditLabel = new JLabel("Password");
+    public final JLabel accessEditLabel = new JLabel("Account access level");
+    public final JLabel activatedEditLabel = new JLabel("Activated");
 
-    public JTextField usernameEditField = new JTextField(10);
-    public JTextField passwordEditField = new JTextField(10);
-    public String[] accessEditField = {"Admin", "User"};
-    public JComboBox<String> accessLevelComboBoxEdit = new JComboBox<String>(accessEditField);
-    JCheckBox activatedCheckBoxEdit = new JCheckBox("", false);
+    public final JTextField usernameEditField = new JTextField(10);
+    public final JTextField passwordEditField = new JTextField(10);
+    public final String[] accessEditField = {"Admin", "User"};
+    public final JComboBox<String> accessLevelComboBoxEdit = new JComboBox<String>(accessEditField);
+    public final JCheckBox activatedCheckBoxEdit = new JCheckBox("", false);
 
-    JButton updateButton = new JButton("Update");
+    public final JButton updateButton = new JButton("Update");
 
     JTextField[] dataField = {usernameEditField, passwordEditField};
 
 
     EditPopupWindow() {
-        super("Edit Existing User Account");
+        super(Main.app.USER_MANAGER, "Edit Existing User Account");
         compile();
     }
 
@@ -753,7 +815,7 @@ class EditPopupWindow extends APP_Frame {
                     ResultSet result = statement.executeQuery(query);
 
                     if (result.getFetchSize() == 0) {
-                        // No existing username has been found
+                        // No existing username has been found so proceed with updating info
                         query = "UPDATE " + DBReferences.TBL_USER_ACCOUNTS + " SET ";
 
                         List<String> columnNames = Arrays.asList(SQLConnector.FIELDS_user_accounts);
@@ -783,7 +845,7 @@ class EditPopupWindow extends APP_Frame {
                         popUp.dispose();
 
                         // Update table
-                        parentFrame.loadFromDatabase();
+                        getParentFrame().updateFrame();
                     } else {
                         // No existing username has been found
                     }
@@ -861,12 +923,9 @@ class EditPopupWindow extends APP_Frame {
 
 class DeletePopUpWindow extends APP_PopUpFrame<WF_UserManager> {
 
-    /**Reference field so this instance can have access to the
-     * WF_UserManager JFrame instance.
-     */
-    public WF_UserManager parentFrame;
-
     public static final String[] columnNames = {"Username", "Password", "Access Level", "Activation Status"};
+    
+    public boolean isExiting = false;
 
     public final JPanel headerPanel = new JPanel(new GridBagLayout());
     public final JPanel buttonsPanel = new JPanel(new GridBagLayout());
@@ -894,6 +953,53 @@ class DeletePopUpWindow extends APP_PopUpFrame<WF_UserManager> {
     public void prepare() {
         getContentPane().setBackground(ColorConfig.ACCENT_1);
         setLayout(new GridBagLayout());
+
+        addWindowListener(new WindowListener() {
+
+            @Override
+            public void windowOpened(WindowEvent e) {
+                // TODO Auto-generated method stub
+                // throw new UnsupportedOperationException("Unimplemented method 'windowOpened'");
+            }
+
+            @Override
+            public void windowClosing(WindowEvent e) {
+                // TODO Auto-generated method stub
+                // throw new UnsupportedOperationException("Unimplemented method 'windowClosing'");
+            }
+
+            @Override
+            public void windowClosed(WindowEvent e) {
+                if (isExiting == true) {
+                    Main.app.USER_MANAGER.returnToSuperAdminScreen();
+                }
+            }
+
+            @Override
+            public void windowIconified(WindowEvent e) {
+                // TODO Auto-generated method stub
+                // throw new UnsupportedOperationException("Unimplemented method 'windowIconified'");
+            }
+
+            @Override
+            public void windowDeiconified(WindowEvent e) {
+                // TODO Auto-generated method stub
+                // throw new UnsupportedOperationException("Unimplemented method 'windowDeiconified'");
+            }
+
+            @Override
+            public void windowActivated(WindowEvent e) {
+                // TODO Auto-generated method stub
+                // throw new UnsupportedOperationException("Unimplemented method 'windowActivated'");
+            }
+
+            @Override
+            public void windowDeactivated(WindowEvent e) {
+                // TODO Auto-generated method stub
+                // throw new UnsupportedOperationException("Unimplemented method 'windowDeactivated'");
+            }
+            
+        });
     }
 
     public void prepareComponents() {
@@ -903,7 +1009,7 @@ class DeletePopUpWindow extends APP_PopUpFrame<WF_UserManager> {
         header.setFont(StylesConfig.HEADING3);
         info.setFont(StylesConfig.NORMAL);
 
-        for (ArrayList<String> row : WF_UserManager.pendingDeletedUsernames) {
+        for (ArrayList<String> row : WF_UserManager.pendingDeletedRows) {
             tableModel.addRow(new Vector<>(row));
         }
 
@@ -911,15 +1017,17 @@ class DeletePopUpWindow extends APP_PopUpFrame<WF_UserManager> {
             @Override
             public void actionPerformed(ActionEvent ae) {
                 getParentFrame().purgatoryPardon();
+                Main.app.USER_MANAGER.submitChangesButton.setEnabled(false);
                 JFrame source = (JFrame) SwingUtilities.getWindowAncestor(continueButton);
                 source.dispose();
             }
         });
-
+        
         continueButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
                 getParentFrame().purgatoryPurge();
+                Main.app.USER_MANAGER.submitChangesButton.setEnabled(false);
                 JFrame source = (JFrame) SwingUtilities.getWindowAncestor(continueButton);
                 source.dispose();
             }

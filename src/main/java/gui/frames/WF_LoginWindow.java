@@ -1,4 +1,4 @@
-package main.java.gui.windowFrames;
+package main.java.gui.frames;
 
 import java.awt.Component;
 import java.awt.Dimension;
@@ -103,7 +103,7 @@ public final class WF_LoginWindow extends APP_Frame {
         loginButton.setEnabled(false);
         loginButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                boolean permitLogin = false;  // The boolean flag for allowing SUPER ADMIN access
+                boolean permitLogin = false;  // The boolean flag for allowing access
 
                 // Retrieve the credentials
                 final String username = usernameField.getText();
@@ -133,7 +133,7 @@ public final class WF_LoginWindow extends APP_Frame {
                         // defaults to attempting login either admin or user
                         permitLogin = true;
                     } else {
-                        // The login cannot take place
+                        // The login cannot take place because of non-existent credentials
                         permitLogin = false;
 
                         Component parent = SwingUtilities.getWindowAncestor(loginButton);
@@ -153,35 +153,56 @@ public final class WF_LoginWindow extends APP_Frame {
                     }
 
                     if (!LoginManager.isAccountActivated(username)) {
+                        // Account has valid credentials but is not activated
                         permitLogin = false;
 
                         Component parent = SwingUtilities.getWindowAncestor(loginButton);
                         JOptionPane.showMessageDialog(
                             parent,
-                            "Account \"" + username + "\" is not activated. Contact administrator for activation.",
+                            "Account \"" + username + "\" is not activated or is locked. Contact administrator for activation.",
                             "Error",
                             JOptionPane.ERROR_MESSAGE
                         );
                     } else if (!LoginManager.isAccountPasswordCorrect(username, password)) {
+                        // An account of the correct username was found
+                        // but an incorrect password was given
                         permitLogin = false;
+
+                        LoginManager.incrementIncorrectAttempts(username);
+
+                        String errorMessage;
+                        if (!LoginManager.isAccountActivated(username)) {
+                            errorMessage = "Account \"" + username + "\" has been locked after three login attempts failed."
+                                + " Contact administrator for reactivation.";
+                        } else {
+                            int remaining = LoginManager.getRemainingAttempts(username);
+                            errorMessage = "Incorrect password for \"" + username + "\".";
+                            if (remaining == 1) {
+                                errorMessage = errorMessage + " Only " + LoginManager.getRemainingAttempts(username) + " login attempt is remaining.";
+                            } else {
+                                errorMessage = errorMessage + " There are " + LoginManager.getRemainingAttempts(username) + " login attempts remaining.";
+                            }
+                            errorMessage = errorMessage + " If all login attempt fails, the account \"" + username + "\" will be locked.";
+                        }
 
                         Component parent = SwingUtilities.getWindowAncestor(loginButton);
                         JOptionPane.showMessageDialog(
                             parent,
-                            "Incorrect password for \"" + username + "\".",
+                            errorMessage,
                             "Error",
                             JOptionPane.ERROR_MESSAGE
                         );
                     }
+
+                    if (permitLogin) {
+                        LoginManager.resetLoginAttempts(username);
+                        authenticateLogin();
+                    } else {
+                        // Execute when all user account type login attempts fail
+                        // Perform counter operation
+                    }
                 } catch (SQLException exception) {
                     exception.printStackTrace();
-                }
-
-                if (permitLogin) {
-                    authenticateLogin();
-                } else {
-                    // Execute when all user account type login attempts fail
-                    // Perform counter operation
                 }
             }
         });

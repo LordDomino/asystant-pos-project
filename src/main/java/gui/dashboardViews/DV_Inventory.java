@@ -1,4 +1,4 @@
-package main.java.gui.windowScreens;
+package main.java.gui.dashboardViews;
 
 import javax.swing.JLabel;
 import java.awt.GridBagConstraints;
@@ -6,19 +6,21 @@ import java.awt.GridBagConstraints;
 import main.java.configs.ColorConfig;
 import main.java.configs.InsetsConfig;
 import main.java.configs.StylesConfig;
+import main.java.gui.panels.WP_StockInventory;
+
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 
 
 import main.java.components.APP_Panel;
 
-public class WS_Inventory extends APP_Panel {
+public class DV_Inventory extends APP_Panel {
 
     public final JLabel header = new JLabel("Inventory");
 
-    public final WS_StockTable STOCK_TABLE = new WS_StockTable();
+    public final WP_StockInventory STOCK_TABLE = new WP_StockInventory();
 
-    public WS_Inventory() {
+    public DV_Inventory() {
         super();
         compile();
     }

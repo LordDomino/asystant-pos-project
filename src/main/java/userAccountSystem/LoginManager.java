@@ -7,8 +7,8 @@ import java.sql.Statement;
 import javax.swing.JFrame;
 
 import main.java.Main;
-import main.java.gui.windowFrames.WF_Dashboard;
-import main.java.gui.windowFrames.WF_SuperAdminScreen;
+import main.java.gui.frames.WF_Dashboard;
+import main.java.gui.frames.WF_SuperAdminScreen;
 import main.java.sql.DBReferences;
 import main.java.sql.SQLConnector;
 
@@ -110,7 +110,6 @@ public class LoginManager {
         
         result.next(); // Read row
 
-        System.out.println(result.getString("activated").toString());
         if (result.getString("activated").equals("1")) {
             return true;
         } else {
@@ -159,6 +158,51 @@ public class LoginManager {
             }
         }
         return true;
+    }
+
+    public static final void incrementIncorrectAttempts(String username) throws SQLException {
+        String query = "SELECT * FROM " + DBReferences.TBL_USER_ACCOUNTS + " WHERE username = \"" + username + "\" LIMIT 1;";
+        final Statement statement = SQLConnector.connection.createStatement();
+        final ResultSet result = statement.executeQuery(query);
+
+        result.next();
+
+        final int loginAttempts = result.getInt("login_attempts");
+
+        if (loginAttempts + 1 >= 3) {
+            // Lock the account
+            query = "UPDATE " + DBReferences.TBL_USER_ACCOUNTS + " SET login_attempts = 0"; // Locked accounts reset back to zero
+            query = query + " WHERE username = \"" + username + "\";";
+            statement.executeUpdate(query);
+            lockAccount(username);
+        } else {
+            // Increment login_attempts
+            query = "UPDATE " + DBReferences.TBL_USER_ACCOUNTS + " SET login_attempts = " + (loginAttempts + 1);
+            query = query + " WHERE username = \"" + username + "\";";
+            statement.executeUpdate(query);
+        }
+    }
+
+    public static final void resetLoginAttempts(String username) throws SQLException {
+        final Statement statement = SQLConnector.connection.createStatement();
+        String query = "UPDATE " + DBReferences.TBL_USER_ACCOUNTS + " SET login_attempts = 0";
+        query = query + " WHERE username = \"" + username + "\";";
+        statement.executeUpdate(query);
+    }
+
+    public static final int getRemainingAttempts(String username) throws SQLException {
+        final Statement statement = SQLConnector.connection.createStatement();
+        String query = "SELECT * FROM " + DBReferences.TBL_USER_ACCOUNTS + " WHERE username = \"" + username + "\" LIMIT 1;";
+        ResultSet result = statement.executeQuery(query);
+        result.next();
+        return (3 - result.getInt("login_attempts"));
+    }
+
+    private static final void lockAccount(String username) throws SQLException {
+        final Statement statement = SQLConnector.connection.createStatement();
+        String query = "UPDATE " + DBReferences.TBL_USER_ACCOUNTS + " SET activated = " + 0; // Locked accounts reset back to zero
+        query = query + " WHERE username = \"" + username + "\";";
+        statement.executeUpdate(query);
     }
 
     private static final void setCurrentAccessLevelModeConfig(int accessLevel, JFrame targetJFrame) {

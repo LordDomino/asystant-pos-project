@@ -1,6 +1,6 @@
 package main.java.components;
 
-public class APP_PopUpFrame<T> extends APP_Frame {
+public abstract class APP_PopUpFrame<T> extends APP_Frame {
     
     /**The parent frame of this pop up frame */
     private T parent;
@@ -15,13 +15,13 @@ public class APP_PopUpFrame<T> extends APP_Frame {
         this.parent = parent;
     }
 
-    public void prepare() {}
+    public abstract void prepare();
 
-    public void prepareComponents() {}
+    public abstract void prepareComponents();
 
-    public void addComponents() {}
+    public abstract void addComponents();
 
-    public void finalizePrepare() {}
+    public abstract void finalizePrepare();
 
     public T getParentFrame() {
         return parent;

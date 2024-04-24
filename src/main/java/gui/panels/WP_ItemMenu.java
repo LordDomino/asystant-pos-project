@@ -1,4 +1,4 @@
-package main.java.gui.windowPanels;
+package main.java.gui.panels;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

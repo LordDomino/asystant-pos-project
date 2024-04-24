@@ -1,4 +1,4 @@
-package main.java.gui.windowFrames;
+package main.java.gui.frames;
 
 import javax.swing.*;
 

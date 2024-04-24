@@ -8,7 +8,9 @@ public class SQLConnector {
 
     public static Connection connection;
 
-    public static final String[] FIELDS_user_accounts = {"username", "password", "access_level", "activated"};
+    public static final String[] FIELDS_user_accounts = {
+        "username", "password", "access_level", "activated"
+    };
 
     /**
      * Registers the class from the JAR library and establishes a port

@@ -26,6 +26,10 @@ public abstract class APP_Frame extends JFrame {
 
     public abstract void finalizePrepare();
 
+    /**Executes the four convenience methods in sequential order:
+     * {@code prepare()}, {@code prepareComponents()}, 
+     * {@code addComponents()}, then {@code finalizePrepare()}.
+     */
     public void compile() {
         prepare();
         prepareComponents();

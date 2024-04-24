@@ -1,6 +1,5 @@
 package main.java.components;
 
-import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -59,5 +58,9 @@ public class APP_LabeledTextField extends JPanel {
 
     public void setText(String l) {
         tf.setText(l);
+    }
+
+    public void setEnabled(boolean b) {
+        tf.setEnabled(b);
     }
 }

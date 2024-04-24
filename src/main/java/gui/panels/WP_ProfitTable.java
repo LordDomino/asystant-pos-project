@@ -1,4 +1,4 @@
-package main.java.gui.windowScreens;
+package main.java.gui.panels;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -22,7 +22,7 @@ import main.java.configs.StylesConfig;
 import main.java.sql.DBReferences;
 import main.java.sql.SQLConnector;
 
-public class WS_ProfitTable extends APP_Panel {
+public class WP_ProfitTable extends APP_Panel {
 
     public static final String[] columnNames = {"Username", "Password", "Access Level", "Activation Status"};
 
@@ -53,7 +53,7 @@ public class WS_ProfitTable extends APP_Panel {
     public final JButton editButton = new JButton("Edit");
     public final JButton deleteButton = new JButton("Delete");
     
-    public WS_ProfitTable() {
+    public WP_ProfitTable() {
         super();
         compile();
     }

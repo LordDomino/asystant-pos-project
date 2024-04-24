@@ -1,10 +1,13 @@
 package main.java.sql;
 
+import java.util.List;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Arrays;
 
 public class Queries {
+
     public static ResultSet getExistingProductsOfProductCode(String productCode) throws SQLException {
         String query = "SELECT * FROM " + DBReferences.TBL_STOCKS_INVENTORY + " WHERE product_code = \"" + productCode + "\";";
         Statement statement = SQLConnector.connection.createStatement();
@@ -43,6 +46,51 @@ public class Queries {
         query = query + " \"" + stockQuantity    + "\", ";
         query = query + " \"" + markupPrice      + "\", ";
         query = query + " \"" + unitPrice        + "\");";
+
+        Statement statement = SQLConnector.connection.createStatement();
+        System.out.println(query);
+        statement.executeUpdate(query);
+    }
+
+    public static void updateProduct(String productCode, String name,
+    String description, String category, String unitCost, String stockQuantity,
+    String markupPrice, String unitPrice) throws SQLException {
+
+        final String[] fieldNames = {
+            "product_code",
+            "name",
+            "description",
+            "category",
+            "unit_cost",
+            "stock_quantity",
+            "markup_price",
+            "unit_price"
+        };
+
+        final String[] fieldValues = {
+            productCode,
+            name,
+            description,
+            category,
+            unitCost,
+            stockQuantity,
+            markupPrice,
+            unitPrice
+        };
+
+        String query = "UPDATE " + DBReferences.TBL_STOCKS_INVENTORY + " SET ";
+
+        List<String> fields = Arrays.asList(fieldNames);
+        List<String> values = Arrays.asList(fieldValues);
+
+        for (int i = 0; i < fields.size(); i++) {
+            String columnName = fields.get(i);
+            Object value = values.get(i);
+            query = query + " " + columnName + " = \"" + value + "\",";
+        }
+
+        query = query.substring(0, query.length()-1);
+        query = query + " WHERE productCode = \"" + productCode + "\";";
 
         Statement statement = SQLConnector.connection.createStatement();
         System.out.println(query);

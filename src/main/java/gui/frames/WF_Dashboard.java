@@ -1,19 +1,20 @@
-package main.java.gui.windowFrames;
+package main.java.gui.frames;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.MatteBorder;
 
 import main.java.components.APP_Frame;
 import main.java.components.APP_Panel;
 import main.java.configs.ColorConfig;
-import main.java.gui.windowPanels.WP_Calculator;
-import main.java.gui.windowPanels.WP_CheckoutPanel;
-import main.java.gui.windowPanels.WP_ItemMenu;
-import main.java.gui.windowPanels.WP_SideRibbon;
+import main.java.gui.panels.WP_Calculator;
+import main.java.gui.panels.WP_CheckoutPanel;
+import main.java.gui.panels.WP_ItemMenu;
+import main.java.gui.panels.WP_SideRibbon;
 
 public class WF_Dashboard extends APP_Frame {
 
@@ -33,7 +34,7 @@ public class WF_Dashboard extends APP_Frame {
 
     public void prepareComponents() {
         leftPanel.setBackground(ColorConfig.ACCENT_1);
-        viewingPanel.setBackground(ColorConfig.ACCENT_2);
+        viewingPanel.setBackground(ColorConfig.BG);
     }
 
     public void addComponents() {
@@ -67,6 +68,7 @@ public class WF_Dashboard extends APP_Frame {
     public void finalizePrepare() {
         pack();
         setLocationRelativeTo(null);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
     }
 
     public void setView(JPanel view) {

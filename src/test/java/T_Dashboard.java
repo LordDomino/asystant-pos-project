@@ -1,6 +1,6 @@
 package test.java;
 
-import main.java.gui.windowFrames.WF_Dashboard;
+import main.java.gui.frames.WF_Dashboard;
 
 public class T_Dashboard {
     public static void main(String[] args) {

@@ -4,11 +4,11 @@ import javax.swing.JFrame;
 
 import main.java.configs.APPResourceLoader;
 import main.java.configs.StylesConfig;
-import main.java.gui.windowFrames.WF_Dashboard;
-import main.java.gui.windowFrames.WF_LoginWindow;
-import main.java.gui.windowFrames.WF_SuperAdminScreen;
-import main.java.gui.windowFrames.WF_UserManager;
-import main.java.gui.windowScreens.WS_Inventory;
+import main.java.gui.dashboardViews.DV_Inventory;
+import main.java.gui.frames.WF_Dashboard;
+import main.java.gui.frames.WF_LoginWindow;
+import main.java.gui.frames.WF_SuperAdminScreen;
+import main.java.gui.frames.WF_UserManager;
 
 public class Application {
 
@@ -25,7 +25,7 @@ public class Application {
     public WF_UserManager USER_MANAGER;
 
     /**The inventory view of the application */
-    public WS_Inventory INVENTORY;
+    public DV_Inventory INVENTORY;
 
     public void run() {
         APPResourceLoader.loadFonts(); // load custom fonts
