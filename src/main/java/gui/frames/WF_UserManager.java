@@ -755,7 +755,7 @@ class EditPopupWindow extends APP_PopUpFrame<WF_UserManager> {
     public final JComboBox<String> accessLevelComboBoxEdit = new JComboBox<String>(accessEditField);
     public final JCheckBox activatedCheckBoxEdit = new JCheckBox("", false);
 
-    public final JButton updateButton = new JButton("Update");
+    public final JButton updateButton = new APP_AccentButton("Update");
 
     JTextField[] dataField = {usernameEditField, passwordEditField};
 

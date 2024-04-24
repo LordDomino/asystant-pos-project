@@ -52,7 +52,7 @@ public class Queries {
         statement.executeUpdate(query);
     }
 
-    public static void updateProduct(String productCode, String name,
+    public static void updateProduct(int id, String productCode, String name,
     String description, String category, String unitCost, String stockQuantity,
     String markupPrice, String unitPrice) throws SQLException {
 
@@ -90,7 +90,7 @@ public class Queries {
         }
 
         query = query.substring(0, query.length()-1);
-        query = query + " WHERE productCode = \"" + productCode + "\";";
+        query = query + " WHERE id = \"" + id + "\";";
 
         Statement statement = SQLConnector.connection.createStatement();
         System.out.println(query);

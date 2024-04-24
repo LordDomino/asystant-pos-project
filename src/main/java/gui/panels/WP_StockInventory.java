@@ -11,6 +11,8 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
 import java.awt.GridBagConstraints;
@@ -106,6 +108,9 @@ public class WP_StockInventory extends APP_Panel {
             final int[] selectedIndices = inventoryTable.getSelectionModel().getSelectedIndices();
             if (selectedIndices.length > 0) {
                 setEnabled(true);    
+
+                // pakitanggal toh nasa baba kapag ok na yung delete @Potatopowers
+                setEnabled(false);
             } else {
                 setEnabled(false);
             }
@@ -137,6 +142,16 @@ public class WP_StockInventory extends APP_Panel {
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
         detailsPanel.setBackground(ColorConfig.ACCENT_1);
 
+        inventoryTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            public void valueChanged(ListSelectionEvent event) {
+                try {
+                    editButton.fireValueChanged();
+                    deleteButton.fireValueChanged();
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                }
+            }
+        });
 
         addButton.addActionListener(new ActionListener() {
             @Override
@@ -147,24 +162,40 @@ public class WP_StockInventory extends APP_Panel {
             }
         });
 
+        editButton.setEnabled(false);
         editButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 EditPopupWindow popUp = new EditPopupWindow();
 
                 int selectedRowIndex = inventoryTable.getSelectedRow();
-                // String productCode
-                // String name
-                // String category
-                // String unitCost
-                // String
-                // String
-                // String
+                String selectedProductCode      = inventoryTable.getValueAt(selectedRowIndex, 0).toString();
+                String selectedName             = inventoryTable.getValueAt(selectedRowIndex, 1).toString();
+                String selectedCategory         = inventoryTable.getValueAt(selectedRowIndex, 2).toString();
+                String selectedUnitCost         = inventoryTable.getValueAt(selectedRowIndex, 3).toString();
+                String selectedStockQuantity    = inventoryTable.getValueAt(selectedRowIndex, 4).toString();
+                String selectedMarkupPrice      = inventoryTable.getValueAt(selectedRowIndex, 5).toString();
+                String selectedUnitPrice        = inventoryTable.getValueAt(selectedRowIndex, 6).toString();
 
-                // ResultSet result = Queries.getExistingProductsOfProductCode(queryProductCode);
+                popUp.productCodeField.setText(selectedProductCode);
+                popUp.nameField.setText(selectedName);
+                popUp.categoryField.setSelectedItem(selectedCategory);
+                popUp.unitCostField.setText(selectedUnitCost);
+                popUp.stockQuantityField.setText(selectedStockQuantity);
+                popUp.markupPriceField.setText(selectedMarkupPrice);
+                popUp.unitPriceField.setText(selectedUnitPrice);
 
                 popUp.setLocationRelativeTo(null);
                 popUp.setVisible(true);
+            }
+        });
+
+        deleteButton.setEnabled(false);
+        deleteButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // TODO Auto-generated method stub
+                // @Potatopowers
             }
         });
 
@@ -418,7 +449,7 @@ class AddPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
         }
     };
 
-    public final JButton submitButton = new JButton("Submit");
+    public final JButton submitButton = new APP_AccentButton("Submit");
 
     public final JTextField[] fields = {
         productCodeField,
@@ -707,7 +738,7 @@ class EditPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
         }
     };
 
-    public final JButton updateButton = new JButton("Submit");
+    public final JButton updateButton = new APP_AccentButton("Submit");
 
     public final JTextField[] fields = {
         productCodeField,
@@ -784,9 +815,13 @@ class EditPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
                     ResultSet result = Queries.getExistingProductsOfProductCode(queryProductCode);
 
                     if (result.getFetchSize() == 0) {
-                        // No existing product exists
+                        result.next();
+
+                        // Get primary ID key
+                        int id = result.getInt("id");
                         
-                        Queries.insertNewProduct(
+                        Queries.updateProduct(
+                            id,
                             queryProductCode,
                             queryName,
                             queryDescription,

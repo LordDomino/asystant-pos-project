@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 24, 2024 at 04:36 AM
+-- Generation Time: Apr 24, 2024 at 07:33 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -54,15 +54,20 @@ CREATE TABLE `stocks_inventory_tbl` (
   `description` varchar(255) NOT NULL,
   `category` varchar(100) NOT NULL DEFAULT 'Uncategorized',
   `unit_cost` decimal(65,4) NOT NULL,
-  `stock_quantity` int(10) NOT NULL
+  `stock_quantity` int(10) NOT NULL,
+  `markup_price` decimal(65,4) NOT NULL,
+  `unit_price` decimal(65,4) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `stocks_inventory_tbl`
 --
 
-INSERT INTO `stocks_inventory_tbl` (`id`, `product_code`, `name`, `description`, `category`, `unit_cost`, `stock_quantity`) VALUES
-(1, 123456, 'Item', '', 'Uncategorized', 0.0000, 0);
+INSERT INTO `stocks_inventory_tbl` (`id`, `product_code`, `name`, `description`, `category`, `unit_cost`, `stock_quantity`, `markup_price`, `unit_price`) VALUES
+(3, 13573, 'Cookies', 'Some good cookies', 'Pastry', 16.0000, 100, 2.5000, 18.5000),
+(4, 13579, 'Lemon Juice', '', 'Uncategorized', 16.0000, 100, 2.5000, 18.5000),
+(5, 123456, 'Human Liver', '', 'Appetizers', 500000.0000, 1, 250000.0000, 750000.0000),
+(7, 69, 'Loui\'s last braincell', 'The remaining braincell of loui, to be sold', 'Brainrot items', 5000000.0000, 1, 0.0000, 5000000.0000);
 
 -- --------------------------------------------------------
 
@@ -74,17 +79,18 @@ CREATE TABLE `user_accounts` (
   `username` varchar(128) NOT NULL,
   `password` varchar(256) NOT NULL,
   `access_level` int(1) NOT NULL,
-  `activated` tinyint(1) NOT NULL
+  `activated` tinyint(1) NOT NULL,
+  `login_attempts` int(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `user_accounts`
 --
 
-INSERT INTO `user_accounts` (`username`, `password`, `access_level`, `activated`) VALUES
-('%SUPERADMIN%', '%SUPERADMIN%', 1, 1),
-('admin', 'admin', 2, 1),
-('user', 'user', 3, 1);
+INSERT INTO `user_accounts` (`username`, `password`, `access_level`, `activated`, `login_attempts`) VALUES
+('%SUPERADMIN%', '%SUPERADMIN%', 1, 1, 0),
+('admin', 'defaultadmin123', 2, 1, 0),
+('user', 'defaultuser123', 3, 1, 0);
 
 --
 -- Indexes for dumped tables
@@ -102,7 +108,8 @@ ALTER TABLE `profit_tbl`
 --
 ALTER TABLE `stocks_inventory_tbl`
   ADD PRIMARY KEY (`id`) USING BTREE,
-  ADD UNIQUE KEY `product` (`product_code`,`name`,`category`) USING BTREE;
+  ADD UNIQUE KEY `product` (`product_code`,`name`,`category`) USING BTREE,
+  ADD UNIQUE KEY `product_code` (`product_code`);
 
 --
 -- Indexes for table `user_accounts`
@@ -119,7 +126,7 @@ ALTER TABLE `user_accounts`
 -- AUTO_INCREMENT for table `stocks_inventory_tbl`
 --
 ALTER TABLE `stocks_inventory_tbl`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- Constraints for dumped tables
@@ -129,7 +136,7 @@ ALTER TABLE `stocks_inventory_tbl`
 -- Constraints for table `profit_tbl`
 --
 ALTER TABLE `profit_tbl`
-  ADD CONSTRAINT `profit_tbl_ibfk_1` FOREIGN KEY (`product_code`,`name`,`category`) REFERENCES `stocks_inventory_tbl` (`product_code`, `name`, `category`);
+  ADD CONSTRAINT `profit_tbl_ibfk_1` FOREIGN KEY (`product_code`) REFERENCES `stocks_inventory_tbl` (`product_code`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
