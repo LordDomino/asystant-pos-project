@@ -6,6 +6,7 @@ import main.java.configs.APPResourceLoader;
 import main.java.configs.StylesConfig;
 import main.java.gui.dashboardViews.DV_Customers;
 import main.java.gui.dashboardViews.DV_Inventory;
+import main.java.gui.dashboardViews.DV_PurchaseView;
 import main.java.gui.frames.WF_Dashboard;
 import main.java.gui.frames.WF_LoginWindow;
 import main.java.gui.frames.WF_SuperAdminScreen;
@@ -25,6 +26,8 @@ public class Application {
     /**The user manager window. */
     public WF_UserManager USER_MANAGER;
 
+    public DV_PurchaseView PURCHASE_VIEW;
+
     /**The inventory view of the application */
     public DV_Inventory INVENTORY;
 
@@ -36,7 +39,9 @@ public class Application {
 
         LOGIN_WINDOW = new WF_LoginWindow();
         DASHBOARD = new WF_Dashboard();
+
         DASHBOARD.initializeSideRibbon();
+        DASHBOARD.setToDefaultView();
 
         LOGIN_WINDOW.setVisible(true);
         LOGIN_WINDOW.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

@@ -59,6 +59,3 @@ public class DV_Inventory extends APP_Panel {
     
     }
 }
-
-    
-
