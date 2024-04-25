@@ -2,6 +2,7 @@ package main.java.gui.panels;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -22,15 +23,19 @@ import java.awt.Insets;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Vector;
 
 import main.java.Main;
 import main.java.components.APP_AccentButton;
+import main.java.components.APP_ContrastButton;
 import main.java.components.APP_LabeledTextField;
 import main.java.components.APP_Panel;
 import main.java.components.APP_PopUpFrame;
@@ -39,6 +44,7 @@ import main.java.configs.ColorConfig;
 import main.java.configs.InsetsConfig;
 import main.java.configs.StylesConfig;
 import main.java.gui.frames.WF_Dashboard;
+import main.java.gui.frames.WF_UserManager;
 import main.java.sql.DBReferences;
 import main.java.sql.Queries;
 import main.java.sql.SQLConnector;
@@ -83,6 +89,7 @@ public class WP_StockInventory extends APP_Panel {
     public final JPanel buttonsPanel    = new JPanel(new GridBagLayout());
     public final JPanel tablePanel      = new JPanel(new GridBagLayout());
     public final JPanel footerPanel     = new JPanel(new GridBagLayout());
+    public final JPanel footerButtonsPanel = new JPanel(new GridBagLayout());
 
     public final JScrollPane scrollPane         = new JScrollPane(inventoryTable);
     public final WP_DetailsPanel detailsPanel   = new WP_DetailsPanel();
@@ -108,35 +115,10 @@ public class WP_StockInventory extends APP_Panel {
 
         @Override
         public void fireValueChanged() {
-            final int[] selRows = inventoryTable.getSelectionModel().getSelectedIndices();
-            if (selRows.length > 0) {
-                setEnabled(true);    
+            int[] selectedIndices = inventoryTable.getSelectionModel().getSelectedIndices();
 
-                for (int rowID : selRows) {
-                    ArrayList<String> pendingRowValues = new ArrayList<>();
-                    pendingRowValues.add(inventoryTable.getValueAt(rowID, 0).toString());
-                    pendingRowValues.add(inventoryTable.getValueAt(rowID, 1).toString());
-                    pendingRowValues.add(inventoryTable.getValueAt(rowID, 2).toString());
-                    pendingRowValues.add(inventoryTable.getValueAt(rowID, 3).toString());
-                    pendingRowValues.add(inventoryTable.getValueAt(rowID, 4).toString());
-                    pendingRowValues.add(inventoryTable.getValueAt(rowID, 5).toString());
-                    pendingRowValues.add(inventoryTable.getValueAt(rowID, 6).toString());
-                    pendingRowValues.add(inventoryTable.getValueAt(rowID, 7).toString());
-                    pendingRowValues.add(inventoryTable.getValueAt(rowID, 8).toString());
-                    pendingRowValues.add(inventoryTable.getValueAt(rowID, 9).toString());
-                    pendingRowValues.add(inventoryTable.getValueAt(rowID, 10).toString());
-                    pendingDeletedRows.add(pendingRowValues);
-                }
-                
-                int[] selectedRows = inventoryTable.getSelectedRows();
-                if (selectedRows.length > 0) {
-                    for (int i = selectedRows.length - 1; i >= 0; i--) {
-                        inventoryModel.removeRow(selectedRows[i]);
-                    }
-                }
-
-                // pakitanggal toh nasa baba kapag ok na yung delete @Potatopowers
-                setEnabled(false);
+            if (selectedIndices.length > 0) {
+                setEnabled(true);
             } else {
                 setEnabled(false);
             }
@@ -146,20 +128,26 @@ public class WP_StockInventory extends APP_Panel {
 
     public final APP_AccentButton refreshButton = new APP_AccentButton("Refresh");
 
+    public final APP_ContrastButton submitChangesButton = new APP_ContrastButton("Submit changes");
+
     public WP_StockInventory () {
         super();
         compile();
     }
 
     public void prepare() {
-        updateTable();
+        updateGUI();
         setBackground(ColorConfig.BG);
         setLayout(new GridBagLayout());
     }
     
     public void prepareComponents() {
+        updateGUI();
+
         headerPanel.setOpaque(false);
         buttonsPanel.setOpaque(false);
+        footerPanel.setOpaque(false);
+        footerButtonsPanel.setOpaque(false);
 
         tablePanel.setBackground(ColorConfig.BG);
         inventoryTable.setBackground(ColorConfig.BG);
@@ -221,19 +209,48 @@ public class WP_StockInventory extends APP_Panel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int[] selectedRows = inventoryTable.getSelectedRows();
+
+                for (int rowID : selectedRows) {
+                    ArrayList<String> pendingRowValues = new ArrayList<>();
+                    pendingRowValues.add(inventoryTable.getValueAt(rowID, 0).toString());
+                    pendingRowValues.add(inventoryTable.getValueAt(rowID, 1).toString());
+                    pendingRowValues.add(inventoryTable.getValueAt(rowID, 2).toString());
+                    pendingRowValues.add(inventoryTable.getValueAt(rowID, 3).toString());
+                    pendingRowValues.add(inventoryTable.getValueAt(rowID, 4).toString());
+                    pendingRowValues.add(inventoryTable.getValueAt(rowID, 5).toString());
+                    pendingRowValues.add(inventoryTable.getValueAt(rowID, 6).toString());
+                    pendingDeletedRows.add(pendingRowValues);
+                }
+                
                 if (selectedRows.length > 0) {
                     for (int i = selectedRows.length - 1; i >= 0; i--) {
                         inventoryModel.removeRow(selectedRows[i]);
                     }
+                    
+                    submitChangesButton.setEnabled(true);
                 }
-                // TODO Auto-generated method stub
-                // @Potatopowers
+
             }
+        });
+
+        submitChangesButton.setEnabled(false);
+        submitChangesButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                if (pendingDeletedRows.size() >= 1) {
+                    // Open the warning pop up window if there are pending deletions
+                    DeletePopUpWindow popUp = new DeletePopUpWindow();
+                    Main.app.DASHBOARD.setEnabled(false);
+                    popUp.setVisible(true);
+                }
+            }
+            
         });
 
         refreshButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
-                updateTable();
+                updateGUI();
             }
         });
     } 
@@ -318,12 +335,47 @@ public class WP_StockInventory extends APP_Panel {
         gbc.weightx = 1;
         gbc.weighty = 0;
         add(footerPanel, gbc);
+
+        {
+            gbc.anchor = GridBagConstraints.EAST;
+            gbc.fill = GridBagConstraints.NONE;
+            gbc.gridx = 0;
+            gbc.gridy = 1;
+            gbc.gridwidth = GridBagConstraints.REMAINDER;
+            gbc.insets = new Insets(InsetsConfig.M, 0, 0, 0);
+            footerPanel.add(footerButtonsPanel, gbc);
+
+            {
+                gbc.anchor = GridBagConstraints.EAST;
+                gbc.fill = GridBagConstraints.NONE;
+                gbc.gridx = 0;
+                gbc.gridy = 0;
+                gbc.gridwidth = 1;
+                gbc.insets = new Insets(InsetsConfig.M, 0, 0, 0);
+                footerButtonsPanel.add(submitChangesButton, gbc);
+            }
+        }
     }
 
     public void finalizePrepare() {}
 
-    protected void updateTable() {
+    @SuppressWarnings("rawtypes")
+    protected void updateGUI() {
+        Main.app.DASHBOARD.setEnabled(true);
         loadFromDatabase();
+
+        // Loop through the pendingDeletedUsernames and remove the
+        // rows which are in the purgatory of deleted accounts
+        for (ArrayList<String> row : pendingDeletedRows) {
+            Vector<Vector> tableData = inventoryModel.getDataVector();
+
+            for (int i = 0; i < tableData.size(); i++) {
+                Vector tableRow = tableData.get(i);
+                if (tableRow.get(0).equals(row.get(0))) {
+                    inventoryModel.removeRow(i);
+                }
+            }
+        }
     }
 
     protected void loadFromDatabase() {
@@ -375,53 +427,56 @@ public class WP_StockInventory extends APP_Panel {
             exception.printStackTrace();
         }
     }
-}
-// Delete SQL not working..
-/*protected void purgatoryPurge() {
-    // Performing the delete (SQL-Java connection)
-    final int pendingSize = pendingDeletedRows.size();
 
-    try {
-        String query;
-        SQLConnector.establishSQLConnection();
-
-        if (pendingSize == 1) {
-            // If only 1 row is selected, use the equal operator for SQL query
-            query = "DELETE FROM " + DBReferences.TBL_STOCKS_INVENTORY + " WHERE product_code = \"" + pendingDeletedRows.get(0).get(0) + "\";";
-        } else {
-            // If more than one row is selected, use the IN keyword for SQL query
-            query = "DELETE FROM " + DBReferences.TBL_STOCKS_INVENTORY + " WHERE product_code IN ( ";
-
-            // Get all usernameIDs
-            for (ArrayList<String> product_code : pendingDeletedRows) {
-                query = query + "\"" + product_code.get(0) + "\", ";
-            }
-
-            query = query.substring(0, query.length()-2) + " );";
-        }
-
-        System.out.println(query);
-
-        Statement statement = SQLConnector.connection.createStatement();
-        statement.executeUpdate(query);
-
-        SQLConnector.connection.close();
-
-        updateFrame();
-    } catch (Exception e) {
-        e.printStackTrace();
-        JOptionPane.showMessageDialog(
-            SwingUtilities.getWindowAncestor(deleteButton),
-            e.getMessage(),
-            "Error",
-            JOptionPane.ERROR_MESSAGE
-        );
+    protected void purgatoryPardon() {
+        pendingDeletedRows.clear();
+        updateGUI();
     }
 
-    pendingDeletedRows.clear();
-}*/
+    protected void purgatoryPurge() {
+        // Performing the delete (SQL-Java connection)
+        final int pendingSize = pendingDeletedRows.size();
 
+        try {
+            String query;
+            SQLConnector.establishSQLConnection();
 
+            if (pendingSize == 1) {
+                // If only 1 row is selected, use the equal operator for SQL query
+                query = "DELETE FROM " + DBReferences.TBL_STOCKS_INVENTORY + " WHERE product_code = \"" + pendingDeletedRows.get(0).get(0) + "\";";
+            } else {
+                // If more than one row is selected, use the IN keyword for SQL query
+                query = "DELETE FROM " + DBReferences.TBL_STOCKS_INVENTORY + " WHERE product_code IN ( ";
+
+                // Get all usernameIDs
+                for (ArrayList<String> product_code : pendingDeletedRows) {
+                    query = query + "\"" + product_code.get(0) + "\", ";
+                }
+
+                query = query.substring(0, query.length()-2) + " );";
+            }
+
+            System.out.println(query);
+
+            Statement statement = SQLConnector.connection.createStatement();
+            statement.executeUpdate(query);
+
+            SQLConnector.connection.close();
+
+            updateGUI();
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(
+                SwingUtilities.getWindowAncestor(deleteButton),
+                e.getMessage(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE
+            );
+        }
+
+        pendingDeletedRows.clear();
+    }
+}
 
 class AddPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
 
@@ -621,7 +676,7 @@ class AddPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
                     Window popUp = SwingUtilities.getWindowAncestor(submitButton);
                     popUp.dispose();
 
-                    Main.app.INVENTORY.STOCK_TABLE.updateTable();
+                    Main.app.INVENTORY.STOCK_TABLE.updateGUI();
                 } catch (SQLException exception) {
                     exception.printStackTrace();
                 }
@@ -919,7 +974,7 @@ class EditPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
                     Window popUp = SwingUtilities.getWindowAncestor(updateButton);
                     popUp.dispose();
 
-                    Main.app.INVENTORY.STOCK_TABLE.updateTable();
+                    Main.app.INVENTORY.STOCK_TABLE.updateGUI();
                 } catch (SQLException exception) {
                     exception.printStackTrace();
                 }
@@ -1015,3 +1070,171 @@ class EditPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
     }
 }
 
+class DeletePopUpWindow extends APP_PopUpFrame<WF_Dashboard> {
+
+    public static final String[] columnNames = {"Username", "Password", "Access Level", "Activation Status"};
+    
+    public boolean isExiting = false;
+
+    public final JPanel headerPanel = new JPanel(new GridBagLayout());
+    public final JPanel buttonsPanel = new JPanel(new GridBagLayout());
+
+    public final JLabel header = new JLabel("Deletion Warning");
+    public final JLabel info = new JLabel("<html>Accounts are pending to be deleted. Proceed?");
+
+    protected final DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0) {
+        public boolean isCellEditable(int row, int column) {
+            return false;
+        }
+    };
+
+    public final JTable table = new JTable(tableModel);
+    public final JScrollPane scrollPane = new JScrollPane(table);
+
+    public final JButton cancelButton = new APP_ContrastButton("Discard pending deletions");
+    public final JButton continueButton = new APP_ContrastButton("Continue");
+
+    public DeletePopUpWindow() {
+        super(Main.app.DASHBOARD, "Pending Deletion Warning");
+        compile();
+    }
+
+    public void prepare() {
+        getContentPane().setBackground(ColorConfig.ACCENT_1);
+        setLayout(new GridBagLayout());
+
+        addWindowListener(new WindowListener() {
+
+            @Override
+            public void windowOpened(WindowEvent e) {
+                // TODO Auto-generated method stub
+                // throw new UnsupportedOperationException("Unimplemented method 'windowOpened'");
+            }
+
+            @Override
+            public void windowClosing(WindowEvent e) {
+                // TODO Auto-generated method stub
+                // throw new UnsupportedOperationException("Unimplemented method 'windowClosing'");
+            }
+
+            @Override
+            public void windowClosed(WindowEvent e) {
+                // TODO
+            }
+
+            @Override
+            public void windowIconified(WindowEvent e) {
+                // TODO Auto-generated method stub
+                // throw new UnsupportedOperationException("Unimplemented method 'windowIconified'");
+            }
+
+            @Override
+            public void windowDeiconified(WindowEvent e) {
+                // TODO Auto-generated method stub
+                // throw new UnsupportedOperationException("Unimplemented method 'windowDeiconified'");
+            }
+
+            @Override
+            public void windowActivated(WindowEvent e) {
+                // TODO Auto-generated method stub
+                // throw new UnsupportedOperationException("Unimplemented method 'windowActivated'");
+            }
+
+            @Override
+            public void windowDeactivated(WindowEvent e) {
+                // TODO Auto-generated method stub
+                // throw new UnsupportedOperationException("Unimplemented method 'windowDeactivated'");
+            }
+            
+        });
+    }
+
+    public void prepareComponents() {
+        headerPanel.setOpaque(false);
+        buttonsPanel.setOpaque(false);
+
+        header.setFont(StylesConfig.HEADING3);
+        info.setFont(StylesConfig.NORMAL);
+
+        for (ArrayList<String> row : WP_StockInventory.pendingDeletedRows) {
+            tableModel.addRow(new Vector<>(row));
+        }
+
+        cancelButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                Main.app.INVENTORY.STOCK_TABLE.purgatoryPardon();
+                Main.app.INVENTORY.STOCK_TABLE.submitChangesButton.setEnabled(false);
+                
+                JFrame source = (JFrame) SwingUtilities.getWindowAncestor(continueButton);
+                source.dispose();
+            }
+        });
+        
+        continueButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                Main.app.INVENTORY.STOCK_TABLE.purgatoryPurge();
+                Main.app.INVENTORY.STOCK_TABLE.submitChangesButton.setEnabled(false);
+                
+                JFrame source = (JFrame) SwingUtilities.getWindowAncestor(continueButton);
+                source.dispose();
+            }
+        });
+    }
+
+    public void addComponents() {
+        GridBagConstraints gbc = new GridBagConstraints();
+
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.gridy = 0;
+        gbc.insets = new Insets(InsetsConfig.XL, InsetsConfig.XL, 0, InsetsConfig.XL);
+        gbc.weightx = 1;
+        gbc.weighty = 0;
+        add(headerPanel, gbc);
+
+        {
+            gbc.anchor = GridBagConstraints.WEST;
+            gbc.gridy = 0;
+            gbc.insets = new Insets(0, 0, 0, 0);
+            headerPanel.add(header, gbc);
+
+            gbc.gridy = 1;
+            gbc.insets = new Insets(InsetsConfig.S, 0, 0, 0);
+            headerPanel.add(info, gbc);
+        }
+
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.gridy = 1;
+        gbc.insets = new Insets(InsetsConfig.M, InsetsConfig.XL, 0, InsetsConfig.XL);
+        gbc.weighty = 1;
+        add(scrollPane, gbc);
+
+        gbc.anchor = GridBagConstraints.EAST;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.gridy = 2;
+        gbc.insets = new Insets(InsetsConfig.M, InsetsConfig.XL, InsetsConfig.XL, InsetsConfig.XL);
+        gbc.weighty = 0;
+        add(buttonsPanel, gbc);
+
+        {
+            gbc.anchor = GridBagConstraints.CENTER;
+            gbc.fill = GridBagConstraints.NONE;
+            gbc.gridx = 0;
+            gbc.gridy = 0;
+            gbc.insets = new Insets(0, 0, 0, 0);
+            buttonsPanel.add(cancelButton, gbc);
+
+            gbc.gridx = 1;
+            gbc.insets = new Insets(0, InsetsConfig.S, 0, 0);
+            buttonsPanel.add(continueButton, gbc);
+        }
+    }
+
+    public void finalizePrepare() {
+        pack();
+        setLocationRelativeTo(null);
+        setMinimumSize(getSize());
+    }
+}

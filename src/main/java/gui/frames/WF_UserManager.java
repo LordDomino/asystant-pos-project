@@ -121,7 +121,7 @@ public class WF_UserManager extends APP_Frame {
     }
 
     public void prepareComponents() {
-        updateFrame();
+        updateGUI();
 
         headerPanel.setOpaque(false);
         buttonsPanel.setOpaque(false);
@@ -224,7 +224,7 @@ public class WF_UserManager extends APP_Frame {
                     for (int i = selectedRows.length - 1; i >= 0; i--) {
                         tableModel.removeRow(selectedRows[i]);
                     }
-
+use
                     submitChangesButton.setEnabled(true);
                 }
 
@@ -397,7 +397,7 @@ public class WF_UserManager extends APP_Frame {
     }
 
     @SuppressWarnings("rawtypes")
-    protected void updateFrame() {
+    protected void updateGUI() {
         setEnabled(true);
         loadFromDatabase();
 
@@ -484,7 +484,7 @@ public class WF_UserManager extends APP_Frame {
     protected void purgatoryPardon() {
         pendingDeletedRows.clear();
         statusBar.setText("");
-        updateFrame();
+        updateGUI();
     }
 
     protected void purgatoryPurge() {
@@ -517,7 +517,7 @@ public class WF_UserManager extends APP_Frame {
 
             SQLConnector.connection.close();
 
-            updateFrame();
+            updateGUI();
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(
@@ -649,7 +649,7 @@ class AddPopupWindow extends APP_PopUpFrame<WF_UserManager> {
                         popUp.dispose();
 
                         // Update table
-                        getParentFrame().updateFrame();;
+                        getParentFrame().updateGUI();;
                     } else {
                         // An existing username has been found
                     }
@@ -845,7 +845,7 @@ class EditPopupWindow extends APP_PopUpFrame<WF_UserManager> {
                         popUp.dispose();
 
                         // Update table
-                        getParentFrame().updateFrame();
+                        getParentFrame().updateGUI();
                     } else {
                         // No existing username has been found
                     }
