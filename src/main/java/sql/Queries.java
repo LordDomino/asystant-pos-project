@@ -96,4 +96,33 @@ public class Queries {
         System.out.println(query);
         statement.executeUpdate(query);
     }
+
+
+public static void registerCustomer(String rfidNo, String studentNO,
+String userName, String amountDP) throws SQLException {
+
+    final String[] fieldNames = {
+        "rfid_No",
+        "student_No",
+        "username",
+        "amountDP"
+    };
+    
+    String query = "INSERT INTO " + DBReferences.TBL_STOCKS_INVENTORY + " (";
+    
+    for (String field : fieldNames) {
+        query = query + " `" + field + "`,";
+    }
+    
+    query = query.substring(0, query.length()-1) + " ) VALUES (";
+    query = query + " \"" + rfidNo             + "\", ";
+    query = query + " \"" + studentNO             + "\", ";
+    query = query + " \"" + userName      + "\", ";
+    query = query + " \"" + amountDP        + "\");";
+
+    Statement statement = SQLConnector.connection.createStatement();
+    System.out.println(query);
+    statement.executeUpdate(query);
+}
+
 }
