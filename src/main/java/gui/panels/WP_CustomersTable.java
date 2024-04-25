@@ -465,26 +465,18 @@ public class WP_CustomersTable extends APP_Panel {
 
 class AddPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
 
-    public final JLabel header = new JLabel("Insert a new Product");
+    public final JLabel header = new JLabel("Create a account");
     public final JPanel form = new JPanel(new GridBagLayout());
 
-    public final JLabel productCodeLabel        = new JLabel("Product Code");
-    public final JLabel nameLabel               = new JLabel("Name");
-    public final JLabel descriptionLabel        = new JLabel("Product description");
-    public final JLabel categoryLabel           = new JLabel("Category");
-    public final JLabel unitCostLabel           = new JLabel("Unit Cost");
-    public final JLabel stockQuantityLabel      = new JLabel("Stock Quantity");
-    public final JLabel markupPriceLabel        = new JLabel("Markup Price");
-    public final JLabel unitPriceLabel          = new JLabel("Unit Price");
+    public final JLabel rfidNoLabel               = new JLabel("RFID No:");
+    public final JLabel studentNOLabel          = new JLabel("StudentNO:");
+    public final JLabel userNameLabel           = new JLabel("Username:");
+    public final JLabel amountDPLabel           = new JLabel("Amount Deposited:");
 
-    public final JTextField productCodeField            = new APP_TextField(10);
-    public final JTextField nameField                   = new APP_TextField(10);
-    public final APP_TextField descriptionField         = new APP_TextField(10);
-    public final JComboBox<String> categoryField        = new JComboBox<String>();
-    public final APP_LabeledTextField unitCostField     = new APP_LabeledTextField("Php", 10);
-    public final APP_TextField stockQuantityField       = new APP_TextField(10);
-    public final APP_LabeledTextField markupPriceField  = new APP_LabeledTextField("Php", 10);
-    public final APP_LabeledTextField unitPriceField    = new APP_LabeledTextField("Php", 10);
+    public final JTextField rfidNoField           = new APP_TextField(10);
+    public final JTextField studentNOField      = new APP_TextField(10);
+    public final JTextField userNameField       = new APP_TextField(10);
+    public final APP_LabeledTextField amountDPField  = new APP_LabeledTextField("Php", 10);
 
     final DocumentListener unitCostListener = new DocumentListener() {
         public void changedUpdate(DocumentEvent event) {
@@ -500,20 +492,10 @@ class AddPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
         }
 
         public void changed() {
-            // Always update either markup or unit price
-            if (!unitCostField.getText().equals("")) {
-                float unitCost = Float.parseFloat(unitCostField.getText());
-
-                if (!markupPriceField.getText().equals("")) {
-                    float markupPrice = Float.parseFloat(markupPriceField.getText());
-                    unitPriceField.setText(String.valueOf(unitCost + markupPrice));
-                } else if (!unitPriceField.getText().equals("")) {
-                    float unitPrice = Float.parseFloat(unitPriceField.getText());
-                    markupPriceField.setText(String.valueOf(unitPrice - unitCost));
-                }
+            
             }
-        }
-    };
+        };
+    
 
     final DocumentListener markupPriceListener = new DocumentListener() {
         public void changedUpdate(DocumentEvent event) {
@@ -530,16 +512,10 @@ class AddPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
 
         public void changed() {
             // Always update unit price based on typed markup price
-            if (!unitCostField.getText().equals("") && !markupPriceField.getText().equals("")) {
-                float unitCost = Float.parseFloat(unitCostField.getText());
-                float markupPrice = Float.parseFloat(markupPriceField.getText());
-
-                unitPriceField.getTextField().getDocument().removeDocumentListener(unitPriceListener);
-                unitPriceField.setText(String.valueOf(unitCost + markupPrice));
-                unitPriceField.getTextField().getDocument().addDocumentListener(unitPriceListener);
+            
             }
-        }
-    };
+        };
+    
 
     final DocumentListener unitPriceListener = new DocumentListener() {
         public void changedUpdate(DocumentEvent event) {
@@ -556,26 +532,18 @@ class AddPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
 
         public void changed() {
             // Always update unit price based on typed markup price
-            if (!unitCostField.getText().equals("") && !unitPriceField.getText().equals("")) {
-                float unitCost = Float.parseFloat(unitCostField.getText());
-                float unitPrice = Float.parseFloat(unitPriceField.getText());
 
-                markupPriceField.getTextField().getDocument().removeDocumentListener(markupPriceListener);
-                markupPriceField.setText(String.valueOf(unitPrice - unitCost));
-                markupPriceField.getTextField().getDocument().addDocumentListener(markupPriceListener);
             }
-        }
-    };
+        };
+    
 
     public final JButton submitButton = new APP_AccentButton("Submit");
 
     public final JTextField[] fields = {
-        productCodeField,
-        nameField,
-        unitCostField.getTextField(),
-        stockQuantityField,
-        markupPriceField.getTextField(),
-        unitPriceField.getTextField()
+        rfidNoField,
+        studentNOField,
+        userNameField,
+        amountDPField.getTextField()
     };
 
 
@@ -597,62 +565,39 @@ class AddPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
 
         header.setFont(StylesConfig.HEADING3);
         form.setOpaque(false);
-        categoryField.setBackground(ColorConfig.BG);
-        categoryField.setEditable(true);
 
-        // Document listeners to enable functionality of auto-updating
-        // the markupPriceField and unitPriceField based on the data
-        // typed in each other and with the unitCostField
-        unitCostField.getTextField().getDocument().addDocumentListener(unitCostListener);
-        markupPriceField.getTextField().getDocument().addDocumentListener(markupPriceListener);
-        unitPriceField.getTextField().getDocument().addDocumentListener(unitPriceListener);
 
         submitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Retrieve inputs
-                final String retrievedProductCode   = productCodeField.getText();
-                final String retrievedName          = nameField.getText();
-                final String retrievedDescription   = descriptionField.getText();
-                final Object retrievedCategory      = categoryField.getSelectedItem();
-                final float retrievedUnitCost       = Float.parseFloat(unitCostField.getText());
-                final int retrievedStockQuantity    = Integer.parseInt(stockQuantityField.getText());
-                final float retrievedMarkupPrice    = Float.parseFloat(markupPriceField.getText());
-                final float retrievedUnitPrice      = Float.parseFloat(unitPriceField.getText());
+                final String retrievedrfidNo       = idNoField.getText();
+                final String retrievedstudentNO  = studentNOField.getText();
+                final String retrieveduserName   = userNameField.getText();
+                final float retrievedamountDP    = Float.parseFloat(amountDPField.getText());
 
                 // Variables reserved for query
-                String queryProductCode             = retrievedProductCode;
-                String queryName                    = retrievedName;
-                String queryDescription             = retrievedDescription;
-                String queryCategory; // Do not initialize yet because category maybe empty
-                String queryUnitCost                = String.valueOf(retrievedUnitCost);
-                String queryStockQuantity           = String.valueOf(retrievedStockQuantity);
-                String queryMarkupPrice             = String.valueOf(retrievedMarkupPrice);
-                String queryUnitPrice               = String.valueOf(retrievedUnitPrice);
+                String queryrfidNo             = retrievedrfidNo;
+                String queryuserName         = retrieveduserName;
+                String querystudentNO        = retrievedstudentNO;
+                 // Do not initialize yet because category maybe empty
+                String queryamountDP               = String.valueOf(retrievedamountDP);
+
 
                 // Check if category is empty. If so, set category to "Uncategorized"
-                if (retrievedCategory == null) {
-                    queryCategory = "Uncategorized";
-                } else {
-                    queryCategory = retrievedCategory.toString();
-                }
 
                 try {
                     SQLConnector.establishSQLConnection();
-                    ResultSet result = Queries.getExistingProductsOfProductCode(queryProductCode);
+                    ResultSet result = Queries.getExistingProductsOfProductCode(queryrfidNo);
 
                     if (result.getFetchSize() == 0) {
                         // No existing product exists
                         
                         Queries.insertNewProduct(
-                            queryProductCode,
-                            queryName,
-                            queryDescription,
-                            queryCategory,
-                            queryUnitCost,
-                            queryStockQuantity,
-                            queryMarkupPrice,
-                            queryUnitPrice
+                            queryrfidNo,
+                            querystudentNO,
+                            queryuserName,
+                            queryamountDP
                         );
                     }
 
