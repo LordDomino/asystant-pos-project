@@ -29,7 +29,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Vector;
 
@@ -44,7 +43,6 @@ import main.java.configs.ColorConfig;
 import main.java.configs.InsetsConfig;
 import main.java.configs.StylesConfig;
 import main.java.gui.frames.WF_Dashboard;
-import main.java.gui.frames.WF_UserManager;
 import main.java.sql.DBReferences;
 import main.java.sql.Queries;
 import main.java.sql.SQLConnector;
@@ -226,7 +224,7 @@ public class WP_StockInventory extends APP_Panel {
                     for (int i = selectedRows.length - 1; i >= 0; i--) {
                         inventoryModel.removeRow(selectedRows[i]);
                     }
-                    
+
                     submitChangesButton.setEnabled(true);
                 }
 
