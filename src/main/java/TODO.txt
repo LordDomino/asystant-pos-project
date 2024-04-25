@@ -1,0 +1,16 @@
+TABLE
+customers_tbl
+    - id (PRIMARY)
+    - student_no        INT
+    - customer_name     VARCHAR(100)
+    - rfid_no           INT(100)
+    - amount_deposited  DECIMAL(64, 4)
+
+TABLE
+sales_tbl
+    - id (PRIMARY)
+    - rfid_no           INT(100)
+    - item_purchased    VARCHAR() -- product_code in stocks_inventory_tbl
+    - quantity          INT(10)
+    - amount            DECIMAL(64, 4)
+    - timestamp         

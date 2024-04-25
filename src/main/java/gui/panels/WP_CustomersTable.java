@@ -30,7 +30,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Vector;
 
 import main.java.Main;
@@ -49,33 +48,19 @@ import main.java.sql.Queries;
 import main.java.sql.SQLConnector;
 import main.java.utils.GUIHelpers;
 
-public class WP_StockInventory extends APP_Panel {
+public class WP_CustomersTable extends APP_Panel {
 
-    public static final LinkedHashMap<String, String> fieldMappings = new LinkedHashMap<>();
+    public static final HashMap<String, String> fieldMappings = new HashMap<>();
 
     static {
-        fieldMappings.put("Product Code", "product_code");
-        fieldMappings.put("Name", "name");
-        fieldMappings.put("Category", "category");
-        fieldMappings.put("Unit Cost", "unit_cost");
-        fieldMappings.put("Stock Quantity", "stock_quantity");
-        fieldMappings.put("Markup Price", "markup_price");
-        fieldMappings.put("Unit Price", "unit_price");
+        fieldMappings.put("Student No.", "student_no");
+        fieldMappings.put("Customer Name", "customer_name");
+        fieldMappings.put("RFID No.", "rfid_no");
+        fieldMappings.put("Amount Deposited", "amount_deposited");
     }
 
-    public static final String[] inventoryFields = {
-        "Product Code",
-        "Name",
-        "Category",
-        "Unit Cost",
-        "Stock Quantity",
-        "Markup Price",
-        "Unit Price"
-    };
-
-
     public static ArrayList<ArrayList<String>> pendingDeletedRows = new ArrayList<>();
-    public final DefaultTableModel inventoryModel = new DefaultTableModel(inventoryFields, 0) {
+    public final DefaultTableModel inventoryModel = new DefaultTableModel(new Vector<String>(fieldMappings.values()), 0) {
         @Override
         public boolean isCellEditable(int row, int column) {
             return false;
@@ -130,7 +115,7 @@ public class WP_StockInventory extends APP_Panel {
 
     public final APP_ContrastButton submitChangesButton = new APP_ContrastButton("Submit changes");
 
-    public WP_StockInventory () {
+    public WP_CustomersTable () {
         super();
         compile();
     }
@@ -1156,7 +1141,7 @@ class DeletePopUpWindow extends APP_PopUpFrame<WF_Dashboard> {
         header.setFont(StylesConfig.HEADING3);
         info.setFont(StylesConfig.NORMAL);
 
-        for (ArrayList<String> row : WP_StockInventory.pendingDeletedRows) {
+        for (ArrayList<String> row : WP_CustomersTable.pendingDeletedRows) {
             tableModel.addRow(new Vector<>(row));
         }
 

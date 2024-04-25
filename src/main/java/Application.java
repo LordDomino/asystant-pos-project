@@ -4,6 +4,7 @@ import javax.swing.JFrame;
 
 import main.java.configs.APPResourceLoader;
 import main.java.configs.StylesConfig;
+import main.java.gui.dashboardViews.DV_Customers;
 import main.java.gui.dashboardViews.DV_Inventory;
 import main.java.gui.frames.WF_Dashboard;
 import main.java.gui.frames.WF_LoginWindow;
@@ -27,12 +28,15 @@ public class Application {
     /**The inventory view of the application */
     public DV_Inventory INVENTORY;
 
+    public DV_Customers CUSTOMERS;
+
     public void run() {
         APPResourceLoader.loadFonts(); // load custom fonts
         StylesConfig.setupUI();        // then register them as the default fonts
 
         LOGIN_WINDOW = new WF_LoginWindow();
         DASHBOARD = new WF_Dashboard();
+        DASHBOARD.initializeSideRibbon();
 
         LOGIN_WINDOW.setVisible(true);
         LOGIN_WINDOW.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

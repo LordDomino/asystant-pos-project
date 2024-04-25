@@ -224,7 +224,7 @@ public class WF_UserManager extends APP_Frame {
                     for (int i = selectedRows.length - 1; i >= 0; i--) {
                         tableModel.removeRow(selectedRows[i]);
                     }
-use
+
                     submitChangesButton.setEnabled(true);
                 }
 

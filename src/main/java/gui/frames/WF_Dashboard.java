@@ -20,7 +20,7 @@ public class WF_Dashboard extends APP_Frame {
 
     protected JPanel leftPanel = new JPanel(new GridBagLayout());
     public JPanel viewingPanel = new ViewingPanel();
-    protected JPanel sideRibbon = new WP_SideRibbon();
+    protected JPanel sideRibbon;
 
     public WF_Dashboard() {
         super("Dashboard");
@@ -47,16 +47,6 @@ public class WF_Dashboard extends APP_Frame {
         gbc.weighty = 1;
         add(leftPanel, gbc);
 
-        {
-            // LEFT PANEL
-            // Side ribbon
-            gbc.anchor = GridBagConstraints.NORTH;
-            gbc.fill = GridBagConstraints.HORIZONTAL;
-            gbc.gridx = 0;
-            gbc.weightx = 0;
-            gbc.weighty = 1;
-            leftPanel.add(sideRibbon, gbc);
-        }
 
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.fill = GridBagConstraints.BOTH;
@@ -72,7 +62,12 @@ public class WF_Dashboard extends APP_Frame {
     }
 
     public void setView(JPanel view) {
-        remove(viewingPanel);;
+        remove(viewingPanel);
+
+        revalidate();
+        repaint();
+    
+        viewingPanel = view;
 
         GridBagConstraints gbc = new GridBagConstraints();
 
@@ -80,10 +75,26 @@ public class WF_Dashboard extends APP_Frame {
         gbc.fill = GridBagConstraints.BOTH;
         gbc.gridx = 1;
         gbc.weightx = 1;
-        add(view, gbc);
+        add(viewingPanel, gbc);
 
         revalidate();
         repaint();
+    }
+
+    public void initializeSideRibbon() {
+        sideRibbon = new WP_SideRibbon();
+        
+        GridBagConstraints gbc = new GridBagConstraints();
+        {
+            // LEFT PANEL
+            // Side ribbon
+            gbc.anchor = GridBagConstraints.NORTH;
+            gbc.fill = GridBagConstraints.HORIZONTAL;
+            gbc.gridx = 0;
+            gbc.weightx = 0;
+            gbc.weighty = 1;
+            leftPanel.add(sideRibbon, gbc);
+        }
     }
 }
 
