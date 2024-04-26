@@ -8,16 +8,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import main.java.Main;
 import main.java.components.APP_Panel;
 import main.java.components.APP_SideRibbonButton;
 import main.java.gui.GUIReferences;
+import main.java.gui.dashboardViews.DV_PurchaseView;
 
 public class WP_SideRibbon extends APP_Panel {
     
     protected JPanel headerPanel = new JPanel(new GridBagLayout());
+
+    public boolean preventSwitchView = false;
+    public JFrame preventionPopUp;
 
     public WP_SideRibbon() {
         super();
@@ -54,8 +59,21 @@ public class WP_SideRibbon extends APP_Panel {
             viewButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    Main.app.DASHBOARD.setView(GUIReferences.PANELS.get(currentViewName));
-                    System.out.println("Current view mode: " + currentViewName);
+
+                    if (preventSwitchView) {
+                        Main.app.DASHBOARD.setEnabled(false);
+                        preventionPopUp.setVisible(true);
+                    } else {
+                        JPanel newView = GUIReferences.PANELS.get(currentViewName);
+    
+                        // Recompile customers view
+                        if (newView instanceof DV_PurchaseView) {
+                            ((DV_PurchaseView) newView).refreshItemMenu();
+                        }
+    
+                        Main.app.DASHBOARD.setView(newView);
+                        System.out.println("Current view mode: " + currentViewName);
+                    }
                 }
             });
 
@@ -64,5 +82,6 @@ public class WP_SideRibbon extends APP_Panel {
         }
     }
 
+    @Override
     public void finalizePrepare() {}
 }

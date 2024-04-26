@@ -15,7 +15,7 @@ public class WF_Dashboard extends APP_Frame {
 
     protected JPanel leftPanel = new JPanel(new GridBagLayout());
     public JPanel viewingPanel;
-    protected JPanel sideRibbon;
+    public WP_SideRibbon sideRibbon;
 
     public WF_Dashboard() {
         super("Dashboard");
@@ -81,6 +81,8 @@ public class WF_Dashboard extends APP_Frame {
             updateComponent();
 
             viewingPanel = view;
+            viewingPanel.revalidate();
+            viewingPanel.repaint();
 
             GridBagConstraints gbc = new GridBagConstraints();
             gbc.anchor = GridBagConstraints.CENTER;
@@ -91,6 +93,7 @@ public class WF_Dashboard extends APP_Frame {
 
             updateComponent();
         }
+        setMinimumSize(getPreferredSize());
     }
 
     /**Constructs and adds the side ribbon to the dashboard. */

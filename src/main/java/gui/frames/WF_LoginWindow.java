@@ -337,7 +337,9 @@ public final class WF_LoginWindow extends APP_Frame {
 
     private void authenticateLogin() {
         JFrame target = LoginManager.getCurrentAccessLevelTargetJFrame();
+        target.setLocationRelativeTo(null);
         target.setVisible(true);
+        target.setExtendedState(JFrame.MAXIMIZED_BOTH);
         dispose();
     }
 }

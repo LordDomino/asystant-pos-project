@@ -29,7 +29,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Vector;
 
@@ -229,7 +228,10 @@ public class WP_StockInventory extends APP_Panel {
 
                     submitChangesButton.setEnabled(true);
                 }
-
+                
+                DeletePopUpWindow popUp = new DeletePopUpWindow();
+                Main.app.DASHBOARD.sideRibbon.preventSwitchView = true;
+                Main.app.DASHBOARD.sideRibbon.preventionPopUp = popUp;
             }
         });
 
@@ -398,8 +400,8 @@ public class WP_StockInventory extends APP_Panel {
             result.last();
             final int n = result.getRow();
     
-            if (n ==0) {
-
+            if (n == 0) {
+                // TODO
             } else {
                 // Then go back to the starting point before looping
                 result.beforeFirst();
@@ -646,7 +648,7 @@ class AddPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
                 String queryUnitPrice               = String.valueOf(retrievedUnitPrice);
 
                 // Check if category is empty. If so, set category to "Uncategorized"
-                if (retrievedCategory == null) {
+                if (retrievedCategory == null || retrievedCategory.equals("")) {
                     queryCategory = "Uncategorized";
                 } else {
                     queryCategory = retrievedCategory.toString();
@@ -1165,6 +1167,7 @@ class DeletePopUpWindow extends APP_PopUpFrame<WF_Dashboard> {
             public void actionPerformed(ActionEvent ae) {
                 Main.app.INVENTORY.STOCK_TABLE.purgatoryPardon();
                 Main.app.INVENTORY.STOCK_TABLE.submitChangesButton.setEnabled(false);
+                Main.app.DASHBOARD.sideRibbon.preventSwitchView = false;
                 
                 JFrame source = (JFrame) SwingUtilities.getWindowAncestor(continueButton);
                 source.dispose();
@@ -1176,6 +1179,7 @@ class DeletePopUpWindow extends APP_PopUpFrame<WF_Dashboard> {
             public void actionPerformed(ActionEvent ae) {
                 Main.app.INVENTORY.STOCK_TABLE.purgatoryPurge();
                 Main.app.INVENTORY.STOCK_TABLE.submitChangesButton.setEnabled(false);
+                Main.app.DASHBOARD.sideRibbon.preventSwitchView = false;
                 
                 JFrame source = (JFrame) SwingUtilities.getWindowAncestor(continueButton);
                 source.dispose();

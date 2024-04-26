@@ -9,6 +9,7 @@ import javax.swing.border.MatteBorder;
 
 import main.java.components.APP_Panel;
 import main.java.configs.ColorConfig;
+import main.java.configs.InsetsConfig;
 import main.java.gui.panels.WP_Calculator;
 import main.java.gui.panels.WP_CheckoutPanel;
 import main.java.gui.panels.WP_ItemMenu;
@@ -18,7 +19,7 @@ public class DV_PurchaseView extends APP_Panel {
     protected final JPanel centerPanel = new JPanel(new GridBagLayout());
     protected final JPanel rightPanel = new JPanel(new GridBagLayout());
 
-    protected final JPanel itemMenu = new WP_ItemMenu();
+    protected final WP_ItemMenu itemMenu = new WP_ItemMenu();
     protected final JPanel checkoutPanel = new WP_CheckoutPanel();
     protected final JPanel calculator = new WP_Calculator();
 
@@ -53,7 +54,7 @@ public class DV_PurchaseView extends APP_Panel {
             // Item Menu
             gbc.gridx = 0;
             gbc.gridy = 0;
-            gbc.insets = new Insets(10, 10, 10, 10);
+            gbc.insets = new Insets(InsetsConfig.XXL, InsetsConfig.XXL, InsetsConfig.XXL, InsetsConfig.XXL);
             gbc.weightx = 0;
             gbc.weighty = 0;
             centerPanel.add(itemMenu, gbc);
@@ -90,4 +91,10 @@ public class DV_PurchaseView extends APP_Panel {
     }
 
     public void finalizePrepare() {}
+
+    /**Re-renders the items shown in the item menu. */
+    public void refreshItemMenu() {
+        itemMenu.removeAll();
+        itemMenu.generateCategoryPanels();
+    }
 }
