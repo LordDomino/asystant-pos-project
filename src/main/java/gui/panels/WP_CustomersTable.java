@@ -155,7 +155,7 @@ public class WP_CustomersTable extends APP_Panel {
         addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                AddPopupWindow popUp = new AddPopupWindow();
+                Inventory_AddPopupWindow popUp = new Inventory_AddPopupWindow();
                 popUp.setLocationRelativeTo(null);
                 popUp.setVisible(true);
             }
@@ -165,7 +165,7 @@ public class WP_CustomersTable extends APP_Panel {
         editButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                EditPopupWindow popUp = new EditPopupWindow();
+                Inventory_EditPopupWindow popUp = new Inventory_EditPopupWindow();
 
                 int selectedRowIndex = inventoryTable.getSelectedRow();
                 String selectedProductCode      = inventoryTable.getValueAt(selectedRowIndex, 0).toString();
@@ -225,7 +225,7 @@ public class WP_CustomersTable extends APP_Panel {
             public void actionPerformed(ActionEvent ae) {
                 if (pendingDeletedRows.size() >= 1) {
                     // Open the warning pop up window if there are pending deletions
-                    DeletePopUpWindow popUp = new DeletePopUpWindow();
+                    Inventory_DeletePopUpWindow popUp = new Inventory_DeletePopUpWindow();
                     Main.app.DASHBOARD.setEnabled(false);
                     popUp.setVisible(true);
                 }
@@ -463,7 +463,7 @@ public class WP_CustomersTable extends APP_Panel {
     }
 }
 
-class AddPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
+class Customers_AddPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
 
     public final JLabel header = new JLabel("Create a account");
     public final JPanel form = new JPanel(new GridBagLayout());
@@ -549,7 +549,7 @@ class AddPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
 
 
     
-    public AddPopupWindow() {
+    public Customers_AddPopupWindow() {
         super(Main.app.DASHBOARD, "Add new product");
         compile();
     }
@@ -571,13 +571,13 @@ class AddPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Retrieve inputs
-                final String retrievedrfidNo       = idNoField.getText();
+                // final String retrievedrfidNo       = idNoField.getText();
                 final String retrievedstudentNO  = studentNOField.getText();
                 final String retrieveduserName   = userNameField.getText();
                 final float retrievedamountDP    = Float.parseFloat(amountDPField.getText());
 
                 // Variables reserved for query
-                String queryrfidNo             = retrievedrfidNo;
+                // String queryrfidNo             = retrievedrfidNo;
                 String queryuserName         = retrieveduserName;
                 String querystudentNO        = retrievedstudentNO;
                  // Do not initialize yet because category maybe empty
@@ -588,18 +588,18 @@ class AddPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
 
                 try {
                     SQLConnector.establishSQLConnection();
-                    ResultSet result = Queries.getExistingProductsOfProductCode(queryrfidNo);
+                    // ResultSet result = Queries.getExistingProductsOfProductCode(queryrfidNo);
 
-                    if (result.getFetchSize() == 0) {
-                        // No existing product exists
+                    // if (result.getFetchSize() == 0) {
+                    //     // No existing product exists
                         
-                        Queries.insertNewProduct(
-                            queryrfidNo,
-                            querystudentNO,
-                            queryuserName,
-                            queryamountDP
-                        );
-                    }
+                    //     // Queries.insertNewProduct(
+                    //     //     queryrfidNo,
+                    //     //     querystudentNO,
+                    //     //     queryuserName,
+                    //     //     queryamountDP
+                    //     // );
+                    // }
 
                     SQLConnector.connection.close();
 
@@ -629,61 +629,61 @@ class AddPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
         gbc.insets = new Insets(InsetsConfig.L, InsetsConfig.XXL, 0, InsetsConfig.XXL);
         add(form, gbc);
         
-        {
-            gbc.gridx = 0;
-            gbc.gridy = 0;
-            gbc.insets = new Insets(InsetsConfig.S, 0, 0, 0);
-            form.add(productCodeLabel, gbc);
+        // {
+        //     gbc.gridx = 0;
+        //     gbc.gridy = 0;
+        //     gbc.insets = new Insets(InsetsConfig.S, 0, 0, 0);
+        //     form.add(productCodeLabel, gbc);
             
-            gbc.gridy = 1;
-            form.add(nameLabel, gbc);
+        //     gbc.gridy = 1;
+        //     form.add(nameLabel, gbc);
             
-            gbc.gridy = 2;
-            form.add(descriptionLabel, gbc);
+        //     gbc.gridy = 2;
+        //     form.add(descriptionLabel, gbc);
 
-            gbc.gridy = 3;
-            form.add(categoryLabel, gbc);
+        //     gbc.gridy = 3;
+        //     form.add(categoryLabel, gbc);
             
-            gbc.gridy = 4;
-            form.add(unitCostLabel, gbc);
+        //     gbc.gridy = 4;
+        //     form.add(unitCostLabel, gbc);
             
-            gbc.gridy = 5;
-            form.add(stockQuantityLabel, gbc);
+        //     gbc.gridy = 5;
+        //     form.add(stockQuantityLabel, gbc);
 
-            gbc.gridy = 6;
-            form.add(markupPriceLabel, gbc);
+        //     gbc.gridy = 6;
+        //     form.add(markupPriceLabel, gbc);
             
-            gbc.gridy = 7;
-            form.add(unitPriceLabel, gbc);
+        //     gbc.gridy = 7;
+        //     form.add(unitPriceLabel, gbc);
             
-            gbc.anchor = GridBagConstraints.WEST;
-            gbc.fill = GridBagConstraints.HORIZONTAL;
-            gbc.gridx = 1;
-            gbc.gridy = 0;
-            gbc.insets = new Insets(InsetsConfig.S, InsetsConfig.L, 0, 0);
-            form.add(productCodeField, gbc);
+        //     gbc.anchor = GridBagConstraints.WEST;
+        //     gbc.fill = GridBagConstraints.HORIZONTAL;
+        //     gbc.gridx = 1;
+        //     gbc.gridy = 0;
+        //     gbc.insets = new Insets(InsetsConfig.S, InsetsConfig.L, 0, 0);
+        //     form.add(productCodeField, gbc);
 
-            gbc.gridy = 1;
-            form.add(nameField, gbc);
+        //     gbc.gridy = 1;
+        //     form.add(nameField, gbc);
 
-            gbc.gridy = 2;
-            form.add(descriptionField, gbc);
+        //     gbc.gridy = 2;
+        //     form.add(descriptionField, gbc);
 
-            gbc.gridy = 3;
-            form.add(categoryField, gbc);
+        //     gbc.gridy = 3;
+        //     form.add(categoryField, gbc);
 
-            gbc.gridy = 4;
-            form.add(unitCostField, gbc);
+        //     gbc.gridy = 4;
+        //     form.add(unitCostField, gbc);
 
-            gbc.gridy = 5;
-            form.add(stockQuantityField, gbc);
+        //     gbc.gridy = 5;
+        //     form.add(stockQuantityField, gbc);
 
-            gbc.gridy = 6;
-            form.add(markupPriceField, gbc);
+        //     gbc.gridy = 6;
+        //     form.add(markupPriceField, gbc);
 
-            gbc.gridy = 7;
-            form.add(unitPriceField, gbc);
-        }
+        //     gbc.gridy = 7;
+        //     form.add(unitPriceField, gbc);
+        // }
         
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.fill = GridBagConstraints.NONE;
@@ -700,7 +700,7 @@ class AddPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
     }
 }
 
-class EditPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
+class Customers_EditPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
 
     public final JLabel header = new JLabel("Edit product details");
     public final JPanel form = new JPanel(new GridBagLayout());
@@ -815,7 +815,7 @@ class EditPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
         unitPriceField.getTextField()
     };
 
-    public EditPopupWindow() {
+    public Customers_EditPopupWindow() {
         super(Main.app.DASHBOARD);
         compile();
     }
@@ -1000,7 +1000,7 @@ class EditPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
     }
 }
 
-class DeletePopUpWindow extends APP_PopUpFrame<WF_Dashboard> {
+class Customers_DeletePopUpWindow extends APP_PopUpFrame<WF_Dashboard> {
 
     public static final String[] columnNames = {"Username", "Password", "Access Level", "Activation Status"};
     
@@ -1024,7 +1024,7 @@ class DeletePopUpWindow extends APP_PopUpFrame<WF_Dashboard> {
     public final JButton cancelButton = new APP_ContrastButton("Discard pending deletions");
     public final JButton continueButton = new APP_ContrastButton("Continue");
 
-    public DeletePopUpWindow() {
+    public Customers_DeletePopUpWindow() {
         super(Main.app.DASHBOARD, "Pending Deletion Warning");
         compile();
     }

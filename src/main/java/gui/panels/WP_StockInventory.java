@@ -23,8 +23,6 @@ import java.awt.Insets;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -169,7 +167,7 @@ public class WP_StockInventory extends APP_Panel {
         addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                AddPopupWindow popUp = new AddPopupWindow();
+                Inventory_AddPopupWindow popUp = new Inventory_AddPopupWindow();
                 popUp.setLocationRelativeTo(null);
                 popUp.setVisible(true);
             }
@@ -179,7 +177,7 @@ public class WP_StockInventory extends APP_Panel {
         editButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                EditPopupWindow popUp = new EditPopupWindow();
+                Inventory_EditPopupWindow popUp = new Inventory_EditPopupWindow();
 
                 int selectedRowIndex = inventoryTable.getSelectedRow();
                 String selectedProductCode      = inventoryTable.getValueAt(selectedRowIndex, 0).toString();
@@ -229,7 +227,7 @@ public class WP_StockInventory extends APP_Panel {
                     submitChangesButton.setEnabled(true);
                 }
                 
-                DeletePopUpWindow popUp = new DeletePopUpWindow();
+                Inventory_DeletePopUpWindow popUp = new Inventory_DeletePopUpWindow();
                 Main.app.DASHBOARD.sideRibbon.preventSwitchView = true;
                 Main.app.DASHBOARD.sideRibbon.preventionPopUp = popUp;
             }
@@ -242,7 +240,7 @@ public class WP_StockInventory extends APP_Panel {
             public void actionPerformed(ActionEvent ae) {
                 if (pendingDeletedRows.size() >= 1) {
                     // Open the warning pop up window if there are pending deletions
-                    DeletePopUpWindow popUp = new DeletePopUpWindow();
+                    Customers_DeletePopUpWindow popUp = new Customers_DeletePopUpWindow();
                     Main.app.DASHBOARD.setEnabled(false);
                     popUp.setVisible(true);
                 }
@@ -480,7 +478,7 @@ public class WP_StockInventory extends APP_Panel {
     }
 }
 
-class AddPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
+class Inventory_AddPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
 
     public final JLabel header = new JLabel("Insert a new Product");
     public final JPanel form = new JPanel(new GridBagLayout());
@@ -598,7 +596,7 @@ class AddPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
 
 
     
-    public AddPopupWindow() {
+    public Inventory_AddPopupWindow() {
         super(Main.app.DASHBOARD, "Add new product");
         compile();
     }
@@ -772,7 +770,7 @@ class AddPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
     }
 }
 
-class EditPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
+class Inventory_EditPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
 
     public final JLabel header = new JLabel("Edit product details");
     public final JPanel form = new JPanel(new GridBagLayout());
@@ -887,7 +885,7 @@ class EditPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
         unitPriceField.getTextField()
     };
 
-    public EditPopupWindow() {
+    public Inventory_EditPopupWindow() {
         super(Main.app.DASHBOARD);
         compile();
     }
@@ -1072,7 +1070,7 @@ class EditPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
     }
 }
 
-class DeletePopUpWindow extends APP_PopUpFrame<WF_Dashboard> {
+class Inventory_DeletePopUpWindow extends APP_PopUpFrame<WF_Dashboard> {
 
     public static final String[] columnNames = {"Username", "Password", "Access Level", "Activation Status"};
     
@@ -1096,7 +1094,7 @@ class DeletePopUpWindow extends APP_PopUpFrame<WF_Dashboard> {
     public final JButton cancelButton = new APP_ContrastButton("Discard pending deletions");
     public final JButton continueButton = new APP_ContrastButton("Continue");
 
-    public DeletePopUpWindow() {
+    public Inventory_DeletePopUpWindow() {
         super(Main.app.DASHBOARD, "Pending Deletion Warning");
         compile();
     }
@@ -1104,51 +1102,6 @@ class DeletePopUpWindow extends APP_PopUpFrame<WF_Dashboard> {
     public void prepare() {
         getContentPane().setBackground(ColorConfig.ACCENT_1);
         setLayout(new GridBagLayout());
-
-        addWindowListener(new WindowListener() {
-
-            @Override
-            public void windowOpened(WindowEvent e) {
-                // TODO Auto-generated method stub
-                // throw new UnsupportedOperationException("Unimplemented method 'windowOpened'");
-            }
-
-            @Override
-            public void windowClosing(WindowEvent e) {
-                // TODO Auto-generated method stub
-                // throw new UnsupportedOperationException("Unimplemented method 'windowClosing'");
-            }
-
-            @Override
-            public void windowClosed(WindowEvent e) {
-                // TODO
-            }
-
-            @Override
-            public void windowIconified(WindowEvent e) {
-                // TODO Auto-generated method stub
-                // throw new UnsupportedOperationException("Unimplemented method 'windowIconified'");
-            }
-
-            @Override
-            public void windowDeiconified(WindowEvent e) {
-                // TODO Auto-generated method stub
-                // throw new UnsupportedOperationException("Unimplemented method 'windowDeiconified'");
-            }
-
-            @Override
-            public void windowActivated(WindowEvent e) {
-                // TODO Auto-generated method stub
-                // throw new UnsupportedOperationException("Unimplemented method 'windowActivated'");
-            }
-
-            @Override
-            public void windowDeactivated(WindowEvent e) {
-                // TODO Auto-generated method stub
-                // throw new UnsupportedOperationException("Unimplemented method 'windowDeactivated'");
-            }
-            
-        });
     }
 
     public void prepareComponents() {

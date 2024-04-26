@@ -25,7 +25,7 @@ import main.java.sql.SQLConnector;
 public class WP_ItemMenu extends APP_Panel {
 
     public WP_ItemMenu() {
-        super(new GridLayout(2, 2, InsetsConfig.XXL, InsetsConfig.XXL));
+        super(new GridLayout(0, 2, InsetsConfig.XXL, InsetsConfig.XXL));
         compile();
     }
     
@@ -77,7 +77,7 @@ public class WP_ItemMenu extends APP_Panel {
             // The unique category names identified from the data
             final ArrayList<String> categoryNames = new ArrayList<>();
 
-            // Linked has map of category panels and their respective
+            // Linked hash map of category panels and their respective
             // gridx for layout
             final LinkedHashMap<String, JPanel> categoryPanels = new LinkedHashMap<>();
             final LinkedHashMap<String, JPanel> contentPanels = new LinkedHashMap<>();
