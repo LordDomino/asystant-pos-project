@@ -168,21 +168,15 @@ public class WP_CustomersTable extends APP_Panel {
                 Inventory_EditPopupWindow popUp = new Inventory_EditPopupWindow();
 
                 int selectedRowIndex = inventoryTable.getSelectedRow();
-                String selectedProductCode      = inventoryTable.getValueAt(selectedRowIndex, 0).toString();
-                String selectedName             = inventoryTable.getValueAt(selectedRowIndex, 1).toString();
-                String selectedCategory         = inventoryTable.getValueAt(selectedRowIndex, 2).toString();
-                String selectedUnitCost         = inventoryTable.getValueAt(selectedRowIndex, 3).toString();
-                String selectedStockQuantity    = inventoryTable.getValueAt(selectedRowIndex, 4).toString();
-                String selectedMarkupPrice      = inventoryTable.getValueAt(selectedRowIndex, 5).toString();
-                String selectedUnitPrice        = inventoryTable.getValueAt(selectedRowIndex, 6).toString();
+                String selectedrfidNo      = inventoryTable.getValueAt(selectedRowIndex, 0).toString();
+                String selectedstudentNO             = inventoryTable.getValueAt(selectedRowIndex, 1).toString();
+                String selecteduserName         = inventoryTable.getValueAt(selectedRowIndex, 2).toString();
+                String selectedamountDP         = inventoryTable.getValueAt(selectedRowIndex, 3).toString();
 
-                popUp.productCodeField.setText(selectedProductCode);
-                popUp.nameField.setText(selectedName);
-                popUp.categoryField.setSelectedItem(selectedCategory);
-                popUp.unitCostField.setText(selectedUnitCost);
-                popUp.stockQuantityField.setText(selectedStockQuantity);
-                popUp.markupPriceField.setText(selectedMarkupPrice);
-                popUp.unitPriceField.setText(selectedUnitPrice);
+                popUp.productCodeField.setText(selectedrfidNo);
+                popUp.nameField.setText(selectedstudentNO);
+                popUp.categoryField.setSelectedItem(selecteduserName);
+                popUp.unitCostField.setText(selectedamountDP);
 
                 popUp.setLocationRelativeTo(null);
                 popUp.setVisible(true);
@@ -393,15 +387,12 @@ public class WP_CustomersTable extends APP_Panel {
                 int i = 0;
                 while (i < n) {
                     result.next();
-                    String productCode = result.getString("product_code");
-                    String name = result.getString("name");
-                    String category = result.getString("category");
-                    String unitCost = result.getString("unit_cost");
-                    String stockQuantity = result.getString("stock_quantity");
-                    String markupPrice = result.getString("markup_price");
-                    String unitPrice = result.getString("unit_price");
+                    String rfidNo = result.getString("rfidNo");
+                    String studentNO = result.getString("studentNO");
+                    String userName = result.getString("userName");
+                    String amountDP = result.getString("amountDP");
 
-                    String[] rowData = {productCode, name, category, unitCost, stockQuantity, markupPrice, unitPrice};
+                    String[] rowData = {rfidNo, studentNO, userName, amountDP};
 
                     inventoryModel.addRow(rowData);
                     i++;
@@ -477,64 +468,6 @@ class Customers_AddPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
     public final JTextField studentNOField      = new APP_TextField(10);
     public final JTextField userNameField       = new APP_TextField(10);
     public final APP_LabeledTextField amountDPField  = new APP_LabeledTextField("Php", 10);
-
-    final DocumentListener unitCostListener = new DocumentListener() {
-        public void changedUpdate(DocumentEvent event) {
-            changed();
-        }
-
-        public void removeUpdate(DocumentEvent event) {
-            changed();
-        }
-
-        public void insertUpdate(DocumentEvent event) {
-            changed();
-        }
-
-        public void changed() {
-            
-            }
-        };
-    
-
-    final DocumentListener markupPriceListener = new DocumentListener() {
-        public void changedUpdate(DocumentEvent event) {
-            changed();
-        }
-
-        public void removeUpdate(DocumentEvent event) {
-            changed();
-        }
-
-        public void insertUpdate(DocumentEvent event) {
-            changed();
-        }
-
-        public void changed() {
-            // Always update unit price based on typed markup price
-            
-            }
-        };
-    
-
-    final DocumentListener unitPriceListener = new DocumentListener() {
-        public void changedUpdate(DocumentEvent event) {
-            changed();
-        }
-
-        public void removeUpdate(DocumentEvent event) {
-            changed();
-        }
-
-        public void insertUpdate(DocumentEvent event) {
-            changed();
-        }
-
-        public void changed() {
-            // Always update unit price based on typed markup price
-
-            }
-        };
     
 
     public final JButton submitButton = new APP_AccentButton("Submit");
