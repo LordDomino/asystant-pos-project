@@ -502,13 +502,13 @@ class Customers_AddPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Retrieve inputs
-                // final String retrievedrfidNo       = idNoField.getText();
+                 final String retrievedrfidNo       = rfidNoField.getText();
                 final String retrievedstudentNO  = studentNOField.getText();
                 final String retrieveduserName   = userNameField.getText();
                 final float retrievedamountDP    = Float.parseFloat(amountDPField.getText());
 
                 // Variables reserved for query
-                // String queryrfidNo             = retrievedrfidNo;
+                 String queryrfidNo             = retrievedrfidNo;
                 String queryuserName         = retrieveduserName;
                 String querystudentNO        = retrievedstudentNO;
                  // Do not initialize yet because category maybe empty
@@ -519,18 +519,18 @@ class Customers_AddPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
 
                 try {
                     SQLConnector.establishSQLConnection();
-                    // ResultSet result = Queries.getExistingProductsOfProductCode(queryrfidNo);
+                     ResultSet result = Queries.getExistingProductsOfProductCode(queryrfidNo);
 
-                    // if (result.getFetchSize() == 0) {
-                    //     // No existing product exists
+                     if (result.getFetchSize() == 0) {
+                          No existing product exists
                         
-                    //     // Queries.insertNewProduct(
-                    //     //     queryrfidNo,
-                    //     //     querystudentNO,
-                    //     //     queryuserName,
-                    //     //     queryamountDP
-                    //     // );
-                    // }
+                          Queries.registerCustomer(
+                              queryrfidNo,
+                              querystudentNO,
+                             queryuserName,
+                              queryamountDP
+                          );
+                     }
 
                     SQLConnector.connection.close();
 
@@ -560,61 +560,39 @@ class Customers_AddPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
         gbc.insets = new Insets(InsetsConfig.L, InsetsConfig.XXL, 0, InsetsConfig.XXL);
         add(form, gbc);
         
-        // {
-        //     gbc.gridx = 0;
-        //     gbc.gridy = 0;
-        //     gbc.insets = new Insets(InsetsConfig.S, 0, 0, 0);
-        //     form.add(productCodeLabel, gbc);
+         {
+             gbc.gridx = 0;
+             gbc.gridy = 0;
+             gbc.insets = new Insets(InsetsConfig.S, 0, 0, 0);
+             form.add(rfidNoLabel, gbc);
             
-        //     gbc.gridy = 1;
-        //     form.add(nameLabel, gbc);
+             gbc.gridy = 1;
+             form.add(studentNOLabel, gbc);
             
-        //     gbc.gridy = 2;
-        //     form.add(descriptionLabel, gbc);
+             gbc.gridy = 2;
+             form.add(userNameLabel, gbc);
 
-        //     gbc.gridy = 3;
-        //     form.add(categoryLabel, gbc);
+             gbc.gridy = 3;
+             form.add(amountDPLabel, gbc);
             
-        //     gbc.gridy = 4;
-        //     form.add(unitCostLabel, gbc);
             
-        //     gbc.gridy = 5;
-        //     form.add(stockQuantityLabel, gbc);
+             gbc.anchor = GridBagConstraints.WEST;
+             gbc.fill = GridBagConstraints.HORIZONTAL;
+             gbc.gridx = 1;
+             gbc.gridy = 0;
+             gbc.insets = new Insets(InsetsConfig.S, InsetsConfig.L, 0, 0);
+             form.add(rfidNoField, gbc);
 
-        //     gbc.gridy = 6;
-        //     form.add(markupPriceLabel, gbc);
-            
-        //     gbc.gridy = 7;
-        //     form.add(unitPriceLabel, gbc);
-            
-        //     gbc.anchor = GridBagConstraints.WEST;
-        //     gbc.fill = GridBagConstraints.HORIZONTAL;
-        //     gbc.gridx = 1;
-        //     gbc.gridy = 0;
-        //     gbc.insets = new Insets(InsetsConfig.S, InsetsConfig.L, 0, 0);
-        //     form.add(productCodeField, gbc);
+             gbc.gridy = 1;
+             form.add(studentNOField, gbc);
 
-        //     gbc.gridy = 1;
-        //     form.add(nameField, gbc);
+             gbc.gridy = 2;
+             form.add(userNameField, gbc);
 
-        //     gbc.gridy = 2;
-        //     form.add(descriptionField, gbc);
+             gbc.gridy = 3;
+             form.add(amountDPField, gbc);
 
-        //     gbc.gridy = 3;
-        //     form.add(categoryField, gbc);
-
-        //     gbc.gridy = 4;
-        //     form.add(unitCostField, gbc);
-
-        //     gbc.gridy = 5;
-        //     form.add(stockQuantityField, gbc);
-
-        //     gbc.gridy = 6;
-        //     form.add(markupPriceField, gbc);
-
-        //     gbc.gridy = 7;
-        //     form.add(unitPriceField, gbc);
-        // }
+         }
         
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.fill = GridBagConstraints.NONE;
