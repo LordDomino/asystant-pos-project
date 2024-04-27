@@ -5,7 +5,6 @@ import javax.swing.JPanel;
 
 import main.java.Main;
 import main.java.components.APP_Panel;
-import main.java.gui.dashboardViews.DV_Customers;
 import main.java.gui.dashboardViews.DV_Inventory;
 import main.java.gui.dashboardViews.DV_PurchaseView;
 

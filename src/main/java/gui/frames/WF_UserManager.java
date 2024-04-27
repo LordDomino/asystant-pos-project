@@ -510,8 +510,6 @@ public class WF_UserManager extends APP_Frame {
                 query = query.substring(0, query.length()-2) + " );";
             }
 
-            System.out.println(query);
-
             Statement statement = SQLConnector.connection.createStatement();
             statement.executeUpdate(query);
 
@@ -637,7 +635,6 @@ class AddPopupWindow extends APP_PopUpFrame<WF_UserManager> {
                         query = query.substring(0, query.length()-1) + " );";
 
                         // Preview and execute query, if there are no errors
-                        System.out.println(query);
                         Statement statement2 = SQLConnector.connection.createStatement();
                         statement2.executeUpdate(query);
 
@@ -833,7 +830,6 @@ class EditPopupWindow extends APP_PopUpFrame<WF_UserManager> {
                         query = query + " WHERE username = \"" + retrievedUsername + "\";";
 
                         // Preview and execute query, if there are no errors
-                        System.out.println(query);
                         Statement statement2 = SQLConnector.connection.createStatement();
                         statement2.executeUpdate(query);
 
