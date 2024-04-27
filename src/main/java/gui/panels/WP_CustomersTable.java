@@ -432,8 +432,6 @@ public class WP_CustomersTable extends APP_Panel {
                 query = query.substring(0, query.length()-2) + " );";
             }
 
-            System.out.println(query);
-
             Statement statement = SQLConnector.connection.createStatement();
             statement.executeUpdate(query);
 

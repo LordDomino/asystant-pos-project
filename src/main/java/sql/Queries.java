@@ -48,7 +48,6 @@ public class Queries {
         query = query + " \"" + unitPrice        + "\");";
 
         Statement statement = SQLConnector.connection.createStatement();
-        System.out.println(query);
         statement.executeUpdate(query);
     }
 
@@ -93,7 +92,6 @@ public class Queries {
         query = query + " WHERE id = \"" + id + "\";";
 
         Statement statement = SQLConnector.connection.createStatement();
-        System.out.println(query);
         statement.executeUpdate(query);
     }
 
@@ -121,7 +119,6 @@ String userName, String amountDP) throws SQLException {
     query = query + " \"" + amountDP        + "\");";
 
     Statement statement = SQLConnector.connection.createStatement();
-    System.out.println(query);
     statement.executeUpdate(query);
 }
 
