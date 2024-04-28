@@ -366,7 +366,7 @@ public class WP_CustomersTable extends APP_Panel {
             SQLConnector.establishSQLConnection();
     
             // Query setup
-            String query = "SELECT * FROM " + DBReferences.TBL_STOCKS_INVENTORY;
+            String query = "SELECT * FROM " + DBReferences.TBL_CUSTOMERS;
             Statement statement = SQLConnector.connection.createStatement(
                 ResultSet.TYPE_SCROLL_INSENSITIVE,
                 ResultSet.CONCUR_READ_ONLY
@@ -387,12 +387,12 @@ public class WP_CustomersTable extends APP_Panel {
                 int i = 0;
                 while (i < n) {
                     result.next();
-                    String rfidNo = result.getString("rfidNo");
-                    String studentNO = result.getString("studentNO");
-                    String userName = result.getString("userName");
-                    String amountDP = result.getString("amountDP");
+                    String rfidNo = result.getString("rfid_no");
+                    String studentNO = result.getString("student_nO");
+                    String userName = result.getString("customer_name");
+                    String amountDP = result.getString("amount_deposited");
 
-                    String[] rowData = {rfidNo, studentNO, userName, amountDP};
+                    String[] rowData = {studentNO, userName, rfidNo, amountDP};
 
                     inventoryModel.addRow(rowData);
                     i++;
