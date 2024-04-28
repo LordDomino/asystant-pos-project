@@ -25,22 +25,39 @@ DELIMITER $$
 --
 -- Procedures
 --
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spProcessOrderInventory` ()   update sales_tbl 
-set status = 2
-where status = 1$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spProcessOrderInventory` ()
+  UPDATE sales_tbl 
+  SET STATUS = 2
+  WHERE STATUS = 1$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spRecomputeInventory` ()   update stocks_inventory_tbl ii
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spRecomputeInventory` ()
+  UPDATE stocks_inventory_tbl AS ii
+  -- Of course, update the stocks based on the calculation later
 
-JOIN 
-(
-	select i.stock_quantity - sum(p.quantity) qty_up  , i.product_code
-    from stocks_inventory_tbl i 
-    inner join sales_tbl p ON i.product_code = p.item_code
-    WHERE status = 1
-    Group by i.product_code
-) qq 
-on ii.product_code = qq.product_code
-set stock_quantity = qty_up$$
+  JOIN
+  (
+    SELECT i.stock_quantity - sum(sales.quantity) AS qty_up, i.product_code
+    -- After grouping by the product code criteria, SUM() is applied to the
+    -- quantity column to aggregate and validly accomplish the GROUP BY clause
+    -- The product code is also selected to identify each quantity associated
+    -- to the products
+
+    FROM stocks_inventory_tbl AS i          -- get the stocks as alias i
+    INNER JOIN sales_tbl AS sales           -- join it with the sales
+    ON i.product_code = sales.product_code  -- on the common product code
+    WHERE STATUS = 1                        -- which is currently processed (status=1)
+
+    GROUP BY i.product_code
+    -- GROUP BY clause to group any multiple product codes that are the same
+    -- This is related when performing SELECT (see above)
+  ) AS qq
+
+  ON ii.product_code = qq.product_code
+  -- Join common columns for updated quantities and actual stock on the
+  -- criteria of the product code
+
+  SET stock_quantity = qty_up$$
+  -- Update the stock quantity based on the computed new quantity
 
 DELIMITER ;
 
@@ -86,7 +103,7 @@ CREATE TABLE `profit_tbl` (
 
 CREATE TABLE `sales_tbl` (
   `sales_id` varchar(30) DEFAULT NULL,
-  `item_code` int(10) DEFAULT NULL,
+  `product_code` int(10) DEFAULT NULL,
   `item_name` varchar(255) DEFAULT NULL,
   `quantity` int(12) DEFAULT NULL,
   `total_price` decimal(12,4) DEFAULT NULL,
@@ -101,7 +118,7 @@ CREATE TABLE `sales_tbl` (
 -- Dumping data for table `sales_tbl`
 --
 
-INSERT INTO `sales_tbl` (`sales_id`, `item_code`, `item_name`, `quantity`, `total_price`, `status`, `created_by`, `created_datetime`, `completed_datetime`, `customer_id`) VALUES
+INSERT INTO `sales_tbl` (`sales_id`, `product_code`, `item_name`, `quantity`, `total_price`, `status`, `created_by`, `created_datetime`, `completed_datetime`, `customer_id`) VALUES
 ('', 123456, 'Item1', 1, 102.0000, 2, 'user', '2024-04-26 23:47:57', NULL, NULL),
 (NULL, 123457, 'Item2', 1, 102.0000, 2, 'user', '2024-04-26 23:50:09', '2024-04-26 23:50:09', NULL),
 (NULL, 123457, 'Item2', 10, 2020.0000, 2, 'user', '2024-04-26 23:51:11', '2024-04-26 23:51:11', NULL),
