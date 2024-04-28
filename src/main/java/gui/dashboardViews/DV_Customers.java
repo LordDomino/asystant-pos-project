@@ -18,7 +18,7 @@ public class DV_Customers extends APP_Panel {
 
     public final JLabel header = new JLabel("Customers");
 
-    public final WP_CustomersTable STOCK_TABLE = new WP_CustomersTable();
+    public final WP_CustomersTable CUSTOMER_TABLE = new WP_CustomersTable();
 
     public DV_Customers() {
         super();
@@ -50,7 +50,7 @@ public class DV_Customers extends APP_Panel {
         gbc.weighty = 1;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.insets = new Insets(InsetsConfig.M, InsetsConfig.XXL, InsetsConfig.XXL, InsetsConfig.XXL); // xxl margins for left, right, and bottom
-        add(STOCK_TABLE, gbc);
+        add(CUSTOMER_TABLE, gbc);
     }
 
 

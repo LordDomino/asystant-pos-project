@@ -519,10 +519,10 @@ class Customers_AddPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
 
                 try {
                     SQLConnector.establishSQLConnection();
-                     ResultSet result = Queries.getExistingProductsOfProductCode(queryrfidNo);
+                     ResultSet result = Queries.getExistingCustomersOfrfidNo(queryrfidNo);
 
                      if (result.getFetchSize() == 0) {
-                          No existing product exists
+                          
                         
                           Queries.registerCustomer(
                               queryrfidNo,
@@ -537,7 +537,7 @@ class Customers_AddPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
                     Window popUp = SwingUtilities.getWindowAncestor(submitButton);
                     popUp.dispose();
 
-                    Main.app.INVENTORY.STOCK_TABLE.updateGUI();
+                    Main.app.INVENTORY.CUSTOMER_TABLE.updateGUI();
                 } catch (SQLException exception) {
                     exception.printStackTrace();
                 }

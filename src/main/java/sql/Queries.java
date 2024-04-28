@@ -16,6 +16,15 @@ public class Queries {
         return result;
     }
 
+    public static ResultSet getExistingCustomersOfrfidNo(String rfidNo) throws SQLException {
+        String query = "SELECT * FROM " + DBReferences.TBL_CUSTOMERS + " WHERE rfidNo = \"" + rfidNo + "\";";
+        Statement statement = SQLConnector.connection.createStatement();
+        ResultSet result = statement.executeQuery(query);
+        
+        return result;
+    }
+
+
     public static void insertNewProduct(String productCode, String name,
     String description, String category, String unitCost, String stockQuantity,
     String markupPrice, String unitPrice) throws SQLException {
