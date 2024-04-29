@@ -155,7 +155,7 @@ public class WP_CustomersTable extends APP_Panel {
         addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Inventory_AddPopupWindow popUp = new Inventory_AddPopupWindow();
+                Customers_AddPopupWindow popUp = new Customers_AddPopupWindow();
                 popUp.setLocationRelativeTo(null);
                 popUp.setVisible(true);
             }
@@ -165,18 +165,18 @@ public class WP_CustomersTable extends APP_Panel {
         editButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Inventory_EditPopupWindow popUp = new Inventory_EditPopupWindow();
+                Customers_EditPopupWindow popUp = new Customers_EditPopupWindow();
 
                 int selectedRowIndex = inventoryTable.getSelectedRow();
-                String selectedrfidNo      = inventoryTable.getValueAt(selectedRowIndex, 0).toString();
-                String selectedstudentNO             = inventoryTable.getValueAt(selectedRowIndex, 1).toString();
-                String selecteduserName         = inventoryTable.getValueAt(selectedRowIndex, 2).toString();
-                String selectedamountDP         = inventoryTable.getValueAt(selectedRowIndex, 3).toString();
+                String selectedrfid_no      = inventoryTable.getValueAt(selectedRowIndex, 0).toString();
+                String selectedstudent_no             = inventoryTable.getValueAt(selectedRowIndex, 1).toString();
+                String selectedcustomer_name         = inventoryTable.getValueAt(selectedRowIndex, 2).toString();
+                String selectedamount_deposited         = inventoryTable.getValueAt(selectedRowIndex, 3).toString();
 
-                popUp.productCodeField.setText(selectedrfidNo);
-                popUp.nameField.setText(selectedstudentNO);
-                popUp.categoryField.setSelectedItem(selecteduserName);
-                popUp.unitCostField.setText(selectedamountDP);
+                popUp.productCodeField.setText(selectedrfid_no);
+                popUp.nameField.setText(selectedstudent_no);
+                popUp.categoryField.setSelectedItem(selectedcustomer_name);
+                popUp.unitCostField.setText(selectedamount_deposited);
 
                 popUp.setLocationRelativeTo(null);
                 popUp.setVisible(true);
@@ -195,9 +195,6 @@ public class WP_CustomersTable extends APP_Panel {
                     pendingRowValues.add(inventoryTable.getValueAt(rowID, 1).toString());
                     pendingRowValues.add(inventoryTable.getValueAt(rowID, 2).toString());
                     pendingRowValues.add(inventoryTable.getValueAt(rowID, 3).toString());
-                    pendingRowValues.add(inventoryTable.getValueAt(rowID, 4).toString());
-                    pendingRowValues.add(inventoryTable.getValueAt(rowID, 5).toString());
-                    pendingRowValues.add(inventoryTable.getValueAt(rowID, 6).toString());
                     pendingDeletedRows.add(pendingRowValues);
                 }
                 
@@ -387,12 +384,12 @@ public class WP_CustomersTable extends APP_Panel {
                 int i = 0;
                 while (i < n) {
                     result.next();
-                    String rfidNo = result.getString("rfid_no");
-                    String studentNO = result.getString("student_nO");
-                    String userName = result.getString("customer_name");
-                    String amountDP = result.getString("amount_deposited");
+                    String rfid_no = result.getString("rfid_no");
+                    String student_no = result.getString("student_no");
+                    String customer_name = result.getString("customer_name");
+                    String amount_deposited = result.getString("amount_deposited");
 
-                    String[] rowData = {studentNO, userName, rfidNo, amountDP};
+                    String[] rowData = {student_no, customer_name, rfid_no, amount_deposited};
 
                     inventoryModel.addRow(rowData);
                     i++;
@@ -419,14 +416,14 @@ public class WP_CustomersTable extends APP_Panel {
 
             if (pendingSize == 1) {
                 // If only 1 row is selected, use the equal operator for SQL query
-                query = "DELETE FROM " + DBReferences.TBL_STOCKS_INVENTORY + " WHERE product_code = \"" + pendingDeletedRows.get(0).get(0) + "\";";
+                query = "DELETE FROM " + DBReferences.TBL_CUSTOMERS + " WHERE rfid_no = \"" + pendingDeletedRows.get(0).get(0) + "\";";
             } else {
                 // If more than one row is selected, use the IN keyword for SQL query
-                query = "DELETE FROM " + DBReferences.TBL_STOCKS_INVENTORY + " WHERE product_code IN ( ";
+                query = "DELETE FROM " + DBReferences.TBL_CUSTOMERS + " WHERE rfid_no IN ( ";
 
                 // Get all usernameIDs
-                for (ArrayList<String> product_code : pendingDeletedRows) {
-                    query = query + "\"" + product_code.get(0) + "\", ";
+                for (ArrayList<String> rfid_no : pendingDeletedRows) {
+                    query = query + "\"" + rfid_no.get(0) + "\", ";
                 }
 
                 query = query.substring(0, query.length()-2) + " );";
@@ -457,24 +454,24 @@ class Customers_AddPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
     public final JLabel header = new JLabel("Create a account");
     public final JPanel form = new JPanel(new GridBagLayout());
 
-    public final JLabel rfidNoLabel               = new JLabel("RFID No:");
-    public final JLabel studentNOLabel          = new JLabel("StudentNO:");
-    public final JLabel userNameLabel           = new JLabel("Username:");
-    public final JLabel amountDPLabel           = new JLabel("Amount Deposited:");
+    public final JLabel rfid_noLabel               = new JLabel("RFID No:");
+    public final JLabel student_noLabel          = new JLabel("StudentNO:");
+    public final JLabel customer_nameLabel           = new JLabel("Username:");
+    public final JLabel amount_depositLabel           = new JLabel("Amount Deposited:");
 
-    public final JTextField rfidNoField           = new APP_TextField(10);
-    public final JTextField studentNOField      = new APP_TextField(10);
-    public final JTextField userNameField       = new APP_TextField(10);
-    public final APP_LabeledTextField amountDPField  = new APP_LabeledTextField("Php", 10);
+    public final JTextField rfid_noField           = new APP_TextField(10);
+    public final JTextField student_noField      = new APP_TextField(10);
+    public final JTextField customer_nameField       = new APP_TextField(10);
+    public final APP_LabeledTextField amount_depositField  = new APP_LabeledTextField("Php", 10);
     
 
     public final JButton submitButton = new APP_AccentButton("Submit");
 
     public final JTextField[] fields = {
-        rfidNoField,
-        studentNOField,
-        userNameField,
-        amountDPField.getTextField()
+        rfid_noField,
+        student_noField,
+        customer_nameField,
+        amount_depositField.getTextField()
     };
 
 
@@ -502,33 +499,33 @@ class Customers_AddPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Retrieve inputs
-                 final String retrievedrfidNo       = rfidNoField.getText();
-                final String retrievedstudentNO  = studentNOField.getText();
-                final String retrieveduserName   = userNameField.getText();
-                final float retrievedamountDP    = Float.parseFloat(amountDPField.getText());
+                 final String retrievedrfid_no       = rfid_noField.getText();
+                final String retrievedstudent_no  = student_noField.getText();
+                final String retrievedcustomer_no   = customer_nameField.getText();
+                final float retrievedamount_deposit   = Float.parseFloat(amount_depositField.getText());
 
                 // Variables reserved for query
-                 String queryrfidNo             = retrievedrfidNo;
-                String queryuserName         = retrieveduserName;
-                String querystudentNO        = retrievedstudentNO;
+                 String queryrfid_no               = retrievedrfid_no;
+                String querycustomer_name          = retrievedcustomer_no;
+                String querystudent_no             = retrievedstudent_no;
                  // Do not initialize yet because category maybe empty
-                String queryamountDP               = String.valueOf(retrievedamountDP);
+                String queryamount_deposit         = String.valueOf(retrievedamount_deposit);
 
 
                 // Check if category is empty. If so, set category to "Uncategorized"
 
                 try {
                     SQLConnector.establishSQLConnection();
-                     ResultSet result = Queries.getExistingCustomersOfrfidNo(queryrfidNo);
+                     ResultSet result = Queries.getExistingCustomersOfrfidNo(queryrfid_no);
 
                      if (result.getFetchSize() == 0) {
                           
                         
                           Queries.registerCustomer(
-                              queryrfidNo,
-                              querystudentNO,
-                             queryuserName,
-                              queryamountDP
+                              queryrfid_no,
+                              querystudent_no,
+                             querycustomer_name,
+                              queryamount_deposit
                           );
                      }
 
@@ -564,16 +561,16 @@ class Customers_AddPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
              gbc.gridx = 0;
              gbc.gridy = 0;
              gbc.insets = new Insets(InsetsConfig.S, 0, 0, 0);
-             form.add(rfidNoLabel, gbc);
+             form.add(rfid_noLabel, gbc);
             
              gbc.gridy = 1;
-             form.add(studentNOLabel, gbc);
+             form.add(student_noLabel, gbc);
             
              gbc.gridy = 2;
-             form.add(userNameLabel, gbc);
+             form.add(customer_nameLabel, gbc);
 
              gbc.gridy = 3;
-             form.add(amountDPLabel, gbc);
+             form.add(amount_depositLabel, gbc);
             
             
              gbc.anchor = GridBagConstraints.WEST;
@@ -581,16 +578,16 @@ class Customers_AddPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
              gbc.gridx = 1;
              gbc.gridy = 0;
              gbc.insets = new Insets(InsetsConfig.S, InsetsConfig.L, 0, 0);
-             form.add(rfidNoField, gbc);
+             form.add(rfid_noField, gbc);
 
              gbc.gridy = 1;
-             form.add(studentNOField, gbc);
+             form.add(student_noField, gbc);
 
              gbc.gridy = 2;
-             form.add(userNameField, gbc);
+             form.add(customer_nameField, gbc);
 
              gbc.gridy = 3;
-             form.add(amountDPField, gbc);
+             form.add(amount_depositField, gbc);
 
          }
         
@@ -614,110 +611,22 @@ class Customers_EditPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
     public final JLabel header = new JLabel("Edit product details");
     public final JPanel form = new JPanel(new GridBagLayout());
 
-    public final JLabel productCodeLabel        = new JLabel("Product Code");
-    public final JLabel nameLabel               = new JLabel("Name");
-    public final JLabel descriptionLabel        = new JLabel("Product description");
-    public final JLabel categoryLabel           = new JLabel("Category");
-    public final JLabel unitCostLabel           = new JLabel("Unit Cost");
-    public final JLabel stockQuantityLabel      = new JLabel("Stock Quantity");
-    public final JLabel markupPriceLabel        = new JLabel("Markup Price");
-    public final JLabel unitPriceLabel          = new JLabel("Unit Price");
+    public final JLabel rfid_noLabel            = new JLabel("RFID NO");
+    public final JLabel student_noLabel         = new JLabel("Student No");
+    public final JLabel customer_nameLabel      = new JLabel("Customer Name");
+    public final JLabel amount_depositedLabel   = new JLabel("Amount Deposited");
+    
+    public final JTextField rfid_noField            = new APP_TextField(10);
+    public final JTextField student_noField         = new APP_TextField(10);
+    public final JTextField customer_nameField      = new APP_TextField(10);
 
-    public final JTextField productCodeField            = new APP_TextField(10);
-    public final JTextField nameField                   = new APP_TextField(10);
-    public final APP_TextField descriptionField         = new APP_TextField(10);
-    public final JComboBox<String> categoryField        = new JComboBox<String>();
-    public final APP_LabeledTextField unitCostField     = new APP_LabeledTextField("Php", 10);
-    public final APP_TextField stockQuantityField       = new APP_TextField(10);
-    public final APP_LabeledTextField markupPriceField  = new APP_LabeledTextField("Php", 10);
-    public final APP_LabeledTextField unitPriceField    = new APP_LabeledTextField("Php", 10);
-
-    final DocumentListener unitCostListener = new DocumentListener() {
-        public void changedUpdate(DocumentEvent event) {
-            changed();
-        }
-
-        public void removeUpdate(DocumentEvent event) {
-            changed();
-        }
-
-        public void insertUpdate(DocumentEvent event) {
-            changed();
-        }
-
-        public void changed() {
-            // Always update either markup or unit price
-            if (!unitCostField.getText().equals("")) {
-                float unitCost = Float.parseFloat(unitCostField.getText());
-
-                if (!markupPriceField.getText().equals("")) {
-                    float markupPrice = Float.parseFloat(markupPriceField.getText());
-                    unitPriceField.setText(String.valueOf(unitCost + markupPrice));
-                } else if (!unitPriceField.getText().equals("")) {
-                    float unitPrice = Float.parseFloat(unitPriceField.getText());
-                    markupPriceField.setText(String.valueOf(unitPrice - unitCost));
-                }
-            }
-        }
-    };
-
-    final DocumentListener markupPriceListener = new DocumentListener() {
-        public void changedUpdate(DocumentEvent event) {
-            changed();
-        }
-
-        public void removeUpdate(DocumentEvent event) {
-            changed();
-        }
-
-        public void insertUpdate(DocumentEvent event) {
-            changed();
-        }
-
-        public void changed() {
-            // Always update unit price based on typed markup price
-            if (!unitCostField.getText().equals("") && !markupPriceField.getText().equals("")) {
-                float unitCost = Float.parseFloat(unitCostField.getText());
-                float markupPrice = Float.parseFloat(markupPriceField.getText());
-
-                unitPriceField.getTextField().getDocument().removeDocumentListener(unitPriceListener);
-                unitPriceField.setText(String.valueOf(unitCost + markupPrice));
-                unitPriceField.getTextField().getDocument().addDocumentListener(unitPriceListener);
-            }
-        }
-    };
-
-    final DocumentListener unitPriceListener = new DocumentListener() {
-        public void changedUpdate(DocumentEvent event) {
-            changed();
-        }
-
-        public void removeUpdate(DocumentEvent event) {
-            changed();
-        }
-
-        public void insertUpdate(DocumentEvent event) {
-            changed();
-        }
-
-        public void changed() {
-            // Always update unit price based on typed markup price
-            if (!unitCostField.getText().equals("") && !unitPriceField.getText().equals("")) {
-                float unitCost = Float.parseFloat(unitCostField.getText());
-                float unitPrice = Float.parseFloat(unitPriceField.getText());
-
-                markupPriceField.getTextField().getDocument().removeDocumentListener(markupPriceListener);
-                markupPriceField.setText(String.valueOf(unitPrice - unitCost));
-                markupPriceField.getTextField().getDocument().addDocumentListener(markupPriceListener);
-            }
-        }
-    };
+    public final APP_LabeledTextField amount_depositedField     = new APP_LabeledTextField("Php", 10);
 
     public final JButton updateButton = new APP_AccentButton("Submit");
 
     public final JTextField[] fields = {
-        productCodeField,
-        nameField,
+        rfid_noField,
+        student_noField,
         unitCostField.getTextField(),
         stockQuantityField,
         markupPriceField.getTextField(),
