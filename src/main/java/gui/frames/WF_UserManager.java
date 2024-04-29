@@ -239,7 +239,7 @@ public class WF_UserManager extends APP_Frame {
                 if (pendingDeletedRows.size() >= 1) {
                     // Open the warning pop up window if there are pending deletions
                     DeletePopUpWindow popUp = new DeletePopUpWindow();
-                    Main.app.USER_MANAGER.setEnabled(false);
+                    Main.app.USER_MANAGER_SCREEN.setEnabled(false);
                     popUp.setVisible(true);
                 }
             }
@@ -251,7 +251,7 @@ public class WF_UserManager extends APP_Frame {
                 if (pendingDeletedRows.size() >= 1) {
                     // Open the warning pop up window if there are pending deletions
                     DeletePopUpWindow popUp = new DeletePopUpWindow();
-                    Main.app.USER_MANAGER.setEnabled(false);
+                    Main.app.USER_MANAGER_SCREEN.setEnabled(false);
                     popUp.isExiting = true;
                     popUp.setVisible(true);
                 } else {
@@ -531,7 +531,7 @@ public class WF_UserManager extends APP_Frame {
     }
 
     protected void returnToSuperAdminScreen() {
-        Main.app.USER_MANAGER.setEnabled(true);
+        Main.app.USER_MANAGER_SCREEN.setEnabled(true);
         Main.app.SUPERADMIN_SCREEN.setLocationRelativeTo(null);
         Main.app.SUPERADMIN_SCREEN.setVisible(true);
         dispose();
@@ -561,7 +561,7 @@ class AddPopupWindow extends APP_PopUpFrame<WF_UserManager> {
     final JTextField[] fields = {usernameField, passwordField};
 
     public AddPopupWindow() {
-        super(Main.app.USER_MANAGER, "Add New User Account");
+        super(Main.app.USER_MANAGER_SCREEN, "Add New User Account");
         compile();
     }
 
@@ -758,7 +758,7 @@ class EditPopupWindow extends APP_PopUpFrame<WF_UserManager> {
 
 
     EditPopupWindow() {
-        super(Main.app.USER_MANAGER, "Edit Existing User Account");
+        super(Main.app.USER_MANAGER_SCREEN, "Edit Existing User Account");
         compile();
     }
 
@@ -942,7 +942,7 @@ class DeletePopUpWindow extends APP_PopUpFrame<WF_UserManager> {
     public final JButton continueButton = new APP_ContrastButton("Continue");
 
     public DeletePopUpWindow() {
-        super(Main.app.USER_MANAGER, "Pending Deletion Warning");
+        super(Main.app.USER_MANAGER_SCREEN, "Pending Deletion Warning");
         compile();
     }
 
@@ -967,7 +967,7 @@ class DeletePopUpWindow extends APP_PopUpFrame<WF_UserManager> {
             @Override
             public void windowClosed(WindowEvent e) {
                 if (isExiting == true) {
-                    Main.app.USER_MANAGER.returnToSuperAdminScreen();
+                    Main.app.USER_MANAGER_SCREEN.returnToSuperAdminScreen();
                 }
             }
 
@@ -1013,7 +1013,7 @@ class DeletePopUpWindow extends APP_PopUpFrame<WF_UserManager> {
             @Override
             public void actionPerformed(ActionEvent ae) {
                 getParentFrame().purgatoryPardon();
-                Main.app.USER_MANAGER.submitChangesButton.setEnabled(false);
+                Main.app.USER_MANAGER_SCREEN.submitChangesButton.setEnabled(false);
                 JFrame source = (JFrame) SwingUtilities.getWindowAncestor(continueButton);
                 source.dispose();
             }
@@ -1023,7 +1023,7 @@ class DeletePopUpWindow extends APP_PopUpFrame<WF_UserManager> {
             @Override
             public void actionPerformed(ActionEvent ae) {
                 getParentFrame().purgatoryPurge();
-                Main.app.USER_MANAGER.submitChangesButton.setEnabled(false);
+                Main.app.USER_MANAGER_SCREEN.submitChangesButton.setEnabled(false);
                 JFrame source = (JFrame) SwingUtilities.getWindowAncestor(continueButton);
                 source.dispose();
             }

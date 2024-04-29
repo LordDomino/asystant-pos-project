@@ -67,7 +67,7 @@ public class WP_SideRibbon extends APP_Panel {
 
                     if (preventSwitchView) {
                         if (getPreventionPopUp() != null) {
-                            Main.app.DASHBOARD.setEnabled(false);
+                            Main.app.DASHBOARD_FRAME.setEnabled(false);
                             preventionPopUp.setVisible(true);
                         }
                     } else {
@@ -78,7 +78,7 @@ public class WP_SideRibbon extends APP_Panel {
                             ((DV_PurchaseView) newView).refreshItemMenu();
                         }
     
-                        Main.app.DASHBOARD.setView(newView);
+                        Main.app.DASHBOARD_FRAME.setView(newView);
                         System.out.println("Current view mode: " + currentViewName);
                     }
                 }

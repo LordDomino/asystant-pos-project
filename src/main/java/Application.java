@@ -14,34 +14,64 @@ import main.java.gui.frames.WF_UserManager;
 
 public class Application {
 
-    /**The login screen which the application opens first during run. */
+    /**
+     * Singleton reference for this application's login screen JFrame
+     * via the respective {@code WF_LoginWindow} instance.
+     */
     public WF_LoginWindow LOGIN_WINDOW;
 
-    /**The dashboard instance of the app. */
-    public WF_Dashboard DASHBOARD;
+    /**
+     * Singleton reference for this application's dashboard JFrame via
+     * the respective {@code WF_Dashboard} instance.
+     */
+    public WF_Dashboard DASHBOARD_FRAME;
 
-    /**The super admin screen. */
+    /**
+     * Singleton reference for this application's super administrator
+     * screen JFrame via the respective {@code WF_SuperAdminScreen}
+     * instance.
+     */
     public WF_SuperAdminScreen SUPERADMIN_SCREEN;
 
-    /**The user manager window. */
-    public WF_UserManager USER_MANAGER;
+    /**T
+     * Singleton reference for this application's user manager screen
+     * JFrame via the respective {@code WF_UserManager} instance.
+     */
+    public WF_UserManager USER_MANAGER_SCREEN;
 
+    /**
+     * Singleton reference for this application's purchase view, which
+     * is contained within {@code DASHBOARD_FRAME}, accessed via the
+     * respective {@code DV_PurchaseView} instance.
+     */
     public DV_PurchaseView PURCHASE_VIEW;
 
-    /**The inventory view of the application */
+    /**
+     * Singleton reference for this application's inventory view, which
+     * is contained within {@code DASHBOARD_FRAME}, accessed via the
+     * respective {@code DV_Inventory} instance.
+     */
     public DV_Inventory INVENTORY_VIEW;
 
+    /**
+     * Singleton reference for this application's customers view, which
+     * is contained within {@code DASHBOARD_FRAME}, accessed via the
+     * respective {@code DV_Customers} instance.
+     */
     public DV_Customers CUSTOMERS_VIEW;
 
+    /**
+     * Initializes and runs the application.
+     */
     public void run() {
         APPResourceLoader.loadFonts(); // load custom fonts
         StylesConfig.setupUI();        // then register them as the default fonts
 
         LOGIN_WINDOW = new WF_LoginWindow();
-        DASHBOARD = new WF_Dashboard();
+        DASHBOARD_FRAME = new WF_Dashboard();
 
-        DASHBOARD.initializeSideRibbon();
-        DASHBOARD.setToDefaultView();
+        DASHBOARD_FRAME.initializeSideRibbon();
+        DASHBOARD_FRAME.setToDefaultView();
 
         LOGIN_WINDOW.setVisible(true);
         LOGIN_WINDOW.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

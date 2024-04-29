@@ -41,7 +41,7 @@ public class LoginManager {
      */
     public static final char[] ILLEGAL_CHARS = {'%'};
 
-    public static WF_Dashboard dashboard = Main.app.DASHBOARD;
+    public static WF_Dashboard dashboard = Main.app.DASHBOARD_FRAME;
 
     public static final boolean validateUsername(String username) throws SQLException {
         final String query = "SELECT * FROM " + DBReferences.TBL_USER_ACCOUNTS + " WHERE username = \"" + username + "\" LIMIT 1;";

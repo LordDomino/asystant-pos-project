@@ -27,6 +27,12 @@ import main.java.sql.SQLConnector;
 
 public class WP_ItemMenu extends APP_Panel {
 
+    /**
+     * Internal reference for accessing the checkout panel class,
+     * WP_CheckoutPanel
+     */
+    private final WP_CheckoutPanel CHECKOUT = Main.app.PURCHASE_VIEW.CHECKOUT;
+
     public WP_ItemMenu() {
         super(new GridLayout(0, 2, InsetsConfig.XXL, InsetsConfig.XXL));
         compile();
@@ -141,26 +147,12 @@ public class WP_ItemMenu extends APP_Panel {
                     itemButton.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
-                            // Check if this item already exists in the currentItems
-                            if (Main.app.PURCHASE_VIEW.CHECKOUT.currentItems.containsKey(itemButton)) {
-                                // Item exists in currentItems                                
-                                // Get quantity from existing product but add 1
-                                int quantity = Main.app.PURCHASE_VIEW.CHECKOUT.currentItems.get(itemButton) + 1;
-                                Main.app.PURCHASE_VIEW.CHECKOUT.currentItems.put(itemButton, quantity);
-                            } else {
-                                // Item needs to be registered in currentItems
-                                // Initial value should always be 1
-                                Main.app.PURCHASE_VIEW.CHECKOUT.currentItems.put(
-                                    itemButton,
-                                    1
-                                );
-                            }
-
-                            Main.app.PURCHASE_VIEW.CHECKOUT.tableModel.setRowCount(0);
-                            Main.app.PURCHASE_VIEW.CHECKOUT.addAllCurrentItems();
+                            CHECKOUT.addItemToCheckout(itemButton);
+                            CHECKOUT.tableModel.setRowCount(0);
+                            CHECKOUT.addAllCurrentItems();
 
                             // Always update total price label
-                            Main.app.PURCHASE_VIEW.CHECKOUT.totalAmount.setText(
+                            CHECKOUT.totalAmountJLabel.setText(
                                 "Php" + String.valueOf(Main.app.PURCHASE_VIEW.CHECKOUT.recomputeTotalPrice())
                             );
                         }

@@ -6,6 +6,10 @@ import java.util.Enumeration;
 import javax.swing.UIManager;
 import javax.swing.plaf.FontUIResource;
 
+/**
+ * Class containing all style-related predefined fields and helper
+ * methods used in displaying most components of the application.
+ */
 public final class StylesConfig {
 
     public static final int NORMAL_SIZE = 14;
@@ -29,10 +33,26 @@ public final class StylesConfig {
         setUIColors();
     }
 
+    /**
+     * Configures the default UI colors of selected native Swing
+     * components.
+     * <p>
+     * This calls the UIManager to configure the different
+     * keys to default as the provided default colors based on the
+     * {@code ColorConfig} class.
+     */
     private static void setUIColors() {
         UIManager.put("Label.foreground", ColorConfig.FG);
+        UIManager.put("Button.background", ColorConfig.ACCENT_1);
     }
 
+    /**
+     * Configures the default UI font of all native Swing components.
+     * <p>
+     * This calls the UIManager to configure the different
+     * keys to default as the provided default colors based on the
+     * {@code ColorConfig} class.
+     */
     public static void setUIFont (FontUIResource f) {
         Enumeration<Object> keys = UIManager.getDefaults().keys();
         while (keys.hasMoreElements()) {

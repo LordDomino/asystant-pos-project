@@ -212,7 +212,7 @@ public class WP_CustomersTable extends APP_Panel {
                 if (pendingDeletedRows.size() >= 1) {
                     // Open the warning pop up window if there are pending deletions
                     Customers_DeletePopUpWindow popUp = new Customers_DeletePopUpWindow();
-                    Main.app.DASHBOARD.setEnabled(false);
+                    Main.app.DASHBOARD_FRAME.setEnabled(false);
                     popUp.setVisible(true);
                 }
             }
@@ -332,7 +332,7 @@ public class WP_CustomersTable extends APP_Panel {
 
     @SuppressWarnings("rawtypes")
     protected void updateGUI() {
-        Main.app.DASHBOARD.setEnabled(true);
+        Main.app.DASHBOARD_FRAME.setEnabled(true);
         loadFromDatabase();
 
         // Loop through the pendingDeletedUsernames and remove the
@@ -475,7 +475,7 @@ class Customers_AddPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
 
     
     public Customers_AddPopupWindow() {
-        super(Main.app.DASHBOARD, "Add new product");
+        super(Main.app.DASHBOARD_FRAME, "Add new product");
         compile();
     }
 
@@ -623,7 +623,7 @@ class Customers_EditPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
     };
 
     public Customers_EditPopupWindow() {
-        super(Main.app.DASHBOARD);
+        super(Main.app.DASHBOARD_FRAME);
         compile();
     }
 
@@ -780,7 +780,7 @@ class Customers_DeletePopUpWindow extends APP_PopUpFrame<WF_Dashboard> {
     public final JButton continueButton = new APP_ContrastButton("Continue");
 
     public Customers_DeletePopUpWindow() {
-        super(Main.app.DASHBOARD, "Pending Deletion Warning");
+        super(Main.app.DASHBOARD_FRAME, "Pending Deletion Warning");
         compile();
     }
 

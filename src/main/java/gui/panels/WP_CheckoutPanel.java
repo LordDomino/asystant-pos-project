@@ -24,16 +24,21 @@ import javax.swing.JScrollPane;
 public class WP_CheckoutPanel extends APP_Panel {
 
     /**
-     * The current items added to the checkout table. Use this as a reference.
+     * The map of current items added to the checkout table in the
+     * format {@code B, Q} where {@code B} is the item button that
+     * corresponds to the selected product while {@code Q} is the
+     * current quantity of orders for that respective item button.
+     * <p>
+     * Use this as a reference.
      */
-    public final LinkedHashMap<APP_ItemButton, Integer> currentItems = new LinkedHashMap<>();
+    public final LinkedHashMap<APP_ItemButton, Integer> checkoutItems = new LinkedHashMap<>();
 
     public final JLabel header = new JLabel("Checkout");
     public final JLabel totalLabel = new JLabel("Total:");
-    public final JLabel totalAmount = new JLabel();
+    public final JLabel totalAmountJLabel = new JLabel();
     public final APP_AccentButton getCustomerButton = new APP_AccentButton("Get Customer...");
 
-    String[] tableFields = {"Product Code", "Product", "Quantity", "Total Price"};
+    public final String[] tableFields = {"Product Code", "Product", "Quantity", "Total Price"};
 
     public final DefaultTableModel tableModel = new DefaultTableModel(tableFields, 0) {
         @Override
@@ -42,9 +47,9 @@ public class WP_CheckoutPanel extends APP_Panel {
         }
     };
 
-    JTable table = new JTable(tableModel);
+    public final JTable table = new JTable(tableModel);
 
-    JScrollPane scrollPane = new JScrollPane(table);
+    public final JScrollPane scrollPane = new JScrollPane(table);
     
     public WP_CheckoutPanel() {
         super();
@@ -59,9 +64,8 @@ public class WP_CheckoutPanel extends APP_Panel {
         table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         
         header.setFont(StylesConfig.HEADING2);
-        header.setHorizontalAlignment(JLabel.RIGHT);
 
-        totalAmount.setFont(StylesConfig.HEADING3);
+        totalAmountJLabel.setFont(StylesConfig.HEADING3);
 
         totalLabel.setFont(StylesConfig.LEAD);
 
@@ -105,37 +109,60 @@ public class WP_CheckoutPanel extends APP_Panel {
         gbc.gridy = 2;
         gbc.gridwidth = 1;
         gbc.weightx = 0;
-        add(totalAmount, gbc);
+        add(totalAmountJLabel, gbc);
     }
 
     public void finalizePrepare() {}
 
+    public void addItemToCheckout(APP_ItemButton item) {
+        // Check if this item already exists in the currentItems
+        if (checkoutItems.containsKey(item)) {
+            // Item exists in currentItems                                
+            // Get quantity from existing product and add 1
+            int quantity = checkoutItems.get(item) + 1;
+            checkoutItems.put(item, quantity);
+        } else {
+            // Item needs to be registered in currentItems
+            // Initial quantity should always be 1
+            checkoutItems.put(item, 1);
+        }
+    }
+
     public void addAllCurrentItems() {
-        for (APP_ItemButton itemButton : new ArrayList<>(currentItems.keySet())) {
+        for (APP_ItemButton itemButton : new ArrayList<>(checkoutItems.keySet())) {
             // For fields {"Product ID", "Product", "Quantity", "Total Price"} of checkout table
             String[] itemInfo = {
                 itemButton.getProductCode(), 
                 itemButton.getItemName(),
-                String.valueOf(Main.app.PURCHASE_VIEW.CHECKOUT.currentItems.get(itemButton)),
-                "Php" + String.valueOf(Main.app.PURCHASE_VIEW.CHECKOUT.currentItems.get(itemButton) * itemButton.getPriceTag()) 
+                String.valueOf(Main.app.PURCHASE_VIEW.CHECKOUT.checkoutItems.get(itemButton)),
+                "Php" + String.valueOf(Main.app.PURCHASE_VIEW.CHECKOUT.checkoutItems.get(itemButton) * itemButton.getPriceTag()) 
             };
 
             Main.app.PURCHASE_VIEW.CHECKOUT.tableModel.addRow(itemInfo);
         }
     }
 
+    /**
+     * Returns the float value of the computed total price of all the
+     * current items based on their price tags and ordered quantities.
+     * @return the total price of all the items
+     */
     public float recomputeTotalPrice() {
         float totalPrice = 0;
-        for (APP_ItemButton itemButton : new ArrayList<>(currentItems.keySet())) {
+        for (APP_ItemButton itemButton : new ArrayList<>(checkoutItems.keySet())) {
             float itemPrice = itemButton.getPriceTag();
-            int quantity = currentItems.get(itemButton);
+            int quantity = checkoutItems.get(itemButton);
             totalPrice = totalPrice + (itemPrice * quantity);
         }
         return totalPrice;
     }
 
+    /**
+     * Returns true if the index of current items are empty.
+     * @return if the index of current items are empty
+     */
     public boolean isCheckoutClear() {
-        if (currentItems.size() == 0) {
+        if (checkoutItems.size() == 0) {
             return true;
         } else {
             return false;

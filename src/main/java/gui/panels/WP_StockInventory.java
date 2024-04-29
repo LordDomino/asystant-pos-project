@@ -228,8 +228,8 @@ public class WP_StockInventory extends APP_Panel {
                 }
                 
                 Inventory_DeletePopUpWindow popUp = new Inventory_DeletePopUpWindow();
-                Main.app.DASHBOARD.sideRibbon.preventSwitchView = true;
-                Main.app.DASHBOARD.sideRibbon.preventionPopUp = popUp;
+                Main.app.DASHBOARD_FRAME.sideRibbon.preventSwitchView = true;
+                Main.app.DASHBOARD_FRAME.sideRibbon.preventionPopUp = popUp;
             }
         });
 
@@ -241,7 +241,7 @@ public class WP_StockInventory extends APP_Panel {
                 if (pendingDeletedRows.size() >= 1) {
                     // Open the warning pop up window if there are pending deletions
                     Customers_DeletePopUpWindow popUp = new Customers_DeletePopUpWindow();
-                    Main.app.DASHBOARD.setEnabled(false);
+                    Main.app.DASHBOARD_FRAME.setEnabled(false);
                     popUp.setVisible(true);
                 }
             }
@@ -361,7 +361,7 @@ public class WP_StockInventory extends APP_Panel {
 
     @SuppressWarnings("rawtypes")
     protected void updateGUI() {
-        Main.app.DASHBOARD.setEnabled(true);
+        Main.app.DASHBOARD_FRAME.setEnabled(true);
         loadFromDatabase();
 
         // Loop through the pendingDeletedUsernames and remove the
@@ -595,7 +595,7 @@ class Inventory_AddPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
 
     
     public Inventory_AddPopupWindow() {
-        super(Main.app.DASHBOARD, "Add new product");
+        super(Main.app.DASHBOARD_FRAME, "Add new product");
         compile();
     }
 
@@ -884,7 +884,7 @@ class Inventory_EditPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
     };
 
     public Inventory_EditPopupWindow() {
-        super(Main.app.DASHBOARD);
+        super(Main.app.DASHBOARD_FRAME);
         compile();
     }
 
@@ -1093,7 +1093,7 @@ class Inventory_DeletePopUpWindow extends APP_PopUpFrame<WF_Dashboard> {
     public final JButton continueButton = new APP_ContrastButton("Continue");
 
     public Inventory_DeletePopUpWindow() {
-        super(Main.app.DASHBOARD, "Pending Deletion Warning");
+        super(Main.app.DASHBOARD_FRAME, "Pending Deletion Warning");
         compile();
     }
 
@@ -1118,7 +1118,7 @@ class Inventory_DeletePopUpWindow extends APP_PopUpFrame<WF_Dashboard> {
             public void actionPerformed(ActionEvent ae) {
                 Main.app.INVENTORY_VIEW.TABLE_PANEL.purgatoryPardon();
                 Main.app.INVENTORY_VIEW.TABLE_PANEL.submitChangesButton.setEnabled(false);
-                Main.app.DASHBOARD.sideRibbon.preventSwitchView = false;
+                Main.app.DASHBOARD_FRAME.sideRibbon.preventSwitchView = false;
                 
                 JFrame source = (JFrame) SwingUtilities.getWindowAncestor(continueButton);
                 source.dispose();
@@ -1130,7 +1130,7 @@ class Inventory_DeletePopUpWindow extends APP_PopUpFrame<WF_Dashboard> {
             public void actionPerformed(ActionEvent ae) {
                 Main.app.INVENTORY_VIEW.TABLE_PANEL.purgatoryPurge();
                 Main.app.INVENTORY_VIEW.TABLE_PANEL.submitChangesButton.setEnabled(false);
-                Main.app.DASHBOARD.sideRibbon.preventSwitchView = false;
+                Main.app.DASHBOARD_FRAME.sideRibbon.preventSwitchView = false;
                 
                 JFrame source = (JFrame) SwingUtilities.getWindowAncestor(continueButton);
                 source.dispose();
