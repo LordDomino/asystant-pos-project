@@ -72,7 +72,7 @@ public class WP_StockInventory extends APP_Panel {
 
 
     public static ArrayList<ArrayList<String>> pendingDeletedRows = new ArrayList<>();
-    public final DefaultTableModel inventoryModel = new DefaultTableModel(inventoryFields, 0) {
+    public final DefaultTableModel inventoryModel = new DefaultTableModel(new Vector<String>(fieldMappings.keySet()), 0) {
         @Override
         public boolean isCellEditable(int row, int column) {
             return false;
@@ -674,7 +674,7 @@ class Inventory_AddPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
                     Window popUp = SwingUtilities.getWindowAncestor(submitButton);
                     popUp.dispose();
 
-                    Main.app.INVENTORY.STOCK_TABLE.updateGUI();
+                    Main.app.INVENTORY_VIEW.TABLE_PANEL.updateGUI();
                 } catch (SQLException exception) {
                     exception.printStackTrace();
                 }
@@ -972,7 +972,7 @@ class Inventory_EditPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
                     Window popUp = SwingUtilities.getWindowAncestor(updateButton);
                     popUp.dispose();
 
-                    Main.app.INVENTORY.STOCK_TABLE.updateGUI();
+                    Main.app.INVENTORY_VIEW.TABLE_PANEL.updateGUI();
                 } catch (SQLException exception) {
                     exception.printStackTrace();
                 }
@@ -1116,8 +1116,8 @@ class Inventory_DeletePopUpWindow extends APP_PopUpFrame<WF_Dashboard> {
         cancelButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-                Main.app.INVENTORY.STOCK_TABLE.purgatoryPardon();
-                Main.app.INVENTORY.STOCK_TABLE.submitChangesButton.setEnabled(false);
+                Main.app.INVENTORY_VIEW.TABLE_PANEL.purgatoryPardon();
+                Main.app.INVENTORY_VIEW.TABLE_PANEL.submitChangesButton.setEnabled(false);
                 Main.app.DASHBOARD.sideRibbon.preventSwitchView = false;
                 
                 JFrame source = (JFrame) SwingUtilities.getWindowAncestor(continueButton);
@@ -1128,8 +1128,8 @@ class Inventory_DeletePopUpWindow extends APP_PopUpFrame<WF_Dashboard> {
         continueButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-                Main.app.INVENTORY.STOCK_TABLE.purgatoryPurge();
-                Main.app.INVENTORY.STOCK_TABLE.submitChangesButton.setEnabled(false);
+                Main.app.INVENTORY_VIEW.TABLE_PANEL.purgatoryPurge();
+                Main.app.INVENTORY_VIEW.TABLE_PANEL.submitChangesButton.setEnabled(false);
                 Main.app.DASHBOARD.sideRibbon.preventSwitchView = false;
                 
                 JFrame source = (JFrame) SwingUtilities.getWindowAncestor(continueButton);

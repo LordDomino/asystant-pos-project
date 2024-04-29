@@ -1,7 +1,6 @@
 package main.java.gui.panels;
 
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -11,8 +10,6 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
@@ -23,13 +20,11 @@ import java.awt.Insets;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Vector;
 
 import main.java.Main;
@@ -50,24 +45,24 @@ import main.java.utils.GUIHelpers;
 
 public class WP_CustomersTable extends APP_Panel {
 
-    public static final HashMap<String, String> fieldMappings = new HashMap<>();
+    public static final LinkedHashMap<String, String> fieldMappings = new LinkedHashMap<>();
 
     static {
+        fieldMappings.put("RFID No.", "rfid_no");
         fieldMappings.put("Student No.", "student_no");
         fieldMappings.put("Customer Name", "customer_name");
-        fieldMappings.put("RFID No.", "rfid_no");
         fieldMappings.put("Amount Deposited", "amount_deposited");
     }
 
     public static ArrayList<ArrayList<String>> pendingDeletedRows = new ArrayList<>();
-    public final DefaultTableModel inventoryModel = new DefaultTableModel(new Vector<String>(fieldMappings.values()), 0) {
+    public final DefaultTableModel model = new DefaultTableModel(new Vector<String>(fieldMappings.keySet()), 0) {
         @Override
         public boolean isCellEditable(int row, int column) {
             return false;
         }
     };
 
-    public final JTable inventoryTable = new JTable(inventoryModel);
+    public final JTable table = new JTable(model);
 
     // Layout components
     public final JPanel headerPanel     = new JPanel(new GridBagLayout());
@@ -76,7 +71,7 @@ public class WP_CustomersTable extends APP_Panel {
     public final JPanel footerPanel     = new JPanel(new GridBagLayout());
     public final JPanel footerButtonsPanel = new JPanel(new GridBagLayout());
 
-    public final JScrollPane scrollPane         = new JScrollPane(inventoryTable);
+    public final JScrollPane scrollPane         = new JScrollPane(table);
     public final WP_DetailsPanel detailsPanel   = new WP_DetailsPanel();
     
     public static final ArrayList<ArrayList<String>> pendingDeletedProducts = new ArrayList<>();
@@ -87,7 +82,7 @@ public class WP_CustomersTable extends APP_Panel {
 
         @Override
         public void fireValueChanged() {
-            final int[] selectedIndices = inventoryTable.getSelectionModel().getSelectedIndices();
+            final int[] selectedIndices = table.getSelectionModel().getSelectedIndices();
             if (selectedIndices.length == 1) {
                 setEnabled(true);    
             } else {
@@ -100,7 +95,7 @@ public class WP_CustomersTable extends APP_Panel {
 
         @Override
         public void fireValueChanged() {
-            int[] selectedIndices = inventoryTable.getSelectionModel().getSelectedIndices();
+            int[] selectedIndices = table.getSelectionModel().getSelectedIndices();
 
             if (selectedIndices.length > 0) {
                 setEnabled(true);
@@ -135,13 +130,13 @@ public class WP_CustomersTable extends APP_Panel {
         footerButtonsPanel.setOpaque(false);
 
         tablePanel.setBackground(ColorConfig.BG);
-        inventoryTable.setBackground(ColorConfig.BG);
+        table.setBackground(ColorConfig.BG);
         scrollPane.getViewport().setBackground(ColorConfig.BG);
         scrollPane.setBackground(ColorConfig.BG);
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
         detailsPanel.setBackground(ColorConfig.ACCENT_1);
 
-        inventoryTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+        table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent event) {
                 try {
                     editButton.fireValueChanged();
@@ -167,16 +162,16 @@ public class WP_CustomersTable extends APP_Panel {
             public void actionPerformed(ActionEvent e) {
                 Customers_EditPopupWindow popUp = new Customers_EditPopupWindow();
 
-                int selectedRowIndex = inventoryTable.getSelectedRow();
-                String selectedrfid_no      = inventoryTable.getValueAt(selectedRowIndex, 0).toString();
-                String selectedstudent_no             = inventoryTable.getValueAt(selectedRowIndex, 1).toString();
-                String selectedcustomer_name         = inventoryTable.getValueAt(selectedRowIndex, 2).toString();
-                String selectedamount_deposited         = inventoryTable.getValueAt(selectedRowIndex, 3).toString();
+                int selectedRowIndex            = table.getSelectedRow();
+                String selectedRfidNo           = table.getValueAt(selectedRowIndex, 0).toString();
+                String selectedStudentNo        = table.getValueAt(selectedRowIndex, 1).toString();
+                String selectedCustomerName     = table.getValueAt(selectedRowIndex, 2).toString();
+                String selectedAmountDeposited  = table.getValueAt(selectedRowIndex, 3).toString();
 
-                popUp.productCodeField.setText(selectedrfid_no);
-                popUp.nameField.setText(selectedstudent_no);
-                popUp.categoryField.setSelectedItem(selectedcustomer_name);
-                popUp.unitCostField.setText(selectedamount_deposited);
+                popUp.rfidNoField.setText(selectedRfidNo);
+                popUp.studentNoField.setText(selectedStudentNo);
+                popUp.customerNameField.setText(selectedCustomerName);
+                popUp.amountDepositedField.setText(selectedAmountDeposited);
 
                 popUp.setLocationRelativeTo(null);
                 popUp.setVisible(true);
@@ -187,20 +182,20 @@ public class WP_CustomersTable extends APP_Panel {
         deleteButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int[] selectedRows = inventoryTable.getSelectedRows();
+                int[] selectedRows = table.getSelectedRows();
 
                 for (int rowID : selectedRows) {
                     ArrayList<String> pendingRowValues = new ArrayList<>();
-                    pendingRowValues.add(inventoryTable.getValueAt(rowID, 0).toString());
-                    pendingRowValues.add(inventoryTable.getValueAt(rowID, 1).toString());
-                    pendingRowValues.add(inventoryTable.getValueAt(rowID, 2).toString());
-                    pendingRowValues.add(inventoryTable.getValueAt(rowID, 3).toString());
+                    pendingRowValues.add(table.getValueAt(rowID, 0).toString());
+                    pendingRowValues.add(table.getValueAt(rowID, 1).toString());
+                    pendingRowValues.add(table.getValueAt(rowID, 2).toString());
+                    pendingRowValues.add(table.getValueAt(rowID, 3).toString());
                     pendingDeletedRows.add(pendingRowValues);
                 }
                 
                 if (selectedRows.length > 0) {
                     for (int i = selectedRows.length - 1; i >= 0; i--) {
-                        inventoryModel.removeRow(selectedRows[i]);
+                        model.removeRow(selectedRows[i]);
                     }
 
                     submitChangesButton.setEnabled(true);
@@ -216,7 +211,7 @@ public class WP_CustomersTable extends APP_Panel {
             public void actionPerformed(ActionEvent ae) {
                 if (pendingDeletedRows.size() >= 1) {
                     // Open the warning pop up window if there are pending deletions
-                    Inventory_DeletePopUpWindow popUp = new Inventory_DeletePopUpWindow();
+                    Customers_DeletePopUpWindow popUp = new Customers_DeletePopUpWindow();
                     Main.app.DASHBOARD.setEnabled(false);
                     popUp.setVisible(true);
                 }
@@ -343,12 +338,12 @@ public class WP_CustomersTable extends APP_Panel {
         // Loop through the pendingDeletedUsernames and remove the
         // rows which are in the purgatory of deleted accounts
         for (ArrayList<String> row : pendingDeletedRows) {
-            Vector<Vector> tableData = inventoryModel.getDataVector();
+            Vector<Vector> tableData = model.getDataVector();
 
             for (int i = 0; i < tableData.size(); i++) {
                 Vector tableRow = tableData.get(i);
                 if (tableRow.get(0).equals(row.get(0))) {
-                    inventoryModel.removeRow(i);
+                    model.removeRow(i);
                 }
             }
         }
@@ -357,7 +352,7 @@ public class WP_CustomersTable extends APP_Panel {
     protected void loadFromDatabase() {
         try {
             // Clear the rows
-            inventoryModel.setRowCount(0);
+            model.setRowCount(0);
 
             // Establish the SQL connection first
             SQLConnector.establishSQLConnection();
@@ -372,9 +367,9 @@ public class WP_CustomersTable extends APP_Panel {
     
             // Go to last row to get the total number of rows
             result.last();
-            final int n = result.getRow();
+            final int size = result.getRow();
     
-            if (n ==0) {
+            if (size == 0) {
 
             } else {
                 // Then go back to the starting point before looping
@@ -382,21 +377,23 @@ public class WP_CustomersTable extends APP_Panel {
 
                 // Then begin loop
                 int i = 0;
-                while (i < n) {
+                while (i < size) {
                     result.next();
-                    String rfid_no = result.getString("rfid_no");
-                    String student_no = result.getString("student_no");
-                    String customer_name = result.getString("customer_name");
-                    String amount_deposited = result.getString("amount_deposited");
+                    String rfidNo = result.getString("rfid_no");
+                    String studentNo = result.getString("student_no");
+                    String customerName = result.getString("customer_name");
+                    String amountDeposited = result.getString("amount_deposited");
 
-                    String[] rowData = {student_no, customer_name, rfid_no, amount_deposited};
+                    String[] rowData = {rfidNo, studentNo, customerName, amountDeposited};
 
-                    inventoryModel.addRow(rowData);
+                    model.addRow(rowData);
                     i++;
                 }    
             }
 
-        } catch (SQLException exception) {
+            SQLConnector.connection.close();
+
+        } catch (Exception exception) {
             exception.printStackTrace();
         }
     }
@@ -459,19 +456,19 @@ class Customers_AddPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
     public final JLabel customer_nameLabel           = new JLabel("Username:");
     public final JLabel amount_depositLabel           = new JLabel("Amount Deposited:");
 
-    public final JTextField rfid_noField           = new APP_TextField(10);
-    public final JTextField student_noField      = new APP_TextField(10);
-    public final JTextField customer_nameField       = new APP_TextField(10);
-    public final APP_LabeledTextField amount_depositField  = new APP_LabeledTextField("Php", 10);
+    public final JTextField rfidNoField           = new APP_TextField(10);
+    public final JTextField studentNoField      = new APP_TextField(10);
+    public final JTextField customerNameField       = new APP_TextField(10);
+    public final APP_LabeledTextField amountDepositField  = new APP_LabeledTextField("Php", 10);
     
 
     public final JButton submitButton = new APP_AccentButton("Submit");
 
     public final JTextField[] fields = {
-        rfid_noField,
-        student_noField,
-        customer_nameField,
-        amount_depositField.getTextField()
+        rfidNoField,
+        studentNoField,
+        customerNameField,
+        amountDepositField.getTextField()
     };
 
 
@@ -494,47 +491,41 @@ class Customers_AddPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
         header.setFont(StylesConfig.HEADING3);
         form.setOpaque(false);
 
-
         submitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Retrieve inputs
-                 final String retrievedrfid_no       = rfid_noField.getText();
-                final String retrievedstudent_no  = student_noField.getText();
-                final String retrievedcustomer_no   = customer_nameField.getText();
-                final float retrievedamount_deposit   = Float.parseFloat(amount_depositField.getText());
+                final String retrievedRFID_no       = rfidNoField.getText();
+                final String retrievedStudent_no    = studentNoField.getText();
+                final String retrievedCustomerName   = customerNameField.getText();
+                final float retrievedAmount_deposit = Float.parseFloat(amountDepositField.getText());
 
                 // Variables reserved for query
-                 String queryrfid_no               = retrievedrfid_no;
-                String querycustomer_name          = retrievedcustomer_no;
-                String querystudent_no             = retrievedstudent_no;
-                 // Do not initialize yet because category maybe empty
-                String queryamount_deposit         = String.valueOf(retrievedamount_deposit);
-
-
-                // Check if category is empty. If so, set category to "Uncategorized"
+                String queryRFID_no                 = retrievedRFID_no;
+                String queryStudent_no              = retrievedStudent_no;
+                String queryCustomerName           = retrievedCustomerName;
+                String queryAmount_deposit          = String.valueOf(retrievedAmount_deposit);
 
                 try {
                     SQLConnector.establishSQLConnection();
-                     ResultSet result = Queries.getExistingCustomersOfrfidNo(queryrfid_no);
+                    ResultSet result = Queries.getExistingCustomersOfrfidNo(queryRFID_no);
 
-                     if (result.getFetchSize() == 0) {
-                          
-                        
-                          Queries.registerCustomer(
-                              queryrfid_no,
-                              querystudent_no,
-                             querycustomer_name,
-                              queryamount_deposit
-                          );
-                     }
+                    if (result.getFetchSize() == 0) {
+
+                        Queries.registerCustomer(
+                            queryRFID_no,
+                            queryStudent_no,
+                            queryCustomerName,
+                            queryAmount_deposit
+                        );
+                    }
 
                     SQLConnector.connection.close();
 
                     Window popUp = SwingUtilities.getWindowAncestor(submitButton);
                     popUp.dispose();
 
-                    Main.app.INVENTORY.CUSTOMER_TABLE.updateGUI();
+                    Main.app.CUSTOMERS_VIEW.TABLE_PANEL.updateGUI();
                 } catch (SQLException exception) {
                     exception.printStackTrace();
                 }
@@ -557,39 +548,39 @@ class Customers_AddPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
         gbc.insets = new Insets(InsetsConfig.L, InsetsConfig.XXL, 0, InsetsConfig.XXL);
         add(form, gbc);
         
-         {
-             gbc.gridx = 0;
-             gbc.gridy = 0;
-             gbc.insets = new Insets(InsetsConfig.S, 0, 0, 0);
-             form.add(rfid_noLabel, gbc);
+        {
+            gbc.gridx = 0;
+            gbc.gridy = 0;
+            gbc.insets = new Insets(InsetsConfig.S, 0, 0, 0);
+            form.add(rfid_noLabel, gbc);
             
-             gbc.gridy = 1;
-             form.add(student_noLabel, gbc);
+            gbc.gridy = 1;
+            form.add(student_noLabel, gbc);
             
-             gbc.gridy = 2;
-             form.add(customer_nameLabel, gbc);
+            gbc.gridy = 2;
+            form.add(customer_nameLabel, gbc);
 
-             gbc.gridy = 3;
-             form.add(amount_depositLabel, gbc);
+            gbc.gridy = 3;
+            form.add(amount_depositLabel, gbc);
             
             
-             gbc.anchor = GridBagConstraints.WEST;
-             gbc.fill = GridBagConstraints.HORIZONTAL;
-             gbc.gridx = 1;
-             gbc.gridy = 0;
-             gbc.insets = new Insets(InsetsConfig.S, InsetsConfig.L, 0, 0);
-             form.add(rfid_noField, gbc);
+            gbc.anchor = GridBagConstraints.WEST;
+            gbc.fill = GridBagConstraints.HORIZONTAL;
+            gbc.gridx = 1;
+            gbc.gridy = 0;
+            gbc.insets = new Insets(InsetsConfig.S, InsetsConfig.L, 0, 0);
+            form.add(rfidNoField, gbc);
 
-             gbc.gridy = 1;
-             form.add(student_noField, gbc);
+            gbc.gridy = 1;
+            form.add(studentNoField, gbc);
 
-             gbc.gridy = 2;
-             form.add(customer_nameField, gbc);
+            gbc.gridy = 2;
+            form.add(customerNameField, gbc);
 
-             gbc.gridy = 3;
-             form.add(amount_depositField, gbc);
+            gbc.gridy = 3;
+            form.add(amountDepositField, gbc);
 
-         }
+        }
         
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.fill = GridBagConstraints.NONE;
@@ -616,21 +607,19 @@ class Customers_EditPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
     public final JLabel customer_nameLabel      = new JLabel("Customer Name");
     public final JLabel amount_depositedLabel   = new JLabel("Amount Deposited");
     
-    public final JTextField rfid_noField            = new APP_TextField(10);
-    public final JTextField student_noField         = new APP_TextField(10);
-    public final JTextField customer_nameField      = new APP_TextField(10);
+    public final JTextField rfidNoField            = new APP_TextField(10);
+    public final JTextField studentNoField         = new APP_TextField(10);
+    public final JTextField customerNameField      = new APP_TextField(10);
 
-    public final APP_LabeledTextField amount_depositedField     = new APP_LabeledTextField("Php", 10);
+    public final APP_LabeledTextField amountDepositedField     = new APP_LabeledTextField("Php", 10);
 
     public final JButton updateButton = new APP_AccentButton("Submit");
 
     public final JTextField[] fields = {
-        rfid_noField,
-        student_noField,
-        unitCostField.getTextField(),
-        stockQuantityField,
-        markupPriceField.getTextField(),
-        unitPriceField.getTextField()
+        rfidNoField,
+        studentNoField,
+        customerNameField,
+        amountDepositedField.getTextField()
     };
 
     public Customers_EditPopupWindow() {
@@ -650,70 +639,41 @@ class Customers_EditPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
         updateButton.setEnabled(false);
 
         // Disable text fields that should not be allowed to update
-        productCodeField.setEnabled(false);
+        rfidNoField.setEnabled(false);
 
         header.setFont(StylesConfig.HEADING3);
         form.setOpaque(false);
-        categoryField.setBackground(ColorConfig.BG);
-        categoryField.setEditable(true);
-
-        // Document listeners to enable functionality of auto-updating
-        // the markupPriceField and unitPriceField based on the data
-        // typed in each other and with the unitCostField
-        unitCostField.getTextField().getDocument().addDocumentListener(unitCostListener);
-        markupPriceField.getTextField().getDocument().addDocumentListener(markupPriceListener);
-        unitPriceField.getTextField().getDocument().addDocumentListener(unitPriceListener);
-
+    
         updateButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Retrieve inputs
-                final String retrievedProductCode   = productCodeField.getText();
-                final String retrievedName          = nameField.getText();
-                final String retrievedDescription   = descriptionField.getText();
-                final Object retrievedCategory      = categoryField.getSelectedItem();
-                final float retrievedUnitCost       = Float.parseFloat(unitCostField.getText());
-                final int retrievedStockQuantity    = Integer.parseInt(stockQuantityField.getText());
-                final float retrievedMarkupPrice    = Float.parseFloat(markupPriceField.getText());
-                final float retrievedUnitPrice      = Float.parseFloat(unitPriceField.getText());
+                final String retrievedRfidNo            = rfidNoField.getText();
+                final String retrievedStudentNo         = studentNoField.getText();
+                final String retrievedCustomerName      = customerNameField.getText();
+                final float retrievedAmountDeposited    = Float.parseFloat(amountDepositedField.getText());
 
                 // Variables reserved for query
-                String queryProductCode             = retrievedProductCode;
-                String queryName                    = retrievedName;
-                String queryDescription             = retrievedDescription;
-                String queryCategory; // Do not initialize yet because category maybe empty
-                String queryUnitCost                = String.valueOf(retrievedUnitCost);
-                String queryStockQuantity           = String.valueOf(retrievedStockQuantity);
-                String queryMarkupPrice             = String.valueOf(retrievedMarkupPrice);
-                String queryUnitPrice               = String.valueOf(retrievedUnitPrice);
-
-                // Check if category is empty. If so, set category to "Uncategorized"
-                if (retrievedCategory == null) {
-                    queryCategory = "Uncategorized";
-                } else {
-                    queryCategory = retrievedCategory.toString();
-                }
+                String queryRfidNo          = retrievedRfidNo;
+                String queryStudentNo       = retrievedStudentNo;
+                String queryCustomerName    = retrievedCustomerName;
+                String queryAmountDeposited = String.valueOf(retrievedAmountDeposited);
 
                 try {
                     SQLConnector.establishSQLConnection();
-                    ResultSet result = Queries.getExistingProductsOfProductCode(queryProductCode);
+                    ResultSet result = Queries.getExistingCustomersOfrfidNo(queryRfidNo);
 
                     if (result.getFetchSize() == 0) {
                         result.next();
-
-                        // Get primary ID key
-                        int id = result.getInt("id");
                         
-                        Queries.updateProduct(
+                        int id = result.getInt("id");
+
+                        Queries.updateCustomer(
                             id,
-                            queryProductCode,
-                            queryName,
-                            queryDescription,
-                            queryCategory,
-                            queryUnitCost,
-                            queryStockQuantity,
-                            queryMarkupPrice,
-                            queryUnitPrice
+                            queryRfidNo,
+                            queryStudentNo,
+                            queryCustomerName,
+                            queryAmountDeposited
                         );
                     }
 
@@ -722,7 +682,7 @@ class Customers_EditPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
                     Window popUp = SwingUtilities.getWindowAncestor(updateButton);
                     popUp.dispose();
 
-                    Main.app.INVENTORY.STOCK_TABLE.updateGUI();
+                    Main.app.CUSTOMERS_VIEW.TABLE_PANEL.updateGUI();
                 } catch (SQLException exception) {
                     exception.printStackTrace();
                 }
@@ -750,56 +710,33 @@ class Customers_EditPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
             gbc.gridx = 0;
             gbc.gridy = 0;
             gbc.insets = new Insets(InsetsConfig.S, 0, 0, 0);
-            form.add(productCodeLabel, gbc);
+            form.add(rfid_noLabel, gbc);
             
             gbc.gridy = 1;
-            form.add(nameLabel, gbc);
+            form.add(student_noLabel, gbc);
+
             
             gbc.gridy = 2;
-            form.add(descriptionLabel, gbc);
+            form.add(customer_nameLabel, gbc);
 
             gbc.gridy = 3;
-            form.add(categoryLabel, gbc);
-            
-            gbc.gridy = 4;
-            form.add(unitCostLabel, gbc);
-            
-            gbc.gridy = 5;
-            form.add(stockQuantityLabel, gbc);
-
-            gbc.gridy = 6;
-            form.add(markupPriceLabel, gbc);
-            
-            gbc.gridy = 7;
-            form.add(unitPriceLabel, gbc);
+            form.add(amount_depositedLabel, gbc);
             
             gbc.anchor = GridBagConstraints.WEST;
             gbc.fill = GridBagConstraints.HORIZONTAL;
             gbc.gridx = 1;
             gbc.gridy = 0;
             gbc.insets = new Insets(InsetsConfig.S, InsetsConfig.L, 0, 0);
-            form.add(productCodeField, gbc);
+            form.add(rfidNoField, gbc);
 
             gbc.gridy = 1;
-            form.add(nameField, gbc);
+            form.add(studentNoField, gbc);
 
             gbc.gridy = 2;
-            form.add(descriptionField, gbc);
+            form.add(customerNameField, gbc);
 
             gbc.gridy = 3;
-            form.add(categoryField, gbc);
-
-            gbc.gridy = 4;
-            form.add(unitCostField, gbc);
-
-            gbc.gridy = 5;
-            form.add(stockQuantityField, gbc);
-
-            gbc.gridy = 6;
-            form.add(markupPriceField, gbc);
-
-            gbc.gridy = 7;
-            form.add(unitPriceField, gbc);
+            form.add(amountDepositedField, gbc);
         }
         
         gbc.anchor = GridBagConstraints.CENTER;
@@ -820,7 +757,7 @@ class Customers_EditPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
 
 class Customers_DeletePopUpWindow extends APP_PopUpFrame<WF_Dashboard> {
 
-    public static final String[] columnNames = {"Username", "Password", "Access Level", "Activation Status"};
+    public static final String[] columnNames = {"rfid_no", "student_no", "customer_name", "amount_deposited"};
     
     public boolean isExiting = false;
 
@@ -850,51 +787,6 @@ class Customers_DeletePopUpWindow extends APP_PopUpFrame<WF_Dashboard> {
     public void prepare() {
         getContentPane().setBackground(ColorConfig.ACCENT_1);
         setLayout(new GridBagLayout());
-
-        addWindowListener(new WindowListener() {
-
-            @Override
-            public void windowOpened(WindowEvent e) {
-                // TODO Auto-generated method stub
-                // throw new UnsupportedOperationException("Unimplemented method 'windowOpened'");
-            }
-
-            @Override
-            public void windowClosing(WindowEvent e) {
-                // TODO Auto-generated method stub
-                // throw new UnsupportedOperationException("Unimplemented method 'windowClosing'");
-            }
-
-            @Override
-            public void windowClosed(WindowEvent e) {
-                // TODO
-            }
-
-            @Override
-            public void windowIconified(WindowEvent e) {
-                // TODO Auto-generated method stub
-                // throw new UnsupportedOperationException("Unimplemented method 'windowIconified'");
-            }
-
-            @Override
-            public void windowDeiconified(WindowEvent e) {
-                // TODO Auto-generated method stub
-                // throw new UnsupportedOperationException("Unimplemented method 'windowDeiconified'");
-            }
-
-            @Override
-            public void windowActivated(WindowEvent e) {
-                // TODO Auto-generated method stub
-                // throw new UnsupportedOperationException("Unimplemented method 'windowActivated'");
-            }
-
-            @Override
-            public void windowDeactivated(WindowEvent e) {
-                // TODO Auto-generated method stub
-                // throw new UnsupportedOperationException("Unimplemented method 'windowDeactivated'");
-            }
-            
-        });
     }
 
     public void prepareComponents() {
@@ -911,8 +803,8 @@ class Customers_DeletePopUpWindow extends APP_PopUpFrame<WF_Dashboard> {
         cancelButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-                Main.app.INVENTORY.STOCK_TABLE.purgatoryPardon();
-                Main.app.INVENTORY.STOCK_TABLE.submitChangesButton.setEnabled(false);
+                Main.app.CUSTOMERS_VIEW.TABLE_PANEL.purgatoryPardon();
+                Main.app.CUSTOMERS_VIEW.TABLE_PANEL.submitChangesButton.setEnabled(false);
                 
                 JFrame source = (JFrame) SwingUtilities.getWindowAncestor(continueButton);
                 source.dispose();
@@ -922,8 +814,8 @@ class Customers_DeletePopUpWindow extends APP_PopUpFrame<WF_Dashboard> {
         continueButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-                Main.app.INVENTORY.STOCK_TABLE.purgatoryPurge();
-                Main.app.INVENTORY.STOCK_TABLE.submitChangesButton.setEnabled(false);
+                Main.app.CUSTOMERS_VIEW.TABLE_PANEL.purgatoryPurge();
+                Main.app.CUSTOMERS_VIEW.TABLE_PANEL.submitChangesButton.setEnabled(false);
                 
                 JFrame source = (JFrame) SwingUtilities.getWindowAncestor(continueButton);
                 source.dispose();

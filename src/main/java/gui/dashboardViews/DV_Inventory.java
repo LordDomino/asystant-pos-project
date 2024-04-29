@@ -6,7 +6,6 @@ import java.awt.GridBagConstraints;
 import main.java.configs.ColorConfig;
 import main.java.configs.InsetsConfig;
 import main.java.configs.StylesConfig;
-import main.java.gui.panels.WP_CustomersTable;
 import main.java.gui.panels.WP_StockInventory;
 
 import java.awt.GridBagLayout;
@@ -19,9 +18,7 @@ public class DV_Inventory extends APP_Panel {
 
     public final JLabel header = new JLabel("Inventory");
 
-    public final WP_StockInventory STOCK_TABLE = new WP_StockInventory();
-    
-    public final WP_CustomersTable CUSTOMER_TABLE = new WP_CustomersTable();
+    public final WP_StockInventory TABLE_PANEL = new WP_StockInventory();
 
     public DV_Inventory() {
         super();
@@ -53,7 +50,7 @@ public class DV_Inventory extends APP_Panel {
         gbc.weighty = 1;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.insets = new Insets(InsetsConfig.M, InsetsConfig.XXL, InsetsConfig.XXL, InsetsConfig.XXL); // xxl margins for left, right, and bottom
-        add(STOCK_TABLE, gbc);
+        add(TABLE_PANEL, gbc);
     }
 
 

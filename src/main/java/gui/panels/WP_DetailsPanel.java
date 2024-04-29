@@ -1,6 +1,6 @@
 package main.java.gui.panels;
 
-import java.awt.GridBagConstraints;
+// import java.awt.GridBagConstraints;
 
 import javax.swing.JLabel;
 
@@ -38,7 +38,7 @@ public class WP_DetailsPanel extends APP_Panel {
     public void prepareComponents() {}
 
     public void addComponents() {
-        GridBagConstraints gbc = new GridBagConstraints();
+        // GridBagConstraints gbc = new GridBagConstraints();
     }
 
     public void finalizePrepare() {}

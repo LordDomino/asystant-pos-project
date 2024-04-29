@@ -29,9 +29,9 @@ public class Application {
     public DV_PurchaseView PURCHASE_VIEW;
 
     /**The inventory view of the application */
-    public DV_Inventory INVENTORY;
+    public DV_Inventory INVENTORY_VIEW;
 
-    public DV_Customers CUSTOMERS;
+    public DV_Customers CUSTOMERS_VIEW;
 
     public void run() {
         APPResourceLoader.loadFonts(); // load custom fonts

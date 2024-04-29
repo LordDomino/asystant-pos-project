@@ -1,3 +1,20 @@
+TODO
+- Restrict editing deposit less than existing amount
+- Remove functionality in WP_CheckoutPanel
+- RFID tapping mechanism:
+    - First tap = record order as pending and detect customer reference
+    - Second tap = process order using customer reference
+- Add buttons with the following functionality for WP_CheckoutPanel:
+    - "Get Customer Info" -- prompts the checkout menu to do first tap of customer
+    - "Add To Orders" -- adds the records to orders (WIP)
+    - "Open Order" -- opens order using specified sales_id
+    - "Confirm Order" -- sets the order to process
+
+
+
+
+===============================================================================
+
 TABLE
 customers_tbl
     - id (PRIMARY)
