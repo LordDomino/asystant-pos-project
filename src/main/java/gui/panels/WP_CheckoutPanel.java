@@ -2,6 +2,8 @@ package main.java.gui.panels;
 
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
@@ -31,7 +33,7 @@ public class WP_CheckoutPanel extends APP_Panel {
     public final JLabel totalLabel = new JLabel("Total:");
     public final JLabel totalAmount = new JLabel();
     public final APP_AccentButton getCustomerButton = new APP_AccentButton("Get Customer...");
-    
+
     String[] tableFields = {"Product Code", "Product", "Quantity", "Total Price"};
 
     public final DefaultTableModel tableModel = new DefaultTableModel(tableFields, 0) {
@@ -63,6 +65,13 @@ public class WP_CheckoutPanel extends APP_Panel {
         totalAmount.setFont(StylesConfig.HEADING3);
 
         totalLabel.setFont(StylesConfig.LEAD);
+
+        getCustomerButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // TODO -- RFID tapping process
+            }
+        });
     }
 
     public void addComponents() {
