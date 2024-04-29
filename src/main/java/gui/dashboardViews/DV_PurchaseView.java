@@ -61,7 +61,7 @@ public class DV_PurchaseView extends APP_Panel {
             centerPanel.add(ITEM_MENU, gbc);
         }
 
-        gbc.anchor = GridBagConstraints.EAST;
+        gbc.anchor = GridBagConstraints.NORTHEAST;
         gbc.fill = GridBagConstraints.VERTICAL;
         gbc.gridx = 2;
         gbc.gridy = 0;
@@ -73,22 +73,22 @@ public class DV_PurchaseView extends APP_Panel {
         {
             // Checkout Panel
             gbc.anchor = GridBagConstraints.NORTHEAST;
+            gbc.fill = GridBagConstraints.NONE;
             gbc.gridx = 0;
             gbc.gridy = 0;
             gbc.insets = new Insets(InsetsConfig.XL, InsetsConfig.L, 0, InsetsConfig.L);
             gbc.weightx = 0;
-            gbc.weighty = 0;
+            gbc.weighty = 1;
             rightPanel.add(CHECKOUT, gbc);
             
             // Calculator
             gbc.anchor = GridBagConstraints.SOUTHEAST;
-            gbc.fill = GridBagConstraints.BOTH;
             gbc.gridx = 0;
             gbc.gridy = 1;
             gbc.insets = new Insets(0, InsetsConfig.L, InsetsConfig.XL, InsetsConfig.L);
             gbc.weightx = 0;
             gbc.weighty = 1;
-            rightPanel.add(CALCULATOR, gbc);
+            // rightPanel.add(CALCULATOR, gbc);
         }
     }
 

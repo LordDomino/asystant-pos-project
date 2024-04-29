@@ -3,14 +3,15 @@ package main.java.gui.panels;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 import main.java.Main;
+import main.java.components.APP_AccentButton;
 import main.java.components.APP_ItemButton;
 import main.java.components.APP_Panel;
 import main.java.configs.ColorConfig;
@@ -29,8 +30,9 @@ public class WP_CheckoutPanel extends APP_Panel {
     public final JLabel header = new JLabel("Checkout");
     public final JLabel totalLabel = new JLabel("Total:");
     public final JLabel totalAmount = new JLabel();
+    public final APP_AccentButton getCustomerButton = new APP_AccentButton("Get Customer...");
     
-    String[] tableFields = {"Product ID", "Product", "Quantity", "Total Price"};
+    String[] tableFields = {"Product Code", "Product", "Quantity", "Total Price"};
 
     public final DefaultTableModel tableModel = new DefaultTableModel(tableFields, 0) {
         @Override
