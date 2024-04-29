@@ -24,6 +24,7 @@ public class WP_SideRibbon extends APP_Panel {
     public boolean preventSwitchView = false;
     public JFrame preventionPopUp;
 
+
     public WP_SideRibbon() {
         super();
         compile();
@@ -60,9 +61,15 @@ public class WP_SideRibbon extends APP_Panel {
                 @Override
                 public void actionPerformed(ActionEvent e) {
 
+                    if (!Main.app.PURCHASE_VIEW.CHECKOUT.isCheckoutClear()) {
+                        preventSwitchingView();
+                    }
+
                     if (preventSwitchView) {
-                        Main.app.DASHBOARD.setEnabled(false);
-                        preventionPopUp.setVisible(true);
+                        if (getPreventionPopUp() != null) {
+                            Main.app.DASHBOARD.setEnabled(false);
+                            preventionPopUp.setVisible(true);
+                        }
                     } else {
                         JPanel newView = GUIReferences.PANELS.get(currentViewName);
     
@@ -84,4 +91,25 @@ public class WP_SideRibbon extends APP_Panel {
 
     @Override
     public void finalizePrepare() {}
+
+    public void setPreventSwitchView(boolean preventSwitchView) {
+        this.preventSwitchView = preventSwitchView;
+    }
+    
+    public JFrame getPreventionPopUp() {
+        return preventionPopUp;
+    }
+
+    public void setPreventionPopUp(JFrame preventionPopUp) {
+        this.preventionPopUp = preventionPopUp;
+    }
+    
+    public void preventSwitchingView() {
+        setPreventSwitchView(true);
+    }
+
+    public void preventSwitchingViewWithPopUp(JFrame popUp) {
+        setPreventSwitchView(true);
+        setPreventionPopUp(popUp);
+    }
 }

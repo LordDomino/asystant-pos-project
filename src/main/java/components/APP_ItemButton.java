@@ -16,11 +16,13 @@ import main.java.configs.StylesConfig;
 
 public class APP_ItemButton extends JButton {
     
-    public String itemName;
-    public float priceTag;
+    private String productCode;
+    private String itemName;
+    private float priceTag;
 
-    public APP_ItemButton(String itemName, float priceTag) {
+    public APP_ItemButton(String productCode, String itemName, float priceTag) {
         super();
+        this.productCode = productCode;
         this.itemName = itemName;
         this.priceTag = priceTag;
         initialize();
@@ -30,17 +32,16 @@ public class APP_ItemButton extends JButton {
         
         // Colors
         setBackground(ColorConfig.ACCENT_BUTTON_BG);
+        setBorder(BorderFactory.createCompoundBorder(
+            new LineBorder(ColorConfig.DEFAULT_BUTTON_OUTLINE, 1, false),
+            new EmptyBorder(16, 16, 16, 16)
+        ));
         setForeground(ColorConfig.ACCENT_BUTTON_FG);
         setFocusPainted(false);
         setBorderPainted(true);
         setHorizontalAlignment(SwingConstants.LEFT);
         setVerticalAlignment(SwingConstants.TOP);
         setRolloverEnabled(false);
-
-        setBorder(BorderFactory.createCompoundBorder(
-            new LineBorder(ColorConfig.DEFAULT_BUTTON_OUTLINE, 1, false),
-            new EmptyBorder(16, 16, 16, 16)
-        ));
 
         // We create two JLabels for the item button so we also need to change
         // the layout
@@ -74,6 +75,30 @@ public class APP_ItemButton extends JButton {
 
     public void setLabels(String itemName, float priceTag) {
         this.itemName = itemName;
+        this.priceTag = priceTag;
+    }
+
+    public String getProductCode() {
+        return productCode;
+    }
+
+    public void setProductCode(String productCode) {
+        this.productCode = productCode;
+    }
+
+    public String getItemName() {
+        return itemName;
+    }
+
+    public void setItemName(String itemName) {
+        this.itemName = itemName;
+    }
+
+    public float getPriceTag() {
+        return priceTag;
+    }
+
+    public void setPriceTag(float priceTag) {
         this.priceTag = priceTag;
     }
 }

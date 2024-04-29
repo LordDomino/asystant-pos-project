@@ -10,10 +10,13 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 
+import main.java.Main;
 import main.java.components.APP_ItemButton;
 import main.java.components.APP_Panel;
 import main.java.configs.ColorConfig;
@@ -35,26 +38,7 @@ public class WP_ItemMenu extends APP_Panel {
 
     public void prepareComponents() {}
 
-    public void addComponents() {
-        final GridBagConstraints gbc = new GridBagConstraints();
-
-        gbc.anchor = GridBagConstraints.CENTER;
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.insets = new Insets(InsetsConfig.L, InsetsConfig.L, InsetsConfig.L, InsetsConfig.L);
-        gbc.weightx = 1;
-        gbc.weighty = 1;
-        // add(menuItem1, gbc);
-
-        gbc.gridx = 1;
-        gbc.gridy = 0;
-        // add(menuItem2, gbc);
-
-        gbc.gridx = 2;
-        gbc.gridy = 0;
-        // add(menuItem3, gbc);
-    }
+    public void addComponents() {}
 
     public void finalizePrepare() {
         generateCategoryPanels();
@@ -147,8 +131,42 @@ public class WP_ItemMenu extends APP_Panel {
 
                 {
                     // Generate an item button for the current row
-                    final APP_ItemButton itemButton = new APP_ItemButton(result.getString("name"), result.getFloat("unit_price"));
+                    final APP_ItemButton itemButton = new APP_ItemButton(
+                        result.getString("product_code"),
+                        result.getString("name"), // "name" instead of "item_name" because we're referencing from stocks inventory
+                        result.getFloat("unit_price")
+                    );
                     
+                    // Action listener
+                    itemButton.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            // Check if this item already exists in the currentItems
+                            if (Main.app.PURCHASE_VIEW.CHECKOUT.currentItems.containsKey(itemButton)) {
+                                // Item exists in currentItems                                
+                                // Get quantity from existing product but add 1
+                                int quantity = Main.app.PURCHASE_VIEW.CHECKOUT.currentItems.get(itemButton) + 1;
+                                Main.app.PURCHASE_VIEW.CHECKOUT.currentItems.put(itemButton, quantity);
+                            } else {
+                                // Item needs to be registered in currentItems
+                                // Initial value should always be 1
+                                Main.app.PURCHASE_VIEW.CHECKOUT.currentItems.put(
+                                    itemButton,
+                                    1
+                                );
+                            }
+
+                            Main.app.PURCHASE_VIEW.CHECKOUT.tableModel.setRowCount(0);
+                            Main.app.PURCHASE_VIEW.CHECKOUT.addAllCurrentItems();
+
+                            // Always update total price label
+                            Main.app.PURCHASE_VIEW.CHECKOUT.totalAmount.setText(
+                                "Php" + String.valueOf(Main.app.PURCHASE_VIEW.CHECKOUT.recomputeTotalPrice())
+                            );
+                        }
+                    });
+
+                    // Layouting
                     final GridBagConstraints gbc = new GridBagConstraints();
                     gbc.anchor = GridBagConstraints.NORTHWEST;
                     gbc.fill = GridBagConstraints.BOTH;

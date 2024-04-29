@@ -19,9 +19,9 @@ public class DV_PurchaseView extends APP_Panel {
     protected final JPanel centerPanel = new JPanel(new GridBagLayout());
     protected final JPanel rightPanel = new JPanel(new GridBagLayout());
 
-    protected final WP_ItemMenu itemMenu = new WP_ItemMenu();
-    protected final JPanel checkoutPanel = new WP_CheckoutPanel();
-    protected final JPanel calculator = new WP_Calculator();
+    public final WP_ItemMenu ITEM_MENU = new WP_ItemMenu();
+    public final WP_CheckoutPanel CHECKOUT = new WP_CheckoutPanel();
+    protected final JPanel CALCULATOR = new WP_Calculator();
 
     public DV_PurchaseView() {
         super();
@@ -33,6 +33,7 @@ public class DV_PurchaseView extends APP_Panel {
     }
 
     public void prepareComponents() {
+        CALCULATOR.setOpaque(false);
         centerPanel.setBackground(ColorConfig.BG);
         rightPanel.setBackground(ColorConfig.ACCENT_1);
 
@@ -57,7 +58,7 @@ public class DV_PurchaseView extends APP_Panel {
             gbc.insets = new Insets(InsetsConfig.XXL, InsetsConfig.XXL, InsetsConfig.XXL, InsetsConfig.XXL);
             gbc.weightx = 0;
             gbc.weighty = 0;
-            centerPanel.add(itemMenu, gbc);
+            centerPanel.add(ITEM_MENU, gbc);
         }
 
         gbc.anchor = GridBagConstraints.EAST;
@@ -74,19 +75,20 @@ public class DV_PurchaseView extends APP_Panel {
             gbc.anchor = GridBagConstraints.NORTHEAST;
             gbc.gridx = 0;
             gbc.gridy = 0;
-            gbc.insets = new Insets(0, 0, 0, 0);
+            gbc.insets = new Insets(InsetsConfig.XL, InsetsConfig.L, 0, InsetsConfig.L);
             gbc.weightx = 0;
             gbc.weighty = 0;
-            rightPanel.add(checkoutPanel, gbc);
-
+            rightPanel.add(CHECKOUT, gbc);
+            
             // Calculator
             gbc.anchor = GridBagConstraints.SOUTHEAST;
-            gbc.fill = GridBagConstraints.NONE;
+            gbc.fill = GridBagConstraints.BOTH;
             gbc.gridx = 0;
             gbc.gridy = 1;
+            gbc.insets = new Insets(0, InsetsConfig.L, InsetsConfig.XL, InsetsConfig.L);
             gbc.weightx = 0;
             gbc.weighty = 1;
-            rightPanel.add(calculator, gbc);
+            rightPanel.add(CALCULATOR, gbc);
         }
     }
 
@@ -94,7 +96,7 @@ public class DV_PurchaseView extends APP_Panel {
 
     /**Re-renders the items shown in the item menu. */
     public void refreshItemMenu() {
-        itemMenu.removeAll();
-        itemMenu.generateCategoryPanels();
+        ITEM_MENU.removeAll();
+        ITEM_MENU.generateCategoryPanels();
     }
 }
