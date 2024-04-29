@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 26, 2024 at 07:07 PM
+-- Generation Time: Apr 29, 2024 at 07:09 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -25,13 +25,11 @@ DELIMITER $$
 --
 -- Procedures
 --
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spProcessOrderInventory` ()
-  UPDATE sales_tbl 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spProcessOrderInventory` ()   UPDATE sales_tbl 
   SET STATUS = 2
   WHERE STATUS = 1$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `spRecomputeInventory` ()
-  UPDATE stocks_inventory_tbl AS ii
+CREATE DEFINER=`root`@`localhost` PROCEDURE `spRecomputeInventory` ()   UPDATE stocks_inventory_tbl AS ii
   -- Of course, update the stocks based on the calculation later
 
   JOIN
@@ -57,7 +55,6 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `spRecomputeInventory` ()
   -- criteria of the product code
 
   SET stock_quantity = qty_up$$
-  -- Update the stock quantity based on the computed new quantity
 
 DELIMITER ;
 
@@ -69,31 +66,18 @@ DELIMITER ;
 
 CREATE TABLE `customers_tbl` (
   `id` int(11) NOT NULL,
+  `rfid_no` int(100) NOT NULL,
   `student_no` int(100) NOT NULL,
   `customer_name` varchar(100) NOT NULL,
-  `rfid_no` int(100) NOT NULL,
   `amount_deposited` decimal(64,4) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- --------------------------------------------------------
-
 --
--- Table structure for table `profit_tbl`
+-- Dumping data for table `customers_tbl`
 --
 
-CREATE TABLE `profit_tbl` (
-  `id` int(11) NOT NULL,
-  `product_code` int(10) NOT NULL,
-  `name` varchar(64) NOT NULL,
-  `category` varchar(100) NOT NULL,
-  `unit_cost` decimal(65,4) NOT NULL,
-  `markup_price` decimal(65,4) NOT NULL,
-  `unit_price` decimal(65,4) NOT NULL,
-  `units_sold` int(11) NOT NULL,
-  `revenue` decimal(65,4) NOT NULL,
-  `profit` decimal(65,4) NOT NULL,
-  `total_profit` decimal(65,4) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+INSERT INTO `customers_tbl` (`id`, `rfid_no`, `student_no`, `customer_name`, `amount_deposited`) VALUES
+(4, 456789, 12345, 'Loui', 1000.0000);
 
 -- --------------------------------------------------------
 
@@ -102,6 +86,7 @@ CREATE TABLE `profit_tbl` (
 --
 
 CREATE TABLE `sales_tbl` (
+  `id` int(11) NOT NULL,
   `sales_id` varchar(30) DEFAULT NULL,
   `product_code` int(10) DEFAULT NULL,
   `item_name` varchar(255) DEFAULT NULL,
@@ -118,12 +103,12 @@ CREATE TABLE `sales_tbl` (
 -- Dumping data for table `sales_tbl`
 --
 
-INSERT INTO `sales_tbl` (`sales_id`, `product_code`, `item_name`, `quantity`, `total_price`, `status`, `created_by`, `created_datetime`, `completed_datetime`, `customer_id`) VALUES
-('', 123456, 'Item1', 1, 102.0000, 2, 'user', '2024-04-26 23:47:57', NULL, NULL),
-(NULL, 123457, 'Item2', 1, 102.0000, 2, 'user', '2024-04-26 23:50:09', '2024-04-26 23:50:09', NULL),
-(NULL, 123457, 'Item2', 10, 2020.0000, 2, 'user', '2024-04-26 23:51:11', '2024-04-26 23:51:11', NULL),
-(NULL, 123457, 'Item2', 1, 102.0000, 2, 'user', '2024-04-26 23:51:28', '2024-04-26 23:51:28', NULL),
-(NULL, 123458, 'Item3', 1, 102.0000, NULL, 'user', '2024-04-26 23:51:38', '2024-04-26 23:51:38', NULL);
+INSERT INTO `sales_tbl` (`id`, `sales_id`, `product_code`, `item_name`, `quantity`, `total_price`, `status`, `created_by`, `created_datetime`, `completed_datetime`, `customer_id`) VALUES
+(1, '', 123456, 'Item1', 1, 102.0000, 2, 'user', '2024-04-26 23:47:57', NULL, NULL),
+(2, NULL, 123457, 'Item2', 1, 102.0000, 2, 'user', '2024-04-26 23:50:09', '2024-04-26 23:50:09', NULL),
+(3, NULL, 123457, 'Item2', 10, 2020.0000, 2, 'user', '2024-04-26 23:51:11', '2024-04-26 23:51:11', NULL),
+(4, NULL, 123457, 'Item2', 1, 102.0000, 2, 'user', '2024-04-26 23:51:28', '2024-04-26 23:51:28', NULL),
+(5, NULL, 123458, 'Item3', 1, 102.0000, NULL, 'user', '2024-04-26 23:51:38', '2024-04-26 23:51:38', NULL);
 
 -- --------------------------------------------------------
 
@@ -187,11 +172,10 @@ ALTER TABLE `customers_tbl`
   ADD UNIQUE KEY `rfid_no` (`rfid_no`);
 
 --
--- Indexes for table `profit_tbl`
+-- Indexes for table `sales_tbl`
 --
-ALTER TABLE `profit_tbl`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `product_code` (`product_code`,`name`,`category`);
+ALTER TABLE `sales_tbl`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `stocks_inventory_tbl`
@@ -216,23 +200,19 @@ ALTER TABLE `user_accounts`
 -- AUTO_INCREMENT for table `customers_tbl`
 --
 ALTER TABLE `customers_tbl`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT for table `sales_tbl`
+--
+ALTER TABLE `sales_tbl`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `stocks_inventory_tbl`
 --
 ALTER TABLE `stocks_inventory_tbl`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
-
---
--- Constraints for dumped tables
---
-
---
--- Constraints for table `profit_tbl`
---
-ALTER TABLE `profit_tbl`
-  ADD CONSTRAINT `profit_tbl_ibfk_1` FOREIGN KEY (`product_code`) REFERENCES `stocks_inventory_tbl` (`product_code`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
