@@ -27,12 +27,6 @@ import main.java.sql.SQLConnector;
 
 public class WP_ItemMenu extends APP_Panel {
 
-    /**
-     * Internal reference for accessing the checkout panel class,
-     * WP_CheckoutPanel
-     */
-    private final WP_CheckoutPanel CHECKOUT = Main.app.PURCHASE_VIEW.CHECKOUT;
-
     public WP_ItemMenu() {
         super(new GridLayout(0, 2, InsetsConfig.XXL, InsetsConfig.XXL));
         compile();
@@ -147,12 +141,12 @@ public class WP_ItemMenu extends APP_Panel {
                     itemButton.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
-                            CHECKOUT.addItemToCheckout(itemButton);
-                            CHECKOUT.tableModel.setRowCount(0);
-                            CHECKOUT.addAllCurrentItems();
+                            Main.app.PURCHASE_VIEW.CHECKOUT.addItemToCheckout(itemButton);
+                            Main.app.PURCHASE_VIEW.CHECKOUT.tableModel.setRowCount(0);
+                            Main.app.PURCHASE_VIEW.CHECKOUT.addAllCurrentItems();
 
                             // Always update total price label
-                            CHECKOUT.totalAmountJLabel.setText(
+                            Main.app.PURCHASE_VIEW.CHECKOUT.totalAmountJLabel.setText(
                                 "Php" + String.valueOf(Main.app.PURCHASE_VIEW.CHECKOUT.recomputeTotalPrice())
                             );
                         }
