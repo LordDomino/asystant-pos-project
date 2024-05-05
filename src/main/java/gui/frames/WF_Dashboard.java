@@ -2,20 +2,27 @@ package main.java.gui.frames;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import main.java.Main;
 import main.java.components.APP_Frame;
+import main.java.components.APP_SideRibbonButton;
 import main.java.configs.ColorConfig;
 import main.java.gui.GUIReferences;
-import main.java.gui.panels.WP_SideRibbon;
+import main.java.gui.panels.WP_SideRibbonViews;
 
 public class WF_Dashboard extends APP_Frame {
 
     protected JPanel leftPanel = new JPanel(new GridBagLayout());
     public JPanel viewingPanel;
-    public WP_SideRibbon sideRibbon;
+    public WP_SideRibbonViews sideRibbon;
+    public APP_SideRibbonButton logoutButton = new APP_SideRibbonButton("Logout");
 
     public WF_Dashboard() {
         super("Dashboard");
@@ -26,11 +33,33 @@ public class WF_Dashboard extends APP_Frame {
     public void prepare() {
         getContentPane().setBackground(ColorConfig.BG);
         setLayout(new GridBagLayout());
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
     @Override
     public void prepareComponents() {
         leftPanel.setBackground(ColorConfig.ACCENT_1);
+        logoutButton.setBackground(ColorConfig.CONTRAST_BUTTON_BG);
+        logoutButton.setForeground(ColorConfig.CONTRAST_BUTTON_FG);
+        logoutButton.addMouseListener(new MouseAdapter() {
+            public void mouseEntered(MouseEvent e) {
+                logoutButton.setBackground(ColorConfig.ACCENT_2);
+                logoutButton.setForeground(ColorConfig.CONTRAST);
+            }
+            
+            public void mouseExited(MouseEvent e) {
+                logoutButton.setBackground(ColorConfig.CONTRAST_BUTTON_BG);
+                logoutButton.setForeground(ColorConfig.CONTRAST_BUTTON_FG);
+            }
+        });
+
+        logoutButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Main.app.DASHBOARD_FRAME.dispose();
+                Main.app.logout();
+            }
+        });
     }
 
     @Override
@@ -98,19 +127,24 @@ public class WF_Dashboard extends APP_Frame {
 
     /**Constructs and adds the side ribbon to the dashboard. */
     public void initializeSideRibbon() {
-        sideRibbon = new WP_SideRibbon();
+        sideRibbon = new WP_SideRibbonViews();
         
         GridBagConstraints gbc = new GridBagConstraints();
-        {
-            // LEFT PANEL
-            // Side ribbon
-            gbc.anchor = GridBagConstraints.NORTH;
-            gbc.fill = GridBagConstraints.HORIZONTAL;
-            gbc.gridx = 0;
-            gbc.weightx = 0;
-            gbc.weighty = 1;
-            leftPanel.add(sideRibbon, gbc);
-        }
+        // LEFT PANEL
+        // Side ribbon
+        gbc.anchor = GridBagConstraints.NORTH;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 0;
+        gbc.weighty = 1;
+        leftPanel.add(sideRibbon, gbc);
+        
+        // Add logout here
+        gbc.anchor = GridBagConstraints.SOUTH;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.gridy = 1;
+        leftPanel.add(logoutButton, gbc);
     }
 
     /**Convenience method for calling {@code revalidate()} and

@@ -22,6 +22,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
+import main.java.Main;
 import main.java.components.APP_AccentButton;
 import main.java.components.APP_ContrastButton;
 import main.java.components.APP_Frame;
@@ -212,6 +213,7 @@ public final class WF_LoginWindow extends APP_Frame {
             public void actionPerformed(ActionEvent e) {
                 JFrame source = (JFrame) SwingUtilities.getRoot(quitButton);
                 source.dispose();
+                System.exit(0);
             }
         });
     }
@@ -337,10 +339,10 @@ public final class WF_LoginWindow extends APP_Frame {
     }
 
     private void authenticateLogin() {
-        JFrame target = LoginManager.getCurrentAccessLevelTargetJFrame();
-        target.setLocationRelativeTo(null);
+        APP_Frame target = (APP_Frame) LoginManager.getCurrentAccessLevelTargetJFrame();
+        target.finalizePrepare();
         target.setVisible(true);
-        target.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        dispose();
+        //target.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        Main.app.LOGIN_WINDOW.dispose();
     }
 }

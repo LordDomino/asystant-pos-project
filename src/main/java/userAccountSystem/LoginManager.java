@@ -53,6 +53,7 @@ public class LoginManager {
     public static WF_Dashboard dashboard = Main.app.DASHBOARD_FRAME;
 
     public static final boolean validateUsername(String username) throws SQLException {
+        SQLConnector.establishSQLConnection();
         final String query = "SELECT * FROM " + DBReferences.TBL_USER_ACCOUNTS
                            + " WHERE username = \"" + username + "\" LIMIT 1;";
         final Statement statement = SQLConnector.connection.createStatement();
@@ -61,17 +62,21 @@ public class LoginManager {
         if (!result.next()) {  // Read the row
             return false;  // No account of the given credentials have been found
         }
-
+        
         // Reference to the "username" and "password" columns from the result
         final String db_username = result.getString("username");
         // final String db_password = result.getString("password");
         final int db_access_lvl = result.getInt("access_level");
+        // SQLConnector.connection.close();
 
         if (db_username.equals(username)) {
+            // Create dashboard
+            Main.app.initializeDashboardFrame();
+
             if (db_access_lvl == ACCESS_LEVEL_ADMIN) {  // Admin access
-                setCurrentAccessLevelModeConfig(ACCESS_LEVEL_ADMIN, dashboard);
+                setCurrentAccessLevelModeConfig(ACCESS_LEVEL_ADMIN, Main.app.DASHBOARD_FRAME);
             } else if (db_access_lvl == ACCESS_LEVEL_USER) {  // User access
-                setCurrentAccessLevelModeConfig(ACCESS_LEVEL_USER, dashboard);
+                setCurrentAccessLevelModeConfig(ACCESS_LEVEL_USER, Main.app.DASHBOARD_FRAME);
             }
             return true;
         } else {
@@ -139,13 +144,17 @@ public class LoginManager {
         final String SA_password = result.getString("password");
 
         final int db_access_lvl = result.getInt("access_level");
+        // SQLConnector.connection.close();
 
         if (SA_password.equals(password)) {
+            // Create dashboard
+            Main.app.initializeDashboardFrame();
+
             // Access is permitted only when the username's password matches credentials in DB
             if (db_access_lvl == ACCESS_LEVEL_ADMIN) {  // Admin access
-                setCurrentAccessLevelModeConfig(ACCESS_LEVEL_ADMIN, dashboard);
+                setCurrentAccessLevelModeConfig(ACCESS_LEVEL_ADMIN, Main.app.DASHBOARD_FRAME);
             } else if (db_access_lvl == ACCESS_LEVEL_USER) {  // User access
-                setCurrentAccessLevelModeConfig(ACCESS_LEVEL_USER, dashboard);
+                setCurrentAccessLevelModeConfig(ACCESS_LEVEL_USER, Main.app.DASHBOARD_FRAME);
             }
             return true;
         } else {
