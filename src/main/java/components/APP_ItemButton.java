@@ -94,7 +94,7 @@ public class APP_ItemButton extends JButton {
         this.itemName = itemName;
     }
 
-    public float getPriceTag() {
+    public float getPrice() {
         return priceTag;
     }
 

@@ -65,6 +65,7 @@ public final class WF_LoginWindow extends APP_Frame {
     }
 
     public void prepare() {
+        getRootPane().setDefaultButton(loginButton);
         getContentPane().setBackground(ColorConfig.CONTRAST);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new GridBagLayout());

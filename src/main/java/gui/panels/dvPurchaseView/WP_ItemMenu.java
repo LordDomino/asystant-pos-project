@@ -143,12 +143,7 @@ public class WP_ItemMenu extends APP_Panel {
                         public void actionPerformed(ActionEvent e) {
                             Main.app.PURCHASE_VIEW.CHECKOUT.addItemToCheckout(itemButton);
                             Main.app.PURCHASE_VIEW.CHECKOUT.tableModel.setRowCount(0);
-                            Main.app.PURCHASE_VIEW.CHECKOUT.addAllCurrentItems();
-
-                            // Always update total price label
-                            Main.app.PURCHASE_VIEW.CHECKOUT.totalAmountJLabel.setText(
-                                "Php" + String.valueOf(Main.app.PURCHASE_VIEW.CHECKOUT.recomputeTotalPrice())
-                            );
+                            Main.app.PURCHASE_VIEW.CHECKOUT.rerenderCurrentItems();
                         }
                     });
 

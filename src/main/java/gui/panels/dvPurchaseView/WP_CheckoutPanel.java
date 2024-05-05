@@ -1,6 +1,7 @@
 package main.java.gui.panels.dvPurchaseView;
 
 import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -8,7 +9,13 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 
 import main.java.Main;
@@ -33,10 +40,43 @@ public class WP_CheckoutPanel extends APP_Panel {
      */
     public final LinkedHashMap<APP_ItemButton, Integer> checkoutItems = new LinkedHashMap<>();
 
+    // Layout components
+    public final JPanel headerButtonsPanel = new JPanel(new GridBagLayout());
+    public final JPanel footerButtonsPanel = new JPanel(new GridBagLayout());
+    public final JPanel footerPanel = new JPanel(new GridBagLayout());
+
+    // Components
     public final JLabel header = new JLabel("Checkout");
-    public final JLabel totalLabel = new JLabel("Total:");
-    public final JLabel totalAmountJLabel = new JLabel();
-    public final APP_AccentButton getCustomerButton = new APP_AccentButton("Get Customer...");
+    public final APP_AccentButton removeProductButton = new APP_AccentButton("Subtract 1") {
+        
+        @Override
+        public void fireValueChanged() {
+            final int[] selectedIndices = table.getSelectionModel().getSelectedIndices();
+            if (selectedIndices.length == 1) {
+                setEnabled(true);    
+            } else {
+                setEnabled(false);
+            }
+        }
+        
+    };
+    public final APP_AccentButton clearCheckoutButton = new APP_AccentButton("Clear Checkout") {
+
+        @Override
+        public void fireValueChanged() {
+            final int selectedIndices = table.getModel().getRowCount();
+            if (selectedIndices > 0) {
+                setEnabled(true);    
+            } else {
+                setEnabled(false);
+            }
+        };
+
+    };
+    public final JLabel totalAmountLabel = new JLabel("Total:");
+    public final JLabel totalAmount = new JLabel("Php0.0");
+    
+    public final APP_AccentButton getCustomerButton = new APP_AccentButton("Get Customer..."); // WIP
 
     public final String[] tableFields = {"Product Code", "Product", "Quantity", "Total Price"};
 
@@ -61,18 +101,74 @@ public class WP_CheckoutPanel extends APP_Panel {
     }
 
     public void prepareComponents() {
-        table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         
+        headerButtonsPanel.setOpaque(false);
+        footerPanel.setOpaque(false);
+        
+        table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         header.setFont(StylesConfig.HEADING2);
 
-        totalAmountJLabel.setFont(StylesConfig.HEADING3);
+        totalAmount.setFont(StylesConfig.HEADING3);
 
-        totalLabel.setFont(StylesConfig.LEAD);
+        totalAmountLabel.setFont(StylesConfig.LEAD);
 
         getCustomerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // TODO -- RFID tapping process
+            }
+        });
+
+        tableModel.addTableModelListener(new TableModelListener() {
+            @Override
+            public void tableChanged(TableModelEvent e) {
+                clearCheckoutButton.fireValueChanged();
+                totalAmount.setText("Php" + recomputeTotalPrice());
+            }
+        });
+
+        table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            public void valueChanged(ListSelectionEvent event) {
+                try {
+                    removeProductButton.fireValueChanged();
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                }
+            }
+        });
+
+        removeProductButton.setEnabled(false);
+        clearCheckoutButton.setEnabled(false);
+
+        removeProductButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int originalRowCount = tableModel.getRowCount();
+                int selectedRow = table.getSelectedRow();
+                APP_ItemButton item = new ArrayList<APP_ItemButton>(checkoutItems.keySet()).get(selectedRow);
+                
+                removeItemFromCheckout(item);
+                rerenderCurrentItems();
+                reselectItems(selectedRow, originalRowCount);
+            }
+            
+            public void reselectItems(int selectedRow, int originalRowCount) {
+                int newRowCount = tableModel.getRowCount();
+
+                if (originalRowCount == newRowCount) {
+                    table.setRowSelectionInterval(selectedRow, selectedRow);
+                } else {
+                    table.clearSelection();
+                }
+            }
+        });
+
+        clearCheckoutButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                checkoutItems.clear();
+                tableModel.setRowCount(0);
             }
         });
     }
@@ -83,33 +179,61 @@ public class WP_CheckoutPanel extends APP_Panel {
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.gridwidth = 2;
+        gbc.gridy = GridBagConstraints.RELATIVE;
         gbc.insets = new Insets(0, 0, 0, 0);
         add(header, gbc);
         
-        gbc.anchor = GridBagConstraints.CENTER;
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.gridy = GridBagConstraints.RELATIVE;
         gbc.insets = new Insets(InsetsConfig.L, 0, 0, 0);
+        gbc.weightx = 1;
+        add(headerButtonsPanel, gbc);
+
+        {
+            gbc.anchor = GridBagConstraints.CENTER;
+            gbc.fill = GridBagConstraints.NONE;
+            gbc.weightx = 0;
+            
+            gbc.gridx = GridBagConstraints.RELATIVE;
+            gbc.insets = new Insets(0, 0, 0, 0);
+            headerButtonsPanel.add(removeProductButton, gbc);
+
+            gbc.gridx = GridBagConstraints.RELATIVE;
+            gbc.insets = new Insets(0, InsetsConfig.S, 0, 0);
+            headerButtonsPanel.add(clearCheckoutButton, gbc);
+        }
+
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.gridx = 0;
+        gbc.gridy = GridBagConstraints.RELATIVE;
+        gbc.insets = new Insets(InsetsConfig.S, 0, 0, 0);
         add(scrollPane, gbc);
         
         gbc.anchor = GridBagConstraints.WEST;
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        gbc.gridwidth = 1;
+        gbc.gridy = GridBagConstraints.RELATIVE;
         gbc.insets = new Insets(InsetsConfig.L, 0, 0, 0);
         gbc.weightx = 1;
-        add(totalLabel, gbc);
+        add(footerButtonsPanel, gbc);
         
-        gbc.anchor = GridBagConstraints.EAST;
-        gbc.gridx = 1;
-        gbc.gridy = 2;
-        gbc.gridwidth = 1;
-        gbc.weightx = 0;
-        add(totalAmountJLabel, gbc);
+        gbc.gridy = GridBagConstraints.RELATIVE;
+        add(footerPanel, gbc);
+
+        {
+            gbc.fill = GridBagConstraints.NONE;
+            gbc.insets = new Insets(0, 0, 0, 0);
+            gbc.weightx = 1;
+            
+            gbc.anchor = GridBagConstraints.WEST;
+            gbc.gridx = GridBagConstraints.RELATIVE;
+            footerPanel.add(totalAmountLabel, gbc);
+            
+            gbc.anchor = GridBagConstraints.EAST;
+            gbc.gridx = GridBagConstraints.RELATIVE;
+            footerPanel.add(totalAmount, gbc);
+        }
     }
 
     public void finalizePrepare() {}
@@ -128,14 +252,33 @@ public class WP_CheckoutPanel extends APP_Panel {
         }
     }
 
-    public void addAllCurrentItems() {
+    public void removeItemFromCheckout(APP_ItemButton item) {
+        // Check if this item already exists in the currentItems
+        if (checkoutItems.containsKey(item)) {
+            // Item exists in currentItems                                
+            // Get quantity from existing product and add 1
+            int quantity = checkoutItems.get(item) - 1;
+            checkoutItems.put(item, quantity);
+        } else {
+            // Item needs to be registered in currentItems
+            // Initial quantity should always be 1
+            checkoutItems.put(item, checkoutItems.get(item));
+        }
+
+        if (checkoutItems.get(item).equals(0)) {
+            checkoutItems.remove(item);
+        }
+    }
+
+    public void rerenderCurrentItems() {
+        tableModel.setRowCount(0);
         for (APP_ItemButton itemButton : new ArrayList<>(checkoutItems.keySet())) {
             // For fields {"Product ID", "Product", "Quantity", "Total Price"} of checkout table
-            String[] itemInfo = {
+            Object[] itemInfo = {
                 itemButton.getProductCode(), 
                 itemButton.getItemName(),
                 String.valueOf(Main.app.PURCHASE_VIEW.CHECKOUT.checkoutItems.get(itemButton)),
-                "Php" + String.valueOf(Main.app.PURCHASE_VIEW.CHECKOUT.checkoutItems.get(itemButton) * itemButton.getPriceTag()) 
+                "Php" + String.valueOf(Main.app.PURCHASE_VIEW.CHECKOUT.checkoutItems.get(itemButton) * itemButton.getPrice())
             };
 
             Main.app.PURCHASE_VIEW.CHECKOUT.tableModel.addRow(itemInfo);
@@ -150,7 +293,7 @@ public class WP_CheckoutPanel extends APP_Panel {
     public float recomputeTotalPrice() {
         float totalPrice = 0;
         for (APP_ItemButton itemButton : new ArrayList<>(checkoutItems.keySet())) {
-            float itemPrice = itemButton.getPriceTag();
+            float itemPrice = itemButton.getPrice();
             int quantity = checkoutItems.get(itemButton);
             totalPrice = totalPrice + (itemPrice * quantity);
         }

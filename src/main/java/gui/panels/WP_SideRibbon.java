@@ -44,9 +44,9 @@ public class WP_SideRibbon extends APP_Panel {
         gbc.weightx = 0;
         gbc.weighty = 0;
 
-        for (int i = 0; i < GUIReferences.PANELS.size(); i++) {
+        for (int i = 0; i < GUIReferences.VIEW_PANELS.size(); i++) {
             // Get all the keys of GUIReferences.PANELS
-            Set<String> keys = GUIReferences.PANELS.keySet();
+            Set<String> keys = GUIReferences.VIEW_PANELS.keySet();
 
             // Convert key set to list of view names
             List<String> viewNames = new ArrayList<>(keys);
@@ -71,7 +71,7 @@ public class WP_SideRibbon extends APP_Panel {
                             preventionPopUp.setVisible(true);
                         }
                     } else {
-                        JPanel newView = GUIReferences.PANELS.get(currentViewName);
+                        JPanel newView = GUIReferences.VIEW_PANELS.get(currentViewName);
     
                         // Recompile customers view
                         if (newView instanceof DV_PurchaseView) {
