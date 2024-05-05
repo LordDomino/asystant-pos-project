@@ -75,5 +75,13 @@ public class Application {
 
         LOGIN_WINDOW.setVisible(true);
         LOGIN_WINDOW.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
     }
-}
+    
+        public void logout() {
+            // Perform logout actions here
+            // For example, reset user session, close any open windows, etc.
+     
+    }
+  }
+

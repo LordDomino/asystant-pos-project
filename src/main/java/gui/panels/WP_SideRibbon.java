@@ -1,5 +1,6 @@
 package main.java.gui.panels;
 
+
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -9,13 +10,16 @@ import java.util.List;
 import java.util.Set;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JButton;
 
 import main.java.Main;
 import main.java.components.APP_Panel;
 import main.java.components.APP_SideRibbonButton;
 import main.java.gui.GUIReferences;
 import main.java.gui.dashboardViews.DV_PurchaseView;
+
 
 public class WP_SideRibbon extends APP_Panel {
     
@@ -89,7 +93,21 @@ public class WP_SideRibbon extends APP_Panel {
         }
 
         // Add logout here
-    }
+        // JButton logoutButton = new JButton("Logout");
+        // gbc.gridy = GUIReferences.VIEW_PANELS.size(); // Place logout button at the end
+        // add(logoutButton, gbc);
+
+        // Add ActionListener for the logout button
+        // logoutButton.addActionListener(new ActionListener() {
+        // @Override
+        // public void actionPerformed(ActionEvent e) {
+            // Perform logout actions here
+           // Main.app.logout(); // Call the logout method from the Main class
+        
+        // }
+    // });
+}
+    
 
     @Override
     public void finalizePrepare() {}
