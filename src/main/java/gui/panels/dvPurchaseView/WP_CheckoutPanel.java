@@ -76,7 +76,16 @@ public class WP_CheckoutPanel extends APP_Panel {
     public final JLabel totalAmountLabel = new JLabel("Total:");
     public final JLabel totalAmount = new JLabel("Php0.0");
     
-    public final APP_AccentButton getCustomerButton = new APP_AccentButton("Get Customer..."); // WIP
+    public final APP_AccentButton proceedToPaymentButton = new APP_AccentButton("Proceed to Payment") {
+        @Override
+        public void fireValueChanged() {
+            if (!isCheckoutClear()) {
+                proceedToPaymentButton.setEnabled(true);
+            } else {
+                proceedToPaymentButton.setEnabled(false);
+            }
+        };
+    };
 
     public final String[] tableFields = {"Product Code", "Product", "Quantity", "Total Price"};
 
@@ -113,7 +122,7 @@ public class WP_CheckoutPanel extends APP_Panel {
 
         totalAmountLabel.setFont(StylesConfig.LEAD);
 
-        getCustomerButton.addActionListener(new ActionListener() {
+        proceedToPaymentButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // TODO -- RFID tapping process
@@ -124,7 +133,9 @@ public class WP_CheckoutPanel extends APP_Panel {
             @Override
             public void tableChanged(TableModelEvent e) {
                 clearCheckoutButton.fireValueChanged();
+                proceedToPaymentButton.fireValueChanged();
                 totalAmount.setText("Php" + recomputeTotalPrice());
+
             }
         });
 
@@ -140,6 +151,7 @@ public class WP_CheckoutPanel extends APP_Panel {
 
         removeProductButton.setEnabled(false);
         clearCheckoutButton.setEnabled(false);
+        proceedToPaymentButton.setEnabled(false);
 
         removeProductButton.addActionListener(new ActionListener() {
             @Override
@@ -189,10 +201,11 @@ public class WP_CheckoutPanel extends APP_Panel {
         gbc.insets = new Insets(InsetsConfig.L, 0, 0, 0);
         gbc.weightx = 1;
         add(headerButtonsPanel, gbc);
-
+        
         {
             gbc.anchor = GridBagConstraints.CENTER;
             gbc.fill = GridBagConstraints.NONE;
+            gbc.gridy = 0;
             gbc.weightx = 0;
             
             gbc.gridx = GridBagConstraints.RELATIVE;
@@ -213,26 +226,37 @@ public class WP_CheckoutPanel extends APP_Panel {
         
         gbc.anchor = GridBagConstraints.WEST;
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.gridy = GridBagConstraints.RELATIVE;
         gbc.insets = new Insets(InsetsConfig.L, 0, 0, 0);
         gbc.weightx = 1;
-        add(footerButtonsPanel, gbc);
-        
+
         gbc.gridy = GridBagConstraints.RELATIVE;
         add(footerPanel, gbc);
 
         {
             gbc.fill = GridBagConstraints.NONE;
             gbc.insets = new Insets(0, 0, 0, 0);
+            gbc.gridy = 0;
             gbc.weightx = 1;
             
             gbc.anchor = GridBagConstraints.WEST;
-            gbc.gridx = GridBagConstraints.RELATIVE;
+            gbc.gridx = 0;
             footerPanel.add(totalAmountLabel, gbc);
             
             gbc.anchor = GridBagConstraints.EAST;
             gbc.gridx = GridBagConstraints.RELATIVE;
             footerPanel.add(totalAmount, gbc);
+        }
+        
+        gbc.gridx = 0;
+        gbc.gridy = GridBagConstraints.RELATIVE;
+        gbc.insets = new Insets(InsetsConfig.M, 0, 0, 0);
+        add(footerButtonsPanel, gbc);
+        
+        {
+            gbc.gridx = 0;
+            gbc.gridy = 0;
+            gbc.insets = new Insets(0, 0, 0, 0);
+            footerButtonsPanel.add(proceedToPaymentButton, gbc);
         }
     }
 
