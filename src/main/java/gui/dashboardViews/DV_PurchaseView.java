@@ -11,8 +11,8 @@ import main.java.components.APP_Panel;
 import main.java.configs.ColorConfig;
 import main.java.configs.InsetsConfig;
 import main.java.gui.panels.WP_Calculator;
-import main.java.gui.panels.WP_CheckoutPanel;
-import main.java.gui.panels.WP_ItemMenu;
+import main.java.gui.panels.dvPurchaseView.WP_CheckoutPanel;
+import main.java.gui.panels.dvPurchaseView.WP_ItemMenu;
 
 public class DV_PurchaseView extends APP_Panel {
 

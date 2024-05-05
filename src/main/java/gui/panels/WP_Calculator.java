@@ -1,3 +1,6 @@
+/**
+ * Discontinued feature
+ */
 package main.java.gui.panels;
 
 import java.awt.GridBagConstraints;
@@ -47,7 +50,7 @@ public class WP_Calculator extends APP_Panel {
     protected JButton btn_00         = new APP_CalculatorButton("00");
     protected JButton btn_DOT        = new APP_CalculatorButton(".");
     protected JButton btn_equals     = new APP_CalculatorButton("=");
- 
+
     protected String memory = "";
     protected boolean isDecimal = false;
 
@@ -324,8 +327,7 @@ public class WP_Calculator extends APP_Panel {
 
         gbc.gridx = 3;
         gbc.gridy = 4;
-        buttonsPanel.add(btn_equals, gbc);    
-       
+        buttonsPanel.add(btn_equals, gbc);
     }
 
     public void finalizePrepare() {}

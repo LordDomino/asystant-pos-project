@@ -2,7 +2,7 @@ package test.java;
 
 import javax.swing.JFrame;
 
-import main.java.gui.panels.WP_ItemMenu;
+import main.java.gui.panels.dvPurchaseView.WP_ItemMenu;
 
 public class T_ItemMenu {
     public static void main(String[] args) {

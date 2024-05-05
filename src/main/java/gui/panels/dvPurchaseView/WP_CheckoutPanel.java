@@ -1,4 +1,4 @@
-package main.java.gui.panels;
+package main.java.gui.panels.dvPurchaseView;
 
 import java.awt.GridBagConstraints;
 import java.awt.Insets;

@@ -1,4 +1,4 @@
-package main.java.gui.panels;
+package main.java.gui.panels.dvInventory;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -41,6 +41,7 @@ import main.java.configs.ColorConfig;
 import main.java.configs.InsetsConfig;
 import main.java.configs.StylesConfig;
 import main.java.gui.frames.WF_Dashboard;
+import main.java.gui.panels.WP_DetailsPanel;
 import main.java.sql.DBReferences;
 import main.java.sql.Queries;
 import main.java.sql.SQLConnector;
@@ -240,7 +241,7 @@ public class WP_StockInventory extends APP_Panel {
             public void actionPerformed(ActionEvent ae) {
                 if (pendingDeletedRows.size() >= 1) {
                     // Open the warning pop up window if there are pending deletions
-                    Customers_DeletePopUpWindow popUp = new Customers_DeletePopUpWindow();
+                    Inventory_DeletePopUpWindow popUp = new Inventory_DeletePopUpWindow();
                     Main.app.DASHBOARD_FRAME.setEnabled(false);
                     popUp.setVisible(true);
                 }

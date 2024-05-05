@@ -6,7 +6,7 @@ import java.awt.GridBagConstraints;
 import main.java.configs.ColorConfig;
 import main.java.configs.InsetsConfig;
 import main.java.configs.StylesConfig;
-import main.java.gui.panels.WP_CustomersTable;
+import main.java.gui.panels.dvCustomers.WP_CustomersTable;
 
 import java.awt.GridBagLayout;
 import java.awt.Insets;

@@ -6,7 +6,7 @@ import java.awt.GridBagConstraints;
 import main.java.configs.ColorConfig;
 import main.java.configs.InsetsConfig;
 import main.java.configs.StylesConfig;
-import main.java.gui.panels.WP_StockInventory;
+import main.java.gui.panels.dvInventory.WP_StockInventory;
 
 import java.awt.GridBagLayout;
 import java.awt.Insets;

@@ -7,7 +7,9 @@ import main.java.configs.ColorConfig;
 
 public abstract class APP_Frame extends JFrame {
 
-    /**The background color used by this JFrame. */
+    /**
+     * The background color used by this JFrame.
+     */
     public Color bg = ColorConfig.BG;
 
     public APP_Frame() {
@@ -18,26 +20,33 @@ public abstract class APP_Frame extends JFrame {
         super(title);
     }
 
-    /**Convenience method to modify this component and its properties. */
+    /**
+     * Convenience method to modify this component and its properties.
+     */
     public abstract void prepare();
 
-    /**Convenience method to modify this component's children components
-     * and their properties. */
+    /**
+     * Convenience method to modify this component's children components
+     * and their properties.
+     */
     public abstract void prepareComponents();
 
-    /**Convenience method to add this component's children components to
+    /**
+     * Convenience method to add this component's children components to
      * this one.
      */
     public abstract void addComponents();
 
-    /**Convenience method to apply other modifications to this component
+    /**
+     * Convenience method to apply other modifications to this component
      * whenever some methods or modifications require the children
      * components to be added first (e.g. when packing the
      * component using {@code pack()}).
      */
     public abstract void finalizePrepare();
 
-    /**Executes the four convenience methods in sequential order:
+    /**
+     * Executes the four convenience methods in sequential order:
      * {@code prepare()}, {@code prepareComponents()}, 
      * {@code addComponents()}, then {@code finalizePrepare()}.
      */

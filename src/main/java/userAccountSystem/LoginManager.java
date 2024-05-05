@@ -16,27 +16,36 @@ import main.java.sql.SQLConnector;
 
 public class LoginManager {
 
-    /**The access level index of the super administrator account. */
+    /**
+     * The access level index of the super administrator account.
+     */
     public static final int ACCESS_LEVEL_SUPERADMIN = 1;
 
-    /**The access level index of an administrator account */
+    /**
+     * The access level index of an administrator account
+     */
     public static final int ACCESS_LEVEL_ADMIN      = 2;
 
-    /**The access level index of a user account. */
+    /**
+     * The access level index of a user account.
+     */
     public static final int ACCESS_LEVEL_USER       = 3;
 
-    /**The current attempted access level that the LoginManager will use to
+    /**
+     * The current attempted access level that the LoginManager will use to
      * facilitate login attempts based on the given access level.
      */
     private static int CURRENT_ACCESS_LEVEL_MODE = 0;
 
-    /**The current target JFrame of the attempted access level that the
+    /**
+     * The current target JFrame of the attempted access level that the
      * LoginManager will send in case of a successful login attempt of the
      * given access level.
      */
     private static JFrame CURRENT_ACCESS_LEVEL_TARGET_JFRAME;
 
-    /**The set of illegal characters that are not allowed in account
+    /**
+     * The set of illegal characters that are not allowed in account
      * usernames.
      */
     public static final char[] ILLEGAL_CHARS = {'%'};
@@ -44,7 +53,8 @@ public class LoginManager {
     public static WF_Dashboard dashboard = Main.app.DASHBOARD_FRAME;
 
     public static final boolean validateUsername(String username) throws SQLException {
-        final String query = "SELECT * FROM " + DBReferences.TBL_USER_ACCOUNTS + " WHERE username = \"" + username + "\" LIMIT 1;";
+        final String query = "SELECT * FROM " + DBReferences.TBL_USER_ACCOUNTS
+                           + " WHERE username = \"" + username + "\" LIMIT 1;";
         final Statement statement = SQLConnector.connection.createStatement();
         final ResultSet result = statement.executeQuery(query);
         
@@ -72,8 +82,8 @@ public class LoginManager {
     public static final boolean validateSuperAdminUsername(String username) throws SQLException {
         // Query setup
         final String query = "SELECT * FROM " + DBReferences.TBL_USER_ACCOUNTS
-                            + " WHERE access_level = " + ACCESS_LEVEL_SUPERADMIN
-                            + " LIMIT 1";
+                           + " WHERE access_level = " + ACCESS_LEVEL_SUPERADMIN
+                           + " LIMIT 1";
         final Statement statement = SQLConnector.connection.createStatement();
         final ResultSet result = statement.executeQuery(query);  // Get the result from the query
         result.next();  // Read the first row
@@ -104,7 +114,8 @@ public class LoginManager {
     }
 
     public static final boolean isAccountActivated(String username) throws SQLException {
-        final String query = "SELECT * FROM " + DBReferences.TBL_USER_ACCOUNTS + " WHERE username = \"" + username + "\" LIMIT 1;";
+        final String query = "SELECT * FROM " + DBReferences.TBL_USER_ACCOUNTS
+                           + " WHERE username = \"" + username + "\" LIMIT 1;";
         final Statement statement = SQLConnector.connection.createStatement();
         final ResultSet result = statement.executeQuery(query);
         
@@ -118,7 +129,8 @@ public class LoginManager {
     }
 
     public static final boolean isAccountPasswordCorrect(String username, String password) throws SQLException {
-        final String query = "SELECT * FROM " + DBReferences.TBL_USER_ACCOUNTS + " WHERE username = \"" + username + "\" LIMIT 1;";
+        final String query = "SELECT * FROM " + DBReferences.TBL_USER_ACCOUNTS
+                           + " WHERE username = \"" + username + "\" LIMIT 1;";
         final Statement statement = SQLConnector.connection.createStatement();
         final ResultSet result = statement.executeQuery(query);
 
@@ -161,7 +173,8 @@ public class LoginManager {
     }
 
     public static final void incrementIncorrectAttempts(String username) throws SQLException {
-        String query = "SELECT * FROM " + DBReferences.TBL_USER_ACCOUNTS + " WHERE username = \"" + username + "\" LIMIT 1;";
+        String query = "SELECT * FROM " + DBReferences.TBL_USER_ACCOUNTS
+                     + " WHERE username = \"" + username + "\" LIMIT 1;";
         final Statement statement = SQLConnector.connection.createStatement();
         final ResultSet result = statement.executeQuery(query);
 
@@ -171,14 +184,14 @@ public class LoginManager {
 
         if (loginAttempts + 1 >= 3) {
             // Lock the account
-            query = "UPDATE " + DBReferences.TBL_USER_ACCOUNTS + " SET login_attempts = 0"; // Locked accounts reset back to zero
-            query = query + " WHERE username = \"" + username + "\";";
+            query = "UPDATE " + DBReferences.TBL_USER_ACCOUNTS + " SET login_attempts = 0" // Locked accounts reset back to zero
+                  + " WHERE username = \"" + username + "\";";
             statement.executeUpdate(query);
             lockAccount(username);
         } else {
             // Increment login_attempts
-            query = "UPDATE " + DBReferences.TBL_USER_ACCOUNTS + " SET login_attempts = " + (loginAttempts + 1);
-            query = query + " WHERE username = \"" + username + "\";";
+            query = "UPDATE " + DBReferences.TBL_USER_ACCOUNTS + " SET login_attempts = " + (loginAttempts + 1)
+                  + " WHERE username = \"" + username + "\";";
             statement.executeUpdate(query);
         }
     }

@@ -87,6 +87,8 @@ public class WP_SideRibbon extends APP_Panel {
             gbc.gridy = i;
             add(viewButton, gbc);
         }
+
+        // Add logout here
     }
 
     @Override

@@ -1,4 +1,4 @@
-package main.java.gui.panels;
+package main.java.gui.panels.dvCustomers;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -38,6 +38,7 @@ import main.java.configs.ColorConfig;
 import main.java.configs.InsetsConfig;
 import main.java.configs.StylesConfig;
 import main.java.gui.frames.WF_Dashboard;
+import main.java.gui.panels.WP_DetailsPanel;
 import main.java.sql.DBReferences;
 import main.java.sql.Queries;
 import main.java.sql.SQLConnector;

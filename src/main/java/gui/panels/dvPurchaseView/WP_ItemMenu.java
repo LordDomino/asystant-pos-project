@@ -1,4 +1,4 @@
-package main.java.gui.panels;
+package main.java.gui.panels.dvPurchaseView;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
