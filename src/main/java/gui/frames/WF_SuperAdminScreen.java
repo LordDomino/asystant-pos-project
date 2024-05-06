@@ -69,6 +69,7 @@ public class WF_SuperAdminScreen extends APP_Frame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JFrame source = (JFrame) SwingUtilities.getWindowAncestor(userManagementButton);
+                Main.app.DASHBOARD_FRAME.finalizePrepare();
                 Main.app.DASHBOARD_FRAME.setVisible(true);
                 source.dispose();
             }

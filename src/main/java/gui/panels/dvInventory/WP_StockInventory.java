@@ -45,6 +45,7 @@ import main.java.gui.panels.WP_DetailsPanel;
 import main.java.sql.DBReferences;
 import main.java.sql.Queries;
 import main.java.sql.SQLConnector;
+import main.java.userAccountSystem.LoginManager;
 import main.java.utils.GUIHelpers;
 
 public class WP_StockInventory extends APP_Panel {
@@ -272,7 +273,15 @@ public class WP_StockInventory extends APP_Panel {
         gbc.gridy = 1;
         gbc.insets = new Insets(InsetsConfig.XL, InsetsConfig.XXL, 0, InsetsConfig.XXL);
         add(buttonsPanel, gbc);
-
+        
+        if (LoginManager.getCurrentAccessLevelMode() == LoginManager.ACCESS_LEVEL_SUPERADMIN) {
+            buttonsPanel.setVisible(true);
+        } else if (LoginManager.getCurrentAccessLevelMode() == LoginManager.ACCESS_LEVEL_ADMIN) {
+            buttonsPanel.setVisible(true);
+        } else {
+            buttonsPanel.setVisible(false);
+        }
+        
         {
             gbc.anchor = GridBagConstraints.NORTHWEST;
             gbc.fill = GridBagConstraints.BOTH;
@@ -345,6 +354,14 @@ public class WP_StockInventory extends APP_Panel {
             gbc.gridwidth = GridBagConstraints.REMAINDER;
             gbc.insets = new Insets(InsetsConfig.M, 0, 0, 0);
             footerPanel.add(footerButtonsPanel, gbc);
+
+            if (LoginManager.getCurrentAccessLevelMode() == LoginManager.ACCESS_LEVEL_SUPERADMIN) {
+                footerButtonsPanel.setVisible(true);
+            } else if (LoginManager.getCurrentAccessLevelMode() == LoginManager.ACCESS_LEVEL_ADMIN) {
+                footerButtonsPanel.setVisible(true);
+            } else {
+                footerButtonsPanel.setVisible(false);
+            }
 
             {
                 gbc.anchor = GridBagConstraints.EAST;
@@ -460,7 +477,7 @@ public class WP_StockInventory extends APP_Panel {
             Statement statement = SQLConnector.connection.createStatement();
             statement.executeUpdate(query);
 
-            SQLConnector.connection.close();
+            // SQLConnector.connection.close();
 
             updateGUI();
         } catch (Exception e) {
@@ -670,7 +687,7 @@ class Inventory_AddPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
                         );
                     }
 
-                    SQLConnector.connection.close();
+                    // SQLConnector.connection.close();
 
                     Window popUp = SwingUtilities.getWindowAncestor(submitButton);
                     popUp.dispose();
@@ -968,7 +985,7 @@ class Inventory_EditPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
                         );
                     }
 
-                    SQLConnector.connection.close();
+                    // SQLConnector.connection.close();
 
                     Window popUp = SwingUtilities.getWindowAncestor(updateButton);
                     popUp.dispose();

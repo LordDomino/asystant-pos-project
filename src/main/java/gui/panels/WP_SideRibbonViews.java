@@ -1,35 +1,34 @@
 package main.java.gui.panels;
 
-
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JButton;
 
 import main.java.Main;
 import main.java.components.APP_Panel;
 import main.java.components.APP_SideRibbonButton;
+import main.java.configs.ColorConfig;
 import main.java.gui.GUIReferences;
 import main.java.gui.dashboardViews.DV_PurchaseView;
 
-
-public class WP_SideRibbon extends APP_Panel {
+public class WP_SideRibbonViews extends APP_Panel {
     
     protected JPanel headerPanel = new JPanel(new GridBagLayout());
 
     public boolean preventSwitchView = false;
     public JFrame preventionPopUp;
+    
 
-
-    public WP_SideRibbon() {
+    public WP_SideRibbonViews() {
         super();
         compile();
     }
@@ -38,7 +37,9 @@ public class WP_SideRibbon extends APP_Panel {
         // setBackground(ColorConfig.ACCENT_2);
     }
     
-    public void prepareComponents() {}
+    public void prepareComponents() {
+
+    }
 
     public void addComponents() {
         GridBagConstraints gbc = new GridBagConstraints();
@@ -47,6 +48,8 @@ public class WP_SideRibbon extends APP_Panel {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 0;
         gbc.weighty = 0;
+
+        GUIReferences.addViewPanels();
 
         for (int i = 0; i < GUIReferences.VIEW_PANELS.size(); i++) {
             // Get all the keys of GUIReferences.PANELS
@@ -59,9 +62,9 @@ public class WP_SideRibbon extends APP_Panel {
             String currentViewName = viewNames.get(i);
 
             // Create a new button based on the view name
-            APP_SideRibbonButton viewButton = new APP_SideRibbonButton(currentViewName);
+            APP_SideRibbonButton viewPanelButton = new APP_SideRibbonButton(currentViewName);
 
-            viewButton.addActionListener(new ActionListener() {
+            viewPanelButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
 
@@ -88,26 +91,20 @@ public class WP_SideRibbon extends APP_Panel {
                 }
             });
 
-            gbc.gridy = i;
-            add(viewButton, gbc);
-        }
-
-        // Add logout here
-        // JButton logoutButton = new JButton("Logout");
-        // gbc.gridy = GUIReferences.VIEW_PANELS.size(); // Place logout button at the end
-        // add(logoutButton, gbc);
-
-        // Add ActionListener for the logout button
-        // logoutButton.addActionListener(new ActionListener() {
-        // @Override
-        // public void actionPerformed(ActionEvent e) {
-            // Perform logout actions here
-           // Main.app.logout(); // Call the logout method from the Main class
-        
-        // }
-    // });
-}
+            viewPanelButton.addMouseListener(new MouseAdapter() {
+                public void mouseEntered(MouseEvent e) {
+                    viewPanelButton.setBackground(ColorConfig.ACCENT_1.brighter());
+                }
     
+                public void mouseExited(MouseEvent e) {
+                    viewPanelButton.setBackground(ColorConfig.ACCENT_1);
+                }
+            });
+
+            gbc.gridy = i;
+            add(viewPanelButton, gbc);
+        }
+    }
 
     @Override
     public void finalizePrepare() {}

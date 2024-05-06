@@ -24,15 +24,5 @@ public class APP_SideRibbonButton extends APP_DefaultButton {
             new LineBorder(ColorConfig.DEFAULT_BUTTON_OUTLINE, 1, false),
             new EmptyBorder(10, 16, 10, 32)
         ));
-
-        addMouseListener(new MouseAdapter() {
-            public void mouseEntered(MouseEvent e) {
-                setBackground(ColorConfig.ACCENT_1.brighter());
-            }
-
-            public void mouseExited(MouseEvent e) {
-                setBackground(ColorConfig.ACCENT_1);
-            }
-        });
     }
 }

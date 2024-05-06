@@ -66,22 +66,24 @@ public class Application {
     public void run() {
         APPResourceLoader.loadFonts(); // load custom fonts
         StylesConfig.setupUI();        // then register them as the default fonts
-
-        LOGIN_WINDOW = new WF_LoginWindow();
-        DASHBOARD_FRAME = new WF_Dashboard();
-
-        DASHBOARD_FRAME.initializeSideRibbon();
-        DASHBOARD_FRAME.setToDefaultView();
-
-        LOGIN_WINDOW.setVisible(true);
-        LOGIN_WINDOW.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+        openLoginScreen();
     }
     
-        public void logout() {
-            // Perform logout actions here
-            // For example, reset user session, close any open windows, etc.
-     
+    public void initializeDashboardFrame() {
+        DASHBOARD_FRAME = new WF_Dashboard();
+        DASHBOARD_FRAME.initializeSideRibbon();
+        DASHBOARD_FRAME.setToDefaultView();
     }
-  }
 
+    public void openLoginScreen() {
+        LOGIN_WINDOW = new WF_LoginWindow();
+        
+        LOGIN_WINDOW.setVisible(true);
+        LOGIN_WINDOW.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
+
+    public void logout() {
+        Main.app = new Application();
+        Main.app.run();
+    }
+}
