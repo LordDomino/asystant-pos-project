@@ -122,12 +122,12 @@ public class WP_CheckoutPanel extends APP_Panel {
 
         totalAmountLabel.setFont(StylesConfig.LEAD);
 
-        proceedToPaymentButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // TODO -- RFID tapping process
-            }
-        });
+        // proceedToPaymentButton.addActionListener(new ActionListener() {
+        //     @Override
+        //     public void actionPerformed(ActionEvent e) {
+        //         // TODO -- RFID tapping process
+        //     }
+        // });
 
         tableModel.addTableModelListener(new TableModelListener() {
             @Override
@@ -181,6 +181,9 @@ public class WP_CheckoutPanel extends APP_Panel {
             public void actionPerformed(ActionEvent e) {
                 checkoutItems.clear();
                 tableModel.setRowCount(0);
+
+                // Allow switching view once checkout is clear
+                Main.app.DASHBOARD_FRAME.sideRibbon.allowSwitchingView();
             }
         });
     }

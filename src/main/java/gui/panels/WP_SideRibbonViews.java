@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import main.java.Main;
@@ -68,10 +69,18 @@ public class WP_SideRibbonViews extends APP_Panel {
                 @Override
                 public void actionPerformed(ActionEvent e) {
 
+                    // If checkout is not empty
                     if (!Main.app.PURCHASE_VIEW.CHECKOUT.isCheckoutClear()) {
+                         JOptionPane.showMessageDialog(
+                            Main.app.DASHBOARD_FRAME,
+                            "Please confirm or clear orders in checkout first",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE
+                        );
                         preventSwitchingView();
                     }
 
+                    // Check if we cannot switch to new view
                     if (preventSwitchView) {
                         if (getPreventionPopUp() != null) {
                             Main.app.DASHBOARD_FRAME.setEnabled(false);
@@ -119,6 +128,10 @@ public class WP_SideRibbonViews extends APP_Panel {
 
     public void setPreventionPopUp(JFrame preventionPopUp) {
         this.preventionPopUp = preventionPopUp;
+    }
+
+    public void allowSwitchingView() {
+        setPreventSwitchView(false);
     }
     
     public void preventSwitchingView() {
