@@ -31,7 +31,6 @@ import main.java.components.APP_TextField;
 import main.java.configs.ColorConfig;
 import main.java.configs.InsetsConfig;
 import main.java.configs.StylesConfig;
-import main.java.sql.SQLConnector;
 import main.java.userAccountSystem.LoginManager;
 import main.java.utils.GUIHelpers;
 
@@ -40,25 +39,25 @@ public final class WF_LoginWindow extends APP_Frame {
     public int textBoxWidth = 10;
 
     // Layout components
-    private JPanel contentAreaPanel = new JPanel(new GridBagLayout());
-    private JPanel titleCardPanel = new JPanel(new GridBagLayout());
-    private JPanel fieldsPanel = new JPanel(new GridBagLayout());
-    private JPanel buttonsPanel = new JPanel(new GridBagLayout());
+    private final JPanel contentAreaPanel = new JPanel(new GridBagLayout());
+    private final JPanel titleCardPanel = new JPanel(new GridBagLayout());
+    private final JPanel fieldsPanel = new JPanel(new GridBagLayout());
+    private final JPanel buttonsPanel = new JPanel(new GridBagLayout());
 
     // Components
-    public JLabel titleText = new JLabel("Asystant - POS System");
-    public JLabel subtitleText = new JLabel("Developed by Grade 12 ICT (S.Y. 2023-24)");
-    public JLabel versionInfo = new JLabel("Version 0.5.2");
+    private final JLabel titleText = new JLabel("Asystant - POS System");
+    private final JLabel subtitleText = new JLabel("Developed by Grade 12 ICT (S.Y. 2023-24)");
+    private final JLabel versionInfo = new JLabel("Version 0.5.2");
 
-    public JLabel usernameLabel = new JLabel("Username");
-    public JLabel passwordLabel = new JLabel("Password");
+    private final JLabel usernameLabel = new JLabel("Username");
+    private final JLabel passwordLabel = new JLabel("Password");
 
-    public JTextField usernameField = new APP_TextField(textBoxWidth);
-    public JPasswordField passwordField = new APP_PasswordField(textBoxWidth);
-    public JTextField[] fields = {usernameField, passwordField};
+    protected final JTextField usernameField = new APP_TextField(textBoxWidth);
+    protected final JPasswordField passwordField = new APP_PasswordField(textBoxWidth);
+    protected final JTextField[] fields = {usernameField, passwordField};
 
-    public JButton loginButton = new APP_AccentButton("Log In");
-    public JButton quitButton = new APP_ContrastButton("Quit");
+    protected final JButton loginButton = new APP_AccentButton("Log In");
+    protected final JButton quitButton = new APP_ContrastButton("Quit");
 
     public WF_LoginWindow() {
         super("Login");
@@ -77,7 +76,7 @@ public final class WF_LoginWindow extends APP_Frame {
         // General preparations
         GUIHelpers.setButtonTriggerOnAllFields(loginButton, fields);
 
-        // Preparations per component
+        // Preparations per layout component
         contentAreaPanel.setBackground(ColorConfig.ACCENT_1);
         titleCardPanel.setOpaque(false);
         fieldsPanel.setOpaque(false);
@@ -93,8 +92,9 @@ public final class WF_LoginWindow extends APP_Frame {
         ));
         buttonsPanel.setOpaque(false);
 
-        titleText.setFont(StylesConfig.HEADING1);
+        // Preparations per component
         subtitleText.setFont(StylesConfig.DETAIL);
+        titleText.setFont(StylesConfig.HEADING1);
         versionInfo.setFont(StylesConfig.DETAIL);
 
         passwordField.setBorder(new CompoundBorder(
@@ -103,111 +103,7 @@ public final class WF_LoginWindow extends APP_Frame {
         ));
 
         loginButton.setEnabled(false);
-        loginButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                boolean permitLogin = false;  // The boolean flag for allowing access
-
-                // Retrieve the credentials
-                final String username = usernameField.getText();
-                final String password = new String(passwordField.getPassword());
-
-                // To retrieve the user accounts credentials from the database,
-                // establish a SQL connection first
-                try {
-                    SQLConnector.establishSQLConnection();
-                } catch (SQLException exception) {
-                    exception.printStackTrace();
-                    Component parent = SwingUtilities.getWindowAncestor(loginButton);
-                    JOptionPane.showMessageDialog(
-                        parent,
-                        exception.toString(),
-                        "Error",
-                        JOptionPane.ERROR_MESSAGE
-                    );
-                }
-
-                try {
-                    if (LoginManager.validateSuperAdminUsername(username)) {
-                        // Attempt to login super admin
-                        permitLogin = true;
-                    } else if (LoginManager.validateUsername(username)) {
-                        // Super admin is not accessed and LoginManager
-                        // defaults to attempting login either admin or user
-                        permitLogin = true;
-                    } else {
-                        // The login cannot take place because of non-existent credentials
-                        permitLogin = false;
-
-                        Component parent = SwingUtilities.getWindowAncestor(loginButton);
-                        JOptionPane.showMessageDialog(
-                            parent,
-                            "Account of username \"" + username + "\" does not exist.",
-                            "Error",
-                            JOptionPane.ERROR_MESSAGE
-                        );
-                    }
-
-                    // Counter-check for illegal usernames.
-                    // This ensures that illegal usernames that have
-                    // bypassed the SQL database cannot be logged on.
-                    if (!LoginManager.isUsernameLegal(username)) {
-                        // Error message goes here
-                    }
-
-                    if (!LoginManager.isAccountActivated(username)) {
-                        // Account has valid credentials but is not activated
-                        permitLogin = false;
-
-                        Component parent = SwingUtilities.getWindowAncestor(loginButton);
-                        JOptionPane.showMessageDialog(
-                            parent,
-                            "Account \"" + username + "\" is not activated or is locked. Contact administrator for activation.",
-                            "Error",
-                            JOptionPane.ERROR_MESSAGE
-                        );
-                    } else if (!LoginManager.isAccountPasswordCorrect(username, password)) {
-                        // An account of the correct username was found
-                        // but an incorrect password was given
-                        permitLogin = false;
-
-                        LoginManager.incrementIncorrectAttempts(username);
-
-                        String errorMessage;
-                        if (!LoginManager.isAccountActivated(username)) {
-                            errorMessage = "Account \"" + username + "\" has been locked after three login attempts failed."
-                                + " Contact administrator for reactivation.";
-                        } else {
-                            int remaining = LoginManager.getRemainingAttempts(username);
-                            errorMessage = "Incorrect password for \"" + username + "\".";
-                            if (remaining == 1) {
-                                errorMessage = errorMessage + " Only " + LoginManager.getRemainingAttempts(username) + " login attempt is remaining.";
-                            } else {
-                                errorMessage = errorMessage + " There are " + LoginManager.getRemainingAttempts(username) + " login attempts remaining.";
-                            }
-                            errorMessage = errorMessage + " If all login attempt fails, the account \"" + username + "\" will be locked.";
-                        }
-
-                        Component parent = SwingUtilities.getWindowAncestor(loginButton);
-                        JOptionPane.showMessageDialog(
-                            parent,
-                            errorMessage,
-                            "Error",
-                            JOptionPane.ERROR_MESSAGE
-                        );
-                    }
-
-                    if (permitLogin) {
-                        LoginManager.resetLoginAttempts(username);
-                        authenticateLogin();
-                    } else {
-                        // Execute when all user account type login attempts fail
-                        // Perform counter operation
-                    }
-                } catch (SQLException exception) {
-                    exception.printStackTrace();
-                }
-            }
-        });
+        loginButton.addActionListener(new LoginActionListener());
 
         quitButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -338,11 +234,145 @@ public final class WF_LoginWindow extends APP_Frame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
-    private void authenticateLogin() {
+    protected void authenticateLogin() {
         APP_Frame target = (APP_Frame) LoginManager.getCurrentAccessLevelTargetJFrame();
         target.finalizePrepare();
         target.setVisible(true);
-        //target.setExtendedState(JFrame.MAXIMIZED_BOTH);
         Main.app.LOGIN_WINDOW.dispose();
+    }
+}
+
+class LoginActionListener implements ActionListener {
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        boolean permitLogin = false;  // The boolean flag for allowing access
+
+        // Retrieve the inputs
+        final String username = getInputUsername();
+        final String password = getInputPassword();
+
+        try {
+            /**
+             * The login process follows a sequence of login attempts
+             * with the help of the LoginManager class.
+             * 
+             * The super administrator account is first attempted to be
+             * logged in regardless of illegal characters in the
+             * superadmin's account credentials. We (developers) may opt
+             * to use special characters that should only be allowed
+             * when logging in as the superadmin.
+             */
+            if (LoginManager.validateSuperAdminUsername(username)) {
+                permitLogin = true;
+
+            /**
+             * If the string inputs do not match the super administrator
+             * credentials, then the code infers that the user tries to
+             * access a standard administrator or user account. Thus,
+             * the rule for illegal characters applies. The code should
+             * then check if the string inputs are valid. 
+             * 
+             *  --> If valid: Assume that the user will eventually be
+             *      authenticated to log in, so set permitLogin to true.
+             */
+            } else if (LoginManager.validateUsername(username)) {
+                permitLogin = true;
+
+            /**
+             *  --> If invalid: Forbid the user from authenticating to
+             *      log in, so set permitLogin to false. Also notify via
+             *      an error pop up window.
+             */
+            } else {
+                permitLogin = false;
+
+                Component parent = SwingUtilities.getWindowAncestor(Main.app.LOGIN_WINDOW.loginButton);
+                JOptionPane.showMessageDialog(
+                    parent,
+                    "Account of username \"" + username + "\" does not exist.",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
+                    );
+            }
+            
+            // Counter-check for illegal usernames.
+            // This ensures that illegal usernames that have
+            // bypassed the SQL database cannot be logged on.
+            if (!LoginManager.isUsernameLegal(username)) {
+                // Error message goes here
+            }
+
+            if (!LoginManager.isAccountActivated(username)) {
+                // Account has valid credentials but is not activated
+                permitLogin = false;
+                
+                Component parent = SwingUtilities.getWindowAncestor(Main.app.LOGIN_WINDOW.loginButton);
+                JOptionPane.showMessageDialog(
+                    parent,
+                    "Account \"" + username + "\" is not activated or is locked. Contact administrator for activation.",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
+                    );
+                } else if (!LoginManager.isAccountPasswordCorrect(username, password)) {
+                    // An account of the correct username was found
+                    // but an incorrect password was given
+                    permitLogin = false;
+                    
+                    LoginManager.incrementIncorrectAttempts(username);
+                    
+                    String errorMessage;
+                    if (!LoginManager.isAccountActivated(username)) {
+                    errorMessage = "Account \"" + username + "\" has been locked after three login attempts failed."
+                                 + " Contact administrator for reactivation.";
+                } else {
+                    int remaining = LoginManager.getRemainingAttempts(username);
+                    errorMessage = "Incorrect password for \"" + username + "\".";
+                    if (remaining == 1) {
+                        errorMessage = errorMessage + " Only " + LoginManager.getRemainingAttempts(username)
+                                     + " login attempt is remaining.";
+                    } else {
+                        errorMessage = errorMessage + " There are " + LoginManager.getRemainingAttempts(username)
+                                     + " login attempts remaining.";
+                    }
+                    errorMessage = errorMessage + " If all login attempt fails, the account \""
+                                 + username + "\" will be locked.";
+                }
+
+                Component parent = SwingUtilities.getWindowAncestor(Main.app.LOGIN_WINDOW.loginButton);
+                JOptionPane.showMessageDialog(
+                    parent,
+                    errorMessage,
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
+                    );
+                }
+
+            if (permitLogin) {
+                LoginManager.resetLoginAttempts(username);
+                Main.app.LOGIN_WINDOW.authenticateLogin();
+            } else {
+                // Execute when all user account type login attempts fail
+                // Perform counter operation
+            }
+
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+            Component parent = SwingUtilities.getWindowAncestor(Main.app.LOGIN_WINDOW.loginButton);
+            JOptionPane.showMessageDialog(
+                parent,
+                exception.toString(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE
+                );
+        }
+    }
+
+    private String getInputUsername() {
+        return Main.app.LOGIN_WINDOW.usernameField.getText();
+    }
+
+    private String getInputPassword() {
+        return new String(Main.app.LOGIN_WINDOW.passwordField.getPassword());
     }
 }

@@ -4,7 +4,9 @@ import java.util.List;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 public class Queries {
 
@@ -61,9 +63,8 @@ public class Queries {
         statement.executeUpdate(query);
     }
 
-    public static void updateProduct(int id, String productCode, String name,
-    String description, String category, String unitCost, String stockQuantity,
-    String markupPrice, String unitPrice) throws SQLException {
+    public static void updateProduct(int id, String productCode, String name, String description, String category,
+    String unitCost, String stockQuantity, String markupPrice, String unitPrice) throws SQLException {
 
         final String[] fieldNames = {
             "product_code",
@@ -105,69 +106,94 @@ public class Queries {
         statement.executeUpdate(query);
     }
 
+    public static void registerCustomer(String rfid_no, String student_no, String customer_name,
+    String amount_deposited) throws SQLException {
 
-public static void registerCustomer(String rfid_no, String student_no,
-String customer_name, String amount_deposited) throws SQLException {
-
-    final String[] fieldNames = {
-        "rfid_no",
-        "student_no",
-        "customer_name",
-        "amount_deposited"
-    };
+        final String[] fieldNames = {
+            "rfid_no",
+            "student_no",
+            "customer_name",
+            "amount_deposited"
+        };
     
-    String query = "INSERT INTO " + DBReferences.TBL_CUSTOMERS + " (";
+        String query = "INSERT INTO " + DBReferences.TBL_CUSTOMERS + " (";
     
-    for (String field : fieldNames) {
-        query = query + " `" + field + "`,";
-    }
+        for (String field : fieldNames) {
+            query = query + " `" + field + "`,";
+        }
     
-    query = query.substring(0, query.length()-1) + " ) VALUES (";
-    query = query + " \"" + rfid_no             + "\", ";
-    query = query + " \"" + student_no             + "\", ";
-    query = query + " \"" + customer_name      + "\", ";
-    query = query + " \"" + amount_deposited        + "\");";
+        query = query.substring(0, query.length()-1) + " ) VALUES (";
+        query = query + " \"" + rfid_no             + "\", ";
+        query = query + " \"" + student_no             + "\", ";
+        query = query + " \"" + customer_name      + "\", ";
+        query = query + " \"" + amount_deposited        + "\");";
 
-    Statement statement = SQLConnector.connection.createStatement();
-    System.out.println(query);
-    statement.executeUpdate(query);
-}
-
-public static void updateCustomer(int id, String rfid_no, String student_no,
-String customer_name, String amount_deposited) throws SQLException {
-
-    final String[] fieldNames = {
-        "rfid_no",
-        "student_no",
-        "customer_name",
-        "amount_deposited"
-    };
-
-    final String[] fieldValues = {
-        rfid_no,
-        student_no,
-        customer_name,
-        amount_deposited
-    };
-
-    String query = "UPDATE " + DBReferences.TBL_CUSTOMERS + " SET ";
-
-    List<String> fields = Arrays.asList(fieldNames);
-    List<String> values = Arrays.asList(fieldValues);
-
-    for (int i = 0; i < fields.size(); i++) {
-        String columnName = fields.get(i);
-        Object value = values.get(i);
-        query = query + " " + columnName + " = \"" + value + "\",";
+        Statement statement = SQLConnector.connection.createStatement();
+        System.out.println(query);
+        statement.executeUpdate(query);
     }
 
-    query = query.substring(0, query.length()-1);
-    query = query + " WHERE id = \"" + id + "\";";
+    public static void updateCustomer(int id, String rfid_no, String student_no, String customer_name,
+    String amount_deposited) throws SQLException {
 
-    Statement statement = SQLConnector.connection.createStatement();
-    System.out.println(query);
-    statement.executeUpdate(query);
-}
+        final String[] fieldNames = {
+            "rfid_no",
+            "student_no",
+            "customer_name",
+            "amount_deposited"
+        };
 
+        final String[] fieldValues = {
+            rfid_no,
+            student_no,
+            customer_name,
+            amount_deposited
+        };
 
+        String query = "UPDATE " + DBReferences.TBL_CUSTOMERS + " SET ";
+
+        List<String> fields = Arrays.asList(fieldNames);
+        List<String> values = Arrays.asList(fieldValues);
+
+        for (int i = 0; i < fields.size(); i++) {
+            String columnName = fields.get(i);
+            Object value = values.get(i);
+            query = query + " " + columnName + " = \"" + value + "\",";
+        }
+
+        query = query.substring(0, query.length()-1);
+        query = query + " WHERE id = \"" + id + "\";";
+
+        Statement statement = SQLConnector.connection.createStatement();
+        statement.executeUpdate(query);
+    }
+
+    public static ArrayList<String> getItemCategories() throws SQLException {
+        String query = "SELECT category FROM " + DBReferences.TBL_STOCKS_INVENTORY
+                     + " GROUP BY category;";
+
+        Statement statement = SQLConnector.connection.createStatement(
+            ResultSet.TYPE_SCROLL_INSENSITIVE,
+            ResultSet.CONCUR_READ_ONLY
+        );
+        ResultSet result = statement.executeQuery(query);
+
+        result.last();
+        int rowCount = result.getRow();
+
+        ArrayList<String> categories = new ArrayList<String>();
+
+        result.beforeFirst();
+        for (int i = 0; i < rowCount; i++) {
+            result.next();
+            String category = result.getString("category");
+            if (!category.equals("Uncategorized")) {
+                categories.add(category);
+            }
+        }
+        Collections.sort(categories, String.CASE_INSENSITIVE_ORDER);
+        categories.add(0, "Uncategorized");
+
+        return categories;
+    }
 }

@@ -53,21 +53,23 @@ public class LoginManager {
     public static WF_Dashboard dashboard = Main.app.DASHBOARD_FRAME;
 
     public static final boolean validateUsername(String username) throws SQLException {
-        SQLConnector.establishSQLConnection();
+        SQLConnector.establishConnection();
+
         final String query = "SELECT * FROM " + DBReferences.TBL_USER_ACCOUNTS
                            + " WHERE username = \"" + username + "\" LIMIT 1;";
         final Statement statement = SQLConnector.connection.createStatement();
         final ResultSet result = statement.executeQuery(query);
-        
+                
         if (!result.next()) {  // Read the row
             return false;  // No account of the given credentials have been found
         }
-        
+
         // Reference to the "username" and "password" columns from the result
         final String db_username = result.getString("username");
         // final String db_password = result.getString("password");
         final int db_access_lvl = result.getInt("access_level");
-        // SQLConnector.connection.close();
+
+        SQLConnector.connection.close();
 
         if (db_username.equals(username)) {
             // Create dashboard
@@ -85,6 +87,7 @@ public class LoginManager {
     }
 
     public static final boolean validateSuperAdminUsername(String username) throws SQLException {
+        SQLConnector.establishConnection();
         // Query setup
         final String query = "SELECT * FROM " + DBReferences.TBL_USER_ACCOUNTS
                            + " WHERE access_level = " + ACCESS_LEVEL_SUPERADMIN
@@ -104,8 +107,10 @@ public class LoginManager {
             // Finally create a user manager instance
             Main.app.SUPERADMIN_SCREEN = new WF_SuperAdminScreen();
             setCurrentAccessLevelModeConfig(ACCESS_LEVEL_SUPERADMIN, Main.app.SUPERADMIN_SCREEN);
+            SQLConnector.closeConnection();
             return true;
         } else {
+            SQLConnector.closeConnection();
             return false;
         }
     }
@@ -119,6 +124,8 @@ public class LoginManager {
     }
 
     public static final boolean isAccountActivated(String username) throws SQLException {
+        SQLConnector.establishConnection();
+
         final String query = "SELECT * FROM " + DBReferences.TBL_USER_ACCOUNTS
                            + " WHERE username = \"" + username + "\" LIMIT 1;";
         final Statement statement = SQLConnector.connection.createStatement();
@@ -127,13 +134,17 @@ public class LoginManager {
         result.next(); // Read row
 
         if (result.getString("activated").equals("1")) {
+            SQLConnector.connection.close();
             return true;
         } else {
+            SQLConnector.connection.close();
             return false;
         }
     }
 
     public static final boolean isAccountPasswordCorrect(String username, String password) throws SQLException {
+        SQLConnector.establishConnection();
+
         final String query = "SELECT * FROM " + DBReferences.TBL_USER_ACCOUNTS
                            + " WHERE username = \"" + username + "\" LIMIT 1;";
         final Statement statement = SQLConnector.connection.createStatement();
@@ -144,7 +155,6 @@ public class LoginManager {
         final String SA_password = result.getString("password");
 
         final int db_access_lvl = result.getInt("access_level");
-        // SQLConnector.connection.close();
 
         if (SA_password.equals(password)) {
             // Create dashboard
@@ -156,8 +166,11 @@ public class LoginManager {
             } else if (db_access_lvl == ACCESS_LEVEL_USER) {  // User access
                 setCurrentAccessLevelModeConfig(ACCESS_LEVEL_USER, Main.app.DASHBOARD_FRAME);
             }
+
+            SQLConnector.connection.close();
             return true;
         } else {
+            SQLConnector.connection.close();
             return false;
         }
     }
@@ -182,6 +195,7 @@ public class LoginManager {
     }
 
     public static final void incrementIncorrectAttempts(String username) throws SQLException {
+        SQLConnector.establishConnection();
         String query = "SELECT * FROM " + DBReferences.TBL_USER_ACCOUNTS
                      + " WHERE username = \"" + username + "\" LIMIT 1;";
         final Statement statement = SQLConnector.connection.createStatement();
@@ -203,21 +217,28 @@ public class LoginManager {
                   + " WHERE username = \"" + username + "\";";
             statement.executeUpdate(query);
         }
+
+        SQLConnector.closeConnection();
     }
 
     public static final void resetLoginAttempts(String username) throws SQLException {
+        SQLConnector.establishConnection();
         final Statement statement = SQLConnector.connection.createStatement();
         String query = "UPDATE " + DBReferences.TBL_USER_ACCOUNTS + " SET login_attempts = 0";
         query = query + " WHERE username = \"" + username + "\";";
         statement.executeUpdate(query);
+        SQLConnector.closeConnection();
     }
 
     public static final int getRemainingAttempts(String username) throws SQLException {
+        SQLConnector.establishConnection();
         final Statement statement = SQLConnector.connection.createStatement();
         String query = "SELECT * FROM " + DBReferences.TBL_USER_ACCOUNTS + " WHERE username = \"" + username + "\" LIMIT 1;";
         ResultSet result = statement.executeQuery(query);
         result.next();
-        return (3 - result.getInt("login_attempts"));
+        int remainingAttempts = 3 - result.getInt("login_attempts");
+        SQLConnector.closeConnection();
+        return remainingAttempts;
     }
 
     private static final void lockAccount(String username) throws SQLException {

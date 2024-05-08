@@ -16,7 +16,7 @@ public class SQLConnector {
      * Registers the class from the JAR library and establishes a port
      * connection to access MySQL.
      */
-    public static void establishSQLConnection() throws SQLException {
+    public static void establishConnection() throws SQLException {
         try {
             // Here we register the referenced external library, which
             // is the .jar file, to allow us to use its internal
@@ -32,5 +32,9 @@ public class SQLConnector {
             "root",
             ""
         );
+    }
+
+    public static void closeConnection() throws SQLException {
+        connection.close();
     }
 }

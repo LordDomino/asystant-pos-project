@@ -47,7 +47,7 @@ public class WP_ItemMenu extends APP_Panel {
     public void generateCategoryPanels() {
         // Get data from SQL db first
         try {
-            SQLConnector.establishSQLConnection();
+            SQLConnector.establishConnection();
             
             final Statement statement = SQLConnector.connection.createStatement(
                 ResultSet.TYPE_SCROLL_INSENSITIVE,

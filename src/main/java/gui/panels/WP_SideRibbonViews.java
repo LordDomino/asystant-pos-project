@@ -1,7 +1,6 @@
 package main.java.gui.panels;
 
 import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -22,26 +21,26 @@ import main.java.gui.GUIReferences;
 import main.java.gui.dashboardViews.DV_PurchaseView;
 
 public class WP_SideRibbonViews extends APP_Panel {
-    
-    protected JPanel headerPanel = new JPanel(new GridBagLayout());
 
-    public boolean preventSwitchView = false;
-    public JFrame preventionPopUp;
+    private boolean isViewSwitchable = true;
+    private JFrame preventionPopUp;
     
-
     public WP_SideRibbonViews() {
         super();
         compile();
     }
     
+    @Override
     public void prepare() {
         // setBackground(ColorConfig.ACCENT_2);
     }
     
+    @Override
     public void prepareComponents() {
 
     }
 
+    @Override
     public void addComponents() {
         GridBagConstraints gbc = new GridBagConstraints();
         
@@ -77,11 +76,11 @@ public class WP_SideRibbonViews extends APP_Panel {
                             "Error",
                             JOptionPane.ERROR_MESSAGE
                         );
-                        preventSwitchingView();
+                        preventViewSwitching();
                     }
 
                     // Check if we cannot switch to new view
-                    if (preventSwitchView) {
+                    if (!isViewSwitchable()) {
                         if (getPreventionPopUp() != null) {
                             Main.app.DASHBOARD_FRAME.setEnabled(false);
                             preventionPopUp.setVisible(true);
@@ -95,7 +94,6 @@ public class WP_SideRibbonViews extends APP_Panel {
                         }
     
                         Main.app.DASHBOARD_FRAME.setView(newView);
-                        System.out.println("Current view mode: " + currentViewName);
                     }
                 }
             });
@@ -113,33 +111,94 @@ public class WP_SideRibbonViews extends APP_Panel {
             gbc.gridy = i;
             add(viewPanelButton, gbc);
         }
+
+        allowViewSwitching();
     }
 
     @Override
     public void finalizePrepare() {}
-
-    public void setPreventSwitchView(boolean preventSwitchView) {
-        this.preventSwitchView = preventSwitchView;
+  
+    /**
+     * Returns true if the current side ribbon allows view switching
+     * to different view panels, otherwise returns false.
+     * @return if the current side ribbon allows view switching
+     */
+    public boolean isViewSwitchable() {
+        return isViewSwitchable;
     }
-    
+
+    /**
+     * Returns the pop up JFrame that is reserved to be displayed
+     * whenever the program attempts to switch to a different view panel
+     * while it is currently prevented.
+     * @return the pop up JFrame to be displayed in case of switching
+     * attempts
+     * @see {@link #preventViewSwitchingWithPopUp(JFrame)}
+     * @see {@link #setPreventionPopUp(JFrame)}
+     */
     public JFrame getPreventionPopUp() {
         return preventionPopUp;
     }
 
+    /**
+     * Sets the boolean flag on whether to allow switching to a
+     * different view panel.
+     * @param preventSwitchView whether to allow view switching to a
+     * different view panel
+     * @see {@link #allowViewSwitching()}
+     * @see {@link #preventViewSwitching()}
+     */
+    public void setViewSwitching(boolean preventSwitchView) {
+        this.isViewSwitchable = preventSwitchView;
+    }
+    
+    /**
+     * Sets the pop up JFrame that is reserved to be displayed whenever
+     * the program attempts to switch to a different view panel while it
+     * is currently prevented.
+     * @param preventionPopUp the pop up JFrame to be displayed in case
+     * of switching attempts
+     * @see {@link #getPreventionPopUp()}
+     */
     public void setPreventionPopUp(JFrame preventionPopUp) {
         this.preventionPopUp = preventionPopUp;
     }
 
-    public void allowSwitchingView() {
-        setPreventSwitchView(false);
+    /**
+     * Sets the boolean flag to allow switching to different view
+     * panels. This conveniently calls
+     * {@code setPreventSwitchView(true)} within this method.
+     * @see {@link #setViewSwitching(boolean)}
+     */
+    public void allowViewSwitching() {
+        setViewSwitching(true);
     }
     
-    public void preventSwitchingView() {
-        setPreventSwitchView(true);
+    /**
+     * Sets the boolean flag to prevent switching to different view
+     * panels. This conveniently calls
+     * {@code setViewSwitching(false)} within this method.
+     * @see {@link #setViewSwitching(boolean)}
+     */
+    public void preventViewSwitching() {
+        setViewSwitching(false);
     }
 
-    public void preventSwitchingViewWithPopUp(JFrame popUp) {
-        setPreventSwitchView(true);
+    /**
+     * Sets the boolean flag to prevent switching to different view
+     * panels with a reserved pop up JFrame to be displayed on
+     * switching attempts.
+     * <p>
+     * This method conveniently calls both
+     * {@code setPreventSwitchView(true)} and
+     * {@code setPreventionPopUp()} with the given pop up argument.
+     * @param popUp the pop up JFrame to be displayed in case of
+     * switching attempts
+     * @see {@link #setViewSwitching(boolean)}
+     * @see {@link #setPreventionPopUp(JFrame)}
+     */
+    public void preventViewSwitchingWithPopUp(JFrame popUp) {
+        setViewSwitching(false);
         setPreventionPopUp(popUp);
     }
 }

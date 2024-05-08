@@ -183,7 +183,7 @@ public class WP_CheckoutPanel extends APP_Panel {
                 tableModel.setRowCount(0);
 
                 // Allow switching view once checkout is clear
-                Main.app.DASHBOARD_FRAME.sideRibbon.allowSwitchingView();
+                Main.app.DASHBOARD_FRAME.sideRibbon.allowViewSwitching();
             }
         });
     }

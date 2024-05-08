@@ -1,6 +1,7 @@
 package main.java.gui.panels.dvCustomers;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -44,6 +45,7 @@ import main.java.sql.Queries;
 import main.java.sql.SQLConnector;
 import main.java.userAccountSystem.LoginManager;
 import main.java.utils.GUIHelpers;
+import main.java.utils.SQLUtils;
 
 public class WP_CustomersTable extends APP_Panel {
 
@@ -54,6 +56,7 @@ public class WP_CustomersTable extends APP_Panel {
         fieldMappings.put("Student No.", "student_no");
         fieldMappings.put("Customer Name", "customer_name");
         fieldMappings.put("Amount Deposited", "amount_deposited");
+        fieldMappings.put("Activated", "activated");
     }
 
     public static ArrayList<ArrayList<String>> pendingDeletedRows = new ArrayList<>();
@@ -67,11 +70,11 @@ public class WP_CustomersTable extends APP_Panel {
     public final JTable table = new JTable(model);
 
     // Layout components
-    public final JPanel headerPanel     = new JPanel(new GridBagLayout());
-    public final JPanel buttonsPanel    = new JPanel(new GridBagLayout());
-    public final JPanel tablePanel      = new JPanel(new GridBagLayout());
-    public final JPanel footerPanel     = new JPanel(new GridBagLayout());
-    public final JPanel footerButtonsPanel = new JPanel(new GridBagLayout());
+    public final JPanel headerPanel         = new JPanel(new GridBagLayout());
+    public final JPanel buttonsPanel        = new JPanel(new GridBagLayout());
+    public final JPanel tablePanel          = new JPanel(new GridBagLayout());
+    public final JPanel footerPanel         = new JPanel(new GridBagLayout());
+    public final JPanel footerButtonsPanel  = new JPanel(new GridBagLayout());
 
     public final JScrollPane scrollPane         = new JScrollPane(table);
     public final WP_DetailsPanel detailsPanel   = new WP_DetailsPanel();
@@ -164,11 +167,11 @@ public class WP_CustomersTable extends APP_Panel {
             public void actionPerformed(ActionEvent e) {
                 Customers_EditPopupWindow popUp = new Customers_EditPopupWindow();
 
-                int selectedRowIndex            = table.getSelectedRow();
-                String selectedRfidNo           = table.getValueAt(selectedRowIndex, 0).toString();
-                String selectedStudentNo        = table.getValueAt(selectedRowIndex, 1).toString();
-                String selectedCustomerName     = table.getValueAt(selectedRowIndex, 2).toString();
-                String selectedAmountDeposited  = table.getValueAt(selectedRowIndex, 3).toString();
+                final int selectedRowIndex            = table.getSelectedRow();
+                final String selectedRfidNo           = table.getValueAt(selectedRowIndex, 0).toString();
+                final String selectedStudentNo        = table.getValueAt(selectedRowIndex, 1).toString();
+                final String selectedCustomerName     = table.getValueAt(selectedRowIndex, 2).toString();
+                final String selectedAmountDeposited  = table.getValueAt(selectedRowIndex, 3).toString();
 
                 popUp.rfidNoField.setText(selectedRfidNo);
                 popUp.studentNoField.setText(selectedStudentNo);
@@ -369,11 +372,11 @@ public class WP_CustomersTable extends APP_Panel {
 
     protected void loadFromDatabase() {
         try {
-            // Clear the rows
+            // Always clear the rows when beginning to "reload" the table
             model.setRowCount(0);
 
             // Establish the SQL connection first
-            SQLConnector.establishSQLConnection();
+            SQLConnector.establishConnection();
     
             // Query setup
             String query = "SELECT * FROM " + DBReferences.TBL_CUSTOMERS;
@@ -383,13 +386,10 @@ public class WP_CustomersTable extends APP_Panel {
             );
             ResultSet result = statement.executeQuery(query);
     
-            // Go to last row to get the total number of rows
-            result.last();
-            final int size = result.getRow();
+            // Get the total number of rows
+            final int size = SQLUtils.getResultSetRowCount(result);
     
-            if (size == 0) {
-
-            } else {
+            if (size != 0) {
                 // Then go back to the starting point before looping
                 result.beforeFirst();
 
@@ -397,20 +397,33 @@ public class WP_CustomersTable extends APP_Panel {
                 int i = 0;
                 while (i < size) {
                     result.next();
-                    String rfidNo = result.getString("rfid_no");
-                    String studentNo = result.getString("student_no");
-                    String customerName = result.getString("customer_name");
-                    String amountDeposited = result.getString("amount_deposited");
 
-                    String[] rowData = {rfidNo, studentNo, customerName, amountDeposited};
+                    final String retrievedRfidNo = result.getString("rfid_no");
+                    final String retrievedStudentNo = result.getString("student_no");
+                    final String retrievedCustomerName = result.getString("customer_name");
+                    final String retrievedAmountDeposited = result.getString("amount_deposited");
+                    final int retrievedActivated = result.getInt("activated");
+
+                    final String rfidNo           = retrievedRfidNo;
+                    final String studentNo        = retrievedStudentNo;
+                    final String customerName     = retrievedCustomerName;
+                    final String amountDeposited  = retrievedAmountDeposited;
+                    final String activated;
+
+                    if (retrievedActivated == 0) {
+                        activated = "Yes";
+                    } else {
+                        activated = "No";
+                    }
+
+                    final String[] rowData = {rfidNo, studentNo, customerName, amountDeposited, activated};
 
                     model.addRow(rowData);
                     i++;
                 }    
             }
 
-            // SQLConnector.connection.close();
-
+            SQLConnector.connection.close();
         } catch (Exception exception) {
             exception.printStackTrace();
         }
@@ -427,7 +440,7 @@ public class WP_CustomersTable extends APP_Panel {
 
         try {
             String query;
-            SQLConnector.establishSQLConnection();
+            SQLConnector.establishConnection();
 
             if (pendingSize == 1) {
                 // If only 1 row is selected, use the equal operator for SQL query
@@ -466,20 +479,21 @@ public class WP_CustomersTable extends APP_Panel {
 
 class Customers_AddPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
 
-    public final JLabel header = new JLabel("Create a account");
+    public final JLabel header = new JLabel("Register customer");
     public final JPanel form = new JPanel(new GridBagLayout());
 
-    public final JLabel rfid_noLabel               = new JLabel("RFID No:");
-    public final JLabel student_noLabel          = new JLabel("StudentNO:");
-    public final JLabel customer_nameLabel           = new JLabel("Username:");
-    public final JLabel amount_depositLabel           = new JLabel("Amount Deposited:");
+    public final JLabel rfidNoLabel        = new JLabel("RFID No:");
+    public final JLabel studentNoLabel     = new JLabel("Student No:");
+    public final JLabel customerNameLabel  = new JLabel("Username:");
+    public final JLabel amountDepositLabel = new JLabel("Amount Deposited:");
+    public final JLabel activatedLabel      = new JLabel("Activated");
 
-    public final JTextField rfidNoField           = new APP_TextField(10);
-    public final JTextField studentNoField      = new APP_TextField(10);
-    public final JTextField customerNameField       = new APP_TextField(10);
-    public final APP_LabeledTextField amountDepositField  = new APP_LabeledTextField("Php", 10);
+    public final APP_TextField rfidNoField                  = new APP_TextField(10);
+    public final APP_TextField studentNoField               = new APP_TextField(10);
+    public final APP_TextField customerNameField            = new APP_TextField(10);
+    public final APP_LabeledTextField amountDepositField    = new APP_LabeledTextField("Php", 10);
+    public final JCheckBox activatedField                   = new JCheckBox("", false);
     
-
     public final JButton submitButton = new APP_AccentButton("Submit");
 
     public final JTextField[] fields = {
@@ -488,9 +502,6 @@ class Customers_AddPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
         customerNameField,
         amountDepositField.getTextField()
     };
-
-
-
     
     public Customers_AddPopupWindow() {
         super(Main.app.DASHBOARD_FRAME, "Add new product");
@@ -525,7 +536,7 @@ class Customers_AddPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
                 String queryAmount_deposit          = String.valueOf(retrievedAmount_deposit);
 
                 try {
-                    SQLConnector.establishSQLConnection();
+                    SQLConnector.establishConnection();
                     ResultSet result = Queries.getExistingCustomersOfrfidNo(queryRFID_no);
 
                     if (result.getFetchSize() == 0) {
@@ -567,35 +578,39 @@ class Customers_AddPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
         add(form, gbc);
         
         {
+            gbc.anchor = GridBagConstraints.WEST;
             gbc.gridx = 0;
             gbc.gridy = 0;
             gbc.insets = new Insets(InsetsConfig.S, 0, 0, 0);
-            form.add(rfid_noLabel, gbc);
+            form.add(rfidNoLabel, gbc);
             
-            gbc.gridy = 1;
-            form.add(student_noLabel, gbc);
+            gbc.gridy = GridBagConstraints.RELATIVE;
+            form.add(studentNoLabel, gbc);
             
-            gbc.gridy = 2;
-            form.add(customer_nameLabel, gbc);
+            gbc.gridy = GridBagConstraints.RELATIVE;
+            form.add(customerNameLabel, gbc);
 
-            gbc.gridy = 3;
-            form.add(amount_depositLabel, gbc);
+            gbc.gridy = GridBagConstraints.RELATIVE;
+            form.add(amountDepositLabel, gbc);
+
+            gbc.gridy = GridBagConstraints.RELATIVE;
+            form.add(activatedLabel, gbc);
             
             
             gbc.anchor = GridBagConstraints.WEST;
             gbc.fill = GridBagConstraints.HORIZONTAL;
-            gbc.gridx = 1;
+            gbc.gridx = GridBagConstraints.RELATIVE;
             gbc.gridy = 0;
             gbc.insets = new Insets(InsetsConfig.S, InsetsConfig.L, 0, 0);
             form.add(rfidNoField, gbc);
 
-            gbc.gridy = 1;
+            gbc.gridy = GridBagConstraints.RELATIVE;
             form.add(studentNoField, gbc);
 
-            gbc.gridy = 2;
+            gbc.gridy = GridBagConstraints.RELATIVE;
             form.add(customerNameField, gbc);
 
-            gbc.gridy = 3;
+            gbc.gridy = GridBagConstraints.RELATIVE;
             form.add(amountDepositField, gbc);
 
         }
@@ -678,7 +693,7 @@ class Customers_EditPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
                 String queryAmountDeposited = String.valueOf(retrievedAmountDeposited);
 
                 try {
-                    SQLConnector.establishSQLConnection();
+                    SQLConnector.establishConnection();
                     ResultSet result = Queries.getExistingCustomersOfrfidNo(queryRfidNo);
 
                     if (result.getFetchSize() == 0) {
@@ -842,7 +857,7 @@ class Customers_DeletePopUpWindow extends APP_PopUpFrame<WF_Dashboard> {
     }
 
     public void addComponents() {
-        GridBagConstraints gbc = new GridBagConstraints();
+        final GridBagConstraints gbc = new GridBagConstraints();
 
         gbc.anchor = GridBagConstraints.WEST;
         gbc.fill = GridBagConstraints.HORIZONTAL;

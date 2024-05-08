@@ -1,5 +1,6 @@
 package main.java.gui.panels.dvInventory;
 
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -23,6 +24,8 @@ import java.awt.Insets;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -61,17 +64,6 @@ public class WP_StockInventory extends APP_Panel {
         fieldMappings.put("Markup Price", "markup_price");
         fieldMappings.put("Unit Price", "unit_price");
     }
-
-    public static final String[] inventoryFields = {
-        "Product Code",
-        "Name",
-        "Category",
-        "Unit Cost",
-        "Stock Quantity",
-        "Markup Price",
-        "Unit Price"
-    };
-
 
     public static ArrayList<ArrayList<String>> pendingDeletedRows = new ArrayList<>();
     public final DefaultTableModel inventoryModel = new DefaultTableModel(new Vector<String>(fieldMappings.keySet()), 0) {
@@ -230,8 +222,7 @@ public class WP_StockInventory extends APP_Panel {
                 }
                 
                 Inventory_DeletePopUpWindow popUp = new Inventory_DeletePopUpWindow();
-                Main.app.DASHBOARD_FRAME.sideRibbon.preventSwitchView = true;
-                Main.app.DASHBOARD_FRAME.sideRibbon.preventionPopUp = popUp;
+                Main.app.DASHBOARD_FRAME.sideRibbon.preventViewSwitchingWithPopUp(popUp);
             }
         });
 
@@ -402,7 +393,7 @@ public class WP_StockInventory extends APP_Panel {
             inventoryModel.setRowCount(0);
 
             // Establish the SQL connection first
-            SQLConnector.establishSQLConnection();
+            SQLConnector.establishConnection();
     
             // Query setup
             String query = "SELECT * FROM " + DBReferences.TBL_STOCKS_INVENTORY;
@@ -457,7 +448,7 @@ public class WP_StockInventory extends APP_Panel {
 
         try {
             String query;
-            SQLConnector.establishSQLConnection();
+            SQLConnector.establishConnection();
 
             if (pendingSize == 1) {
                 // If only 1 row is selected, use the equal operator for SQL query
@@ -630,6 +621,24 @@ class Inventory_AddPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
         form.setOpaque(false);
         categoryField.setBackground(ColorConfig.BG);
         categoryField.setEditable(true);
+        
+        {
+            try {
+                SQLConnector.establishConnection();
+
+                // Get all item categories
+                ArrayList<String> categories = Queries.getItemCategories();
+
+                // Set the retrieved item categories as the combo box model of the field
+                DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(new Vector<>(categories));
+                categoryField.setModel(model);
+
+                // Select "Uncategorized" as default
+                categoryField.setSelectedItem("Uncategorized");
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
+        }
 
         // Document listeners to enable functionality of auto-updating
         // the markupPriceField and unitPriceField based on the data
@@ -669,7 +678,7 @@ class Inventory_AddPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
                 }
 
                 try {
-                    SQLConnector.establishSQLConnection();
+                    SQLConnector.establishConnection();
                     ResultSet result = Queries.getExistingProductsOfProductCode(queryProductCode);
 
                     if (result.getFetchSize() == 0) {
@@ -687,7 +696,7 @@ class Inventory_AddPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
                         );
                     }
 
-                    // SQLConnector.connection.close();
+                    SQLConnector.connection.close();
 
                     Window popUp = SwingUtilities.getWindowAncestor(submitButton);
                     popUp.dispose();
@@ -925,6 +934,22 @@ class Inventory_EditPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
         categoryField.setBackground(ColorConfig.BG);
         categoryField.setEditable(true);
 
+        try {
+            SQLConnector.establishConnection();
+
+            // Get all item categories
+            ArrayList<String> categories = Queries.getItemCategories();
+
+            // Set the retrieved item categories as the combo box model of the field
+            DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(new Vector<>(categories));
+            categoryField.setModel(model);
+
+            // Select "Uncategorized" as default
+            // categoryField.setSelectedItem("Uncategorized");
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+
         // Document listeners to enable functionality of auto-updating
         // the markupPriceField and unitPriceField based on the data
         // typed in each other and with the unitCostField
@@ -963,7 +988,7 @@ class Inventory_EditPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
                 }
 
                 try {
-                    SQLConnector.establishSQLConnection();
+                    SQLConnector.establishConnection();
                     ResultSet result = Queries.getExistingProductsOfProductCode(queryProductCode);
 
                     if (result.getFetchSize() == 0) {
@@ -1118,6 +1143,52 @@ class Inventory_DeletePopUpWindow extends APP_PopUpFrame<WF_Dashboard> {
     public void prepare() {
         getContentPane().setBackground(ColorConfig.ACCENT_1);
         setLayout(new GridBagLayout());
+        addWindowListener(new WindowListener() {
+
+            @Override
+            public void windowOpened(WindowEvent e) {
+                // TODO Auto-generated method stub
+                throw new UnsupportedOperationException("Unimplemented method 'windowOpened'");
+            }
+
+            @Override
+            public void windowClosing(WindowEvent e) {
+                System.out.println("Test");
+                Main.app.DASHBOARD_FRAME.setEnabled(true);
+                dispose();
+            }
+
+            @Override
+            public void windowClosed(WindowEvent e) {
+                // TODO Auto-generated method stub
+                throw new UnsupportedOperationException("Unimplemented method 'windowClosed'");
+            }
+
+            @Override
+            public void windowIconified(WindowEvent e) {
+                // TODO Auto-generated method stub
+                throw new UnsupportedOperationException("Unimplemented method 'windowIconified'");
+            }
+
+            @Override
+            public void windowDeiconified(WindowEvent e) {
+                // TODO Auto-generated method stub
+                throw new UnsupportedOperationException("Unimplemented method 'windowDeiconified'");
+            }
+
+            @Override
+            public void windowActivated(WindowEvent e) {
+                // TODO Auto-generated method stub
+                throw new UnsupportedOperationException("Unimplemented method 'windowActivated'");
+            }
+
+            @Override
+            public void windowDeactivated(WindowEvent e) {
+                // TODO Auto-generated method stub
+                throw new UnsupportedOperationException("Unimplemented method 'windowDeactivated'");
+            }
+            
+        });
     }
 
     public void prepareComponents() {
@@ -1136,7 +1207,7 @@ class Inventory_DeletePopUpWindow extends APP_PopUpFrame<WF_Dashboard> {
             public void actionPerformed(ActionEvent ae) {
                 Main.app.INVENTORY_VIEW.TABLE_PANEL.purgatoryPardon();
                 Main.app.INVENTORY_VIEW.TABLE_PANEL.submitChangesButton.setEnabled(false);
-                Main.app.DASHBOARD_FRAME.sideRibbon.preventSwitchView = false;
+                Main.app.DASHBOARD_FRAME.sideRibbon.allowViewSwitching();
                 
                 JFrame source = (JFrame) SwingUtilities.getWindowAncestor(continueButton);
                 source.dispose();
@@ -1148,7 +1219,7 @@ class Inventory_DeletePopUpWindow extends APP_PopUpFrame<WF_Dashboard> {
             public void actionPerformed(ActionEvent ae) {
                 Main.app.INVENTORY_VIEW.TABLE_PANEL.purgatoryPurge();
                 Main.app.INVENTORY_VIEW.TABLE_PANEL.submitChangesButton.setEnabled(false);
-                Main.app.DASHBOARD_FRAME.sideRibbon.preventSwitchView = false;
+                Main.app.DASHBOARD_FRAME.sideRibbon.allowViewSwitching();
                 
                 JFrame source = (JFrame) SwingUtilities.getWindowAncestor(continueButton);
                 source.dispose();

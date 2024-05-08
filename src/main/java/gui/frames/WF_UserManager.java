@@ -420,7 +420,7 @@ public class WF_UserManager extends APP_Frame {
         tableModel.setRowCount(0);
 
         try {
-            SQLConnector.establishSQLConnection();
+            SQLConnector.establishConnection();
 
             String query = "SELECT * FROM " + DBReferences.TBL_USER_ACCOUNTS + " WHERE username NOT LIKE \"%SUPERADMIN%\"";
             Statement statement = SQLConnector.connection.createStatement(
@@ -493,7 +493,7 @@ public class WF_UserManager extends APP_Frame {
 
         try {
             String query;
-            SQLConnector.establishSQLConnection();
+            SQLConnector.establishConnection();
 
             if (pendingSize == 1) {
                 // If only 1 row is selected, use the equal operator for SQL query
@@ -546,15 +546,15 @@ class AddPopupWindow extends APP_PopUpFrame<WF_UserManager> {
     final JLabel header = new JLabel("Add a new user account");
     final JPanel form = new JPanel(new GridBagLayout());
 
-    final JLabel usernameLabel = new JLabel("Username");
-    final JLabel passwordLabel = new JLabel("Password");
-    final JLabel accessLevelLabel = new JLabel("Account access level");
-    final JLabel activatedLabel = new JLabel("Activated");
+    final JLabel usernameLabel      = new JLabel("Username");
+    final JLabel passwordLabel      = new JLabel("Password");
+    final JLabel accessLevelLabel   = new JLabel("Account access level");
+    final JLabel activatedLabel     = new JLabel("Activated");
 
-    final JTextField usernameField = new JTextField(10);
-    final JTextField passwordField = new JTextField(10);
+    final JTextField usernameField              = new JTextField(10);
+    final JTextField passwordField              = new JTextField(10);
     final JComboBox<String> accessLevelComboBox = new JComboBox<String>(accessLevelTypes);
-    final JCheckBox activatedCheckBox = new JCheckBox("", false);
+    final JCheckBox activatedCheckBox           = new JCheckBox("", false);
 
     final JButton submitButton = new APP_AccentButton("Submit");
 
@@ -607,7 +607,7 @@ class AddPopupWindow extends APP_PopUpFrame<WF_UserManager> {
 
                 try {
                     // Open database to get all registered user accounts
-                    SQLConnector.establishSQLConnection();
+                    SQLConnector.establishConnection();
 
                     String query = "SELECT * FROM " + DBReferences.TBL_USER_ACCOUNTS + " WHERE username = \"" + retrievedUsername + "\";";
 
@@ -804,7 +804,7 @@ class EditPopupWindow extends APP_PopUpFrame<WF_UserManager> {
 
                 try {
                     // Open database to get all registered user accounts
-                    SQLConnector.establishSQLConnection();
+                    SQLConnector.establishConnection();
 
                     String query = "SELECT * FROM " + DBReferences.TBL_USER_ACCOUNTS + " WHERE username = \"" + retrievedUsername + "\";";
 
