@@ -125,7 +125,7 @@ public class WP_CheckoutPanel extends APP_Panel {
         // proceedToPaymentButton.addActionListener(new ActionListener() {
         //     @Override
         //     public void actionPerformed(ActionEvent e) {
-        //         // TODO -- RFID tapping process
+        //         // TO DO -- RFID tapping process
         //     }
         // });
 

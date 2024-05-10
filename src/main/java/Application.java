@@ -4,6 +4,7 @@ import javax.swing.JFrame;
 
 import main.java.configs.APPResourceLoader;
 import main.java.configs.StylesConfig;
+import main.java.gui.GUIReferences;
 import main.java.gui.dashboardViews.DV_Customers;
 import main.java.gui.dashboardViews.DV_Inventory;
 import main.java.gui.dashboardViews.DV_PurchaseView;
@@ -85,5 +86,15 @@ public class Application {
     public void logout() {
         Main.app = new Application();
         Main.app.run();
+    }
+
+    public void defineViewPanels() {
+        Main.app.PURCHASE_VIEW  = new DV_PurchaseView();
+        Main.app.INVENTORY_VIEW = new DV_Inventory();
+        Main.app.CUSTOMERS_VIEW = new DV_Customers();
+    }
+
+    public void defineDefaultViewPanel() {
+        GUIReferences.DEFAULT_VIEW = Main.app.PURCHASE_VIEW;
     }
 }
