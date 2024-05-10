@@ -16,7 +16,7 @@ public class SQLUtils {
         // 29042024-000001
 
         LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        int yearVal  = localDate.getYear();
+        // int yearVal  = localDate.getYear();
         int monthVal = localDate.getMonthValue();
         int dayValue   = localDate.getDayOfMonth();
 

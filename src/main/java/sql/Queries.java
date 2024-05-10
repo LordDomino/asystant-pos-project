@@ -18,8 +18,8 @@ public class Queries {
         return result;
     }
 
-    public static ResultSet getExistingCustomersOfRfidNo(String rfid_no) throws SQLException {
-        String query = "SELECT * FROM " + DBReferences.TBL_CUSTOMERS + " WHERE rfid_no = \"" + rfid_no + "\";";
+    public static ResultSet getExistingCustomersByID(String customerId) throws SQLException {
+        String query = "SELECT * FROM " + DBReferences.TBL_CUSTOMERS + " WHERE id = \"" + customerId + "\";";
         Statement statement = SQLConnector.connection.createStatement();
         System.out.println(query);
         ResultSet result = statement.executeQuery(query);
