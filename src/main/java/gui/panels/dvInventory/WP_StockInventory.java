@@ -1153,7 +1153,6 @@ class Inventory_DeletePopUpWindow extends APP_PopUpFrame<WF_Dashboard> {
 
             @Override
             public void windowClosing(WindowEvent e) {
-                System.out.println("Test");
                 Main.app.DASHBOARD_FRAME.setEnabled(true);
                 dispose();
             }

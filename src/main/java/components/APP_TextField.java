@@ -22,6 +22,7 @@ public class APP_TextField extends JTextField {
             new LineBorder(ColorConfig.ACCENT_3),
             new LineBorder(ColorConfig.BG, 2)
         ));
+        setDisabledTextColor(ColorConfig.FG);
     }
 
     @Override

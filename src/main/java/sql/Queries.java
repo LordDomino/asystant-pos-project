@@ -21,7 +21,6 @@ public class Queries {
     public static ResultSet getExistingCustomersByID(String customerId) throws SQLException {
         String query = "SELECT * FROM " + DBReferences.TBL_CUSTOMERS + " WHERE id = \"" + customerId + "\";";
         Statement statement = SQLConnector.connection.createStatement();
-        System.out.println(query);
         ResultSet result = statement.executeQuery(query);
         
         return result;
@@ -147,7 +146,6 @@ public class Queries {
         query = query.substring(0, query.length()-2) + " );";
 
         Statement statement = SQLConnector.connection.createStatement();
-        System.out.println(query);
         statement.executeUpdate(query);
     }
 
@@ -177,8 +175,12 @@ public class Queries {
 
         for (int i = 0; i < fields.size(); i++) {
             String columnName = fields.get(i);
-            String value = values.get(i).toString();
-            query = query + " " + columnName + " = \"" + value + "\",";
+            if (values.get(i) == null) {
+                query = query + " " + columnName + " = NULL,";
+            } else {
+                String value = values.get(i).toString();
+                query = query + " " + columnName + " = \"" + value + "\",";
+            }    
         }
 
         query = query.substring(0, query.length()-1);

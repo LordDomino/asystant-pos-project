@@ -19,7 +19,7 @@ public final class StylesConfig {
     public static final Font HEADING2           = new Font("Inter", Font.BOLD, 22);
     public static final Font HEADING3           = new Font("Inter", Font.BOLD, 18);
     public static final Font LEAD               = new Font("Inter", Font.PLAIN, 16);
-    public static final Font DETAIL             = new Font("Inter", Font.PLAIN, 11);
+    public static final Font DETAIL             = new Font("Inter", Font.PLAIN, 12);
     public static final Font BUTTON             = new Font("Inter", Font.BOLD, NORMAL_SIZE);
     
     public static final Font ITEM_LABEL         = new Font("Inter", Font.BOLD, 18);

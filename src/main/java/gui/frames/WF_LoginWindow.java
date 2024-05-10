@@ -60,7 +60,7 @@ public final class WF_LoginWindow extends APP_Frame {
     protected final JButton quitButton = new APP_ContrastButton("Quit");
 
     public WF_LoginWindow() {
-        super("Login");
+        super("Login - Asystant POS");
         compile();
     }
 
@@ -309,7 +309,7 @@ class LoginActionListener implements ActionListener {
              * If an illegal username is found, forbid authentication
              * and display an error pop up window.
              */
-            if (!LoginManager.isUsernameLegal(username)) {
+            if (!LoginManager.isUsernameLegal(username) && !permitLogin) {
                 permitLogin = false;
                 Component parent = SwingUtilities.getWindowAncestor(Main.app.LOGIN_WINDOW.loginButton);
                 JOptionPane.showMessageDialog(

@@ -8,9 +8,12 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
@@ -174,9 +177,10 @@ public class WP_CustomersTable extends APP_Panel {
                 final String selectedStudentNo        = table.getValueAt(selectedRowIndex, 2).toString();
                 final String selectedCustomerName     = table.getValueAt(selectedRowIndex, 3).toString();
                 final String selectedAmountDeposited  = table.getValueAt(selectedRowIndex, 4).toString();
-                final boolean selectedActivated       = Boolean.valueOf(table.getValueAt(selectedRowIndex, 5).toString());
+                final String selectedActivated          = table.getValueAt(selectedRowIndex, 5).toString();
 
                 final String inferredRfidNo;
+                final boolean inferredActivated;
 
                 if (selectedRfidNo instanceof String) {
                     inferredRfidNo = (String) selectedRfidNo;
@@ -184,12 +188,18 @@ public class WP_CustomersTable extends APP_Panel {
                     inferredRfidNo = "";
                 }
 
+                if (selectedActivated.equals("Yes")) {
+                    inferredActivated = true;
+                } else {
+                    inferredActivated = false;
+                }
+
                 popUp.customerIDField.setText(selectedCustomerNo);
                 popUp.rfidNoField.setText(inferredRfidNo);
                 popUp.studentNoField.setText(selectedStudentNo);
                 popUp.customerNameField.setText(selectedCustomerName);
                 popUp.amountDepositedField.setText(selectedAmountDeposited);
-                popUp.activatedCheckBox.setSelected(selectedActivated);
+                popUp.activatedCheckBox.setSelected(inferredActivated);
 
                 popUp.setLocationRelativeTo(null);
                 popUp.setVisible(true);
@@ -258,14 +268,14 @@ public class WP_CustomersTable extends APP_Panel {
         gbc.fill = GridBagConstraints.NONE;
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.insets = new Insets(InsetsConfig.XXL, InsetsConfig.XXL, 0, InsetsConfig.XXL);
+        gbc.insets = new Insets(InsetsConfig.XXL, 0, 0, 0);
         add(headerPanel, gbc);
 
         gbc.anchor = GridBagConstraints.WEST;
         gbc.fill = GridBagConstraints.NONE;
         gbc.gridx = 0;
         gbc.gridy = 1;
-        gbc.insets = new Insets(InsetsConfig.XL, InsetsConfig.XXL, 0, InsetsConfig.XXL);
+        gbc.insets = new Insets(InsetsConfig.XL, 0, 0, 0);
         add(buttonsPanel, gbc);
 
         if (LoginManager.getCurrentAccessLevelMode() == LoginManager.ACCESS_LEVEL_SUPERADMIN) {
@@ -309,7 +319,7 @@ public class WP_CustomersTable extends APP_Panel {
         gbc.fill = GridBagConstraints.BOTH;
         gbc.gridx = 0;
         gbc.gridy = 2;
-        gbc.insets = new Insets(InsetsConfig.M, InsetsConfig.XXL, 0, InsetsConfig.XXL);
+        gbc.insets = new Insets(InsetsConfig.M, 0, 0, 0);
         gbc.weightx = 1;
         gbc.weighty = 1;
         add(tablePanel, gbc);
@@ -335,7 +345,7 @@ public class WP_CustomersTable extends APP_Panel {
         gbc.fill = GridBagConstraints.NONE;
         gbc.gridx = 0;
         gbc.gridy = 3;
-        gbc.insets = new Insets(InsetsConfig.M, InsetsConfig.M, InsetsConfig.XXL, InsetsConfig.XXL);
+        gbc.insets = new Insets(InsetsConfig.M, InsetsConfig.M, 0, 0);
         gbc.weightx = 1;
         gbc.weighty = 0;
         add(footerPanel, gbc);
@@ -426,16 +436,22 @@ public class WP_CustomersTable extends APP_Panel {
                     final int retrievedActivated            = result.getInt("activated");
 
                     final String customerNo       = String.format("%06d", retrievedCustomerNo);
-                    final String rfidNo           = String.valueOf(retrievedRfidNo);
+                    final String rfidNo;
                     final String studentNo        = String.valueOf(retrievedStudentNo);
                     final String customerName     = retrievedCustomerName;
                     final String amountDeposited  = String.valueOf(retrievedAmountDeposited);
                     final String activated;
 
-                    if (retrievedActivated == 0) {
+                    if (retrievedActivated == 1) {
                         activated = "Yes";
                     } else {
                         activated = "No";
+                    }
+
+                    if (retrievedRfidNo == 0) {
+                        rfidNo = "";
+                    } else {
+                        rfidNo = String.valueOf(retrievedRfidNo);
                     }
 
                     final String[] rowData = {customerNo, rfidNo, studentNo, customerName, amountDeposited, activated};
@@ -501,32 +517,68 @@ public class WP_CustomersTable extends APP_Panel {
     }
 }
 
-class Customers_AddPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
+final class Customers_AddPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
 
     public final JLabel header = new JLabel("Register customer");
     public final JPanel form = new JPanel(new GridBagLayout());
 
     public final JLabel rfidNoLabel        = new JLabel("RFID No:");
     public final JLabel studentNoLabel     = new JLabel("Student No:");
-    public final JLabel customerNameLabel  = new JLabel("Username:");
-    public final JLabel amountDepositLabel = new JLabel("Initial amount deposit:");
+    public final JLabel customerNameLabel  = new JLabel("<html><b>*</b>Customer name:</html>");
+    public final JLabel amountDepositLabel = new JLabel("<html><b>*</b>Initial amount deposit:</html>");
     public final JLabel activatedLabel      = new JLabel("Activated");
 
     public final APP_TextField rfidNoField                  = new APP_TextField(10);
     public final APP_TextField studentNoField               = new APP_TextField(10);
     public final APP_TextField customerNameField            = new APP_TextField(10);
-    public final APP_LabeledTextField amountDepositField    = new APP_LabeledTextField("Php", 10);
-    public final JCheckBox activatedField                   = new JCheckBox("", false);
-    
-    public final JButton submitButton = new APP_AccentButton("Submit");
+    public final APP_LabeledTextField amountDepositedField    = new APP_LabeledTextField("Php", 10);
+    public final JCheckBox activatedCheckBox                = new JCheckBox("", false);
+
+    public final JLabel activationHeader = new JLabel("Activation");
+    public final JTextArea infoArea1 = new JTextArea(
+        "Please register the customer's RFID number by scanning the"
+        + " RFID card. A customer account can still be registered but it will"
+        + " be inactive and unusable without a registered RFID number."
+    );
+    public final APP_AccentButton registerRfidButton = new APP_AccentButton("Register RFID");
+    public final JLabel infoLabel1 = new JLabel("<html><i>*Required fields</i></html>");
+    public final JButton submitButton = new APP_ContrastButton("Submit");
 
     public final JTextField[] requiredFields = {
         customerNameField,
-        amountDepositField.getTextField()
+        amountDepositedField.getTextField()
     };
-    
+
+    public final DocumentListener rfidFieldListener = new DocumentListener() {
+
+        @Override
+        public void insertUpdate(DocumentEvent e) {
+            changed();
+        }
+
+        @Override
+        public void removeUpdate(DocumentEvent e) {
+            changed();
+        }
+
+        @Override
+        public void changedUpdate(DocumentEvent e) {
+            changed();
+        }
+
+        private void changed() {
+            if (rfidNoField.getText().equals("")) {
+                activatedCheckBox.setEnabled(false);
+                activatedCheckBox.setSelected(false);
+            } else {
+                activatedCheckBox.setEnabled(true);
+            }
+        }
+        
+    };
+
     public Customers_AddPopupWindow() {
-        super(Main.app.DASHBOARD_FRAME, "Register a customer");
+        super(Main.app.DASHBOARD_FRAME, "Register Customer");
         compile();
     }
 
@@ -544,14 +596,29 @@ class Customers_AddPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
             rfidNoField.setEnabled(false);
         }
 
-        submitButton.setEnabled(false);
-
         header.setFont(StylesConfig.HEADING3);
         form.setOpaque(false);
-
-        amountDepositField.setText("100");
-        activatedField.setOpaque(false);
-
+        rfidNoField.getDocument().addDocumentListener(rfidFieldListener);
+        amountDepositedField.setText("100");
+        activatedCheckBox.setEnabled(false);
+        activatedCheckBox.setOpaque(false);
+        activationHeader.setFont(StylesConfig.LEAD);
+        infoArea1.setEditable(false);
+        infoArea1.setFocusable(false);
+        infoArea1.setFont(StylesConfig.DETAIL);
+        infoArea1.setHighlighter(null);
+        infoArea1.setLineWrap(true);
+        infoArea1.setOpaque(false);
+        infoArea1.setWrapStyleWord(true);
+        infoLabel1.setFont(StylesConfig.DETAIL);
+        registerRfidButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // TODO Auto-generated method stub
+                
+            }
+        });
+        submitButton.setEnabled(false);
         submitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -559,7 +626,7 @@ class Customers_AddPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
                 final String retrievedRFIDNo        = rfidNoField.getText();
                 final String retrievedStudentNo     = studentNoField.getText();
                 final String retrievedCustomerName  = customerNameField.getText();
-                final float retrievedAmountDeposit  = Float.parseFloat(amountDepositField.getText());
+                final float retrievedAmountDeposit  = Float.parseFloat(amountDepositedField.getText());
                 final int retrievedActivated;
 
                 final String inferredRFIDNo;
@@ -577,17 +644,17 @@ class Customers_AddPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
                     inferredStudentNo = retrievedStudentNo;
                 }
 
-                if (activatedField.isSelected()) {
+                if (activatedCheckBox.isSelected()) {
                     retrievedActivated = 1;
                 } else {
                     retrievedActivated = 0;
                 }
 
                 // Variables reserved for query
-                String queryRFID_no         = inferredRFIDNo;
-                String queryStudent_no      = inferredStudentNo;
+                String queryRfidNo         = inferredRFIDNo;
+                String queryStudentNo      = inferredStudentNo;
                 String queryCustomerName    = retrievedCustomerName;
-                String queryAmount_deposit  = String.valueOf(retrievedAmountDeposit);
+                String queryAmountDeposit  = String.valueOf(retrievedAmountDeposit);
                 String queryActivated       = String.valueOf(retrievedActivated);
 
                 try {
@@ -598,8 +665,8 @@ class Customers_AddPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
                      */
                     final int existingAccounts;
 
-                    if (queryRFID_no != "0") {
-                        ResultSet result = Queries.getExistingCustomersByID(queryRFID_no);
+                    if (queryRfidNo != "0") {
+                        ResultSet result = Queries.getExistingCustomersByID(queryRfidNo);
                         existingAccounts = result.getFetchSize();
                     } else {
                         existingAccounts = 0;
@@ -607,10 +674,10 @@ class Customers_AddPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
 
                     if (existingAccounts == 0) {
                         Queries.registerCustomer(
-                            queryRFID_no,
-                            queryStudent_no,
+                            queryRfidNo,
+                            queryStudentNo,
                             queryCustomerName,
-                            queryAmount_deposit,
+                            queryAmountDeposit,
                             queryActivated
                         );
                     } else {
@@ -684,37 +751,66 @@ class Customers_AddPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
             form.add(customerNameField, gbc);
 
             gbc.gridy = GridBagConstraints.RELATIVE;
-            form.add(amountDepositField, gbc);
+            form.add(amountDepositedField, gbc);
 
             gbc.gridy = GridBagConstraints.RELATIVE;
-            form.add(activatedField, gbc);
+            form.add(activatedCheckBox, gbc);
         }
-        
-        gbc.anchor = GridBagConstraints.CENTER;
+
+        gbc.anchor = GridBagConstraints.EAST;
         gbc.fill = GridBagConstraints.NONE;
         gbc.gridx = 0;
-        gbc.gridy = 2;
-        gbc.insets = new Insets(InsetsConfig.XL, InsetsConfig.XXL, InsetsConfig.XXL, InsetsConfig.XXL);
+        gbc.gridy = GridBagConstraints.RELATIVE;
+        gbc.insets = new Insets(InsetsConfig.S, InsetsConfig.XXL, 0, InsetsConfig.XXL);
+        gbc.weightx = 1;
+        gbc.weighty = 1;
+        add(infoLabel1, gbc);
+        
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+        gbc.insets = new Insets(InsetsConfig.XL, InsetsConfig.XXL, 0, InsetsConfig.XXL);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.gridy = GridBagConstraints.RELATIVE;
+        add(activationHeader, gbc);
+        
+        gbc.gridy = GridBagConstraints.RELATIVE;
+        gbc.insets = new Insets(InsetsConfig.M, InsetsConfig.XXL, 0, InsetsConfig.XXL);
+        add(infoArea1, gbc);
+        
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.gridy = GridBagConstraints.RELATIVE;
+        gbc.insets = new Insets(InsetsConfig.L, InsetsConfig.XXL, 0, InsetsConfig.XXL);
+        add(registerRfidButton, gbc);
+        
+        gbc.anchor = GridBagConstraints.EAST;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.gridy = GridBagConstraints.RELATIVE;
+        gbc.insets = new Insets(InsetsConfig.XXL, InsetsConfig.XXL, InsetsConfig.XXL, InsetsConfig.XXL);
         add(submitButton, gbc);
     }
 
     public void finalizePrepare() {
+        prepackTextAreas();
         pack();
-        setLocationRelativeTo(null);
         setResizable(false);
+        setLocationRelativeTo(null);
+    }
+
+    private void prepackTextAreas() {
+        pack();
+        infoArea1.setSize(infoArea1.getSize());
     }
 }
 
 class Customers_EditPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
 
-    public final JLabel header = new JLabel("Edit product details");
+    public final JLabel header = new JLabel("Edit customer details");
     public final JPanel form = new JPanel(new GridBagLayout());
 
-    public final JLabel customerIDLabel         = new JLabel("Customer No.");
+    public final JLabel customerIDLabel         = new JLabel("Customer ID");
     public final JLabel rfidNoLabel             = new JLabel("RFID No.");
     public final JLabel studentNoLabel          = new JLabel("Student No.");
     public final JLabel customerNameLabel       = new JLabel("Customer Name");
-    public final JLabel amountDepositedLabel    = new JLabel("Amount Deposited");
+    public final JLabel amountDepositedLabel    = new JLabel("Remaining deposit");
     public final JLabel activatedLabel          = new JLabel("Activated");
     
     public final APP_TextField customerIDField              = new APP_TextField(10);
@@ -724,17 +820,52 @@ class Customers_EditPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
     public final APP_LabeledTextField amountDepositedField  = new APP_LabeledTextField("Php", 10);
     public final JCheckBox activatedCheckBox                = new JCheckBox();
 
-    public final JButton updateButton = new APP_AccentButton("Submit");
+    public final JLabel activationHeader = new JLabel("Activation");
+    public final JTextArea infoArea1 = new JTextArea(
+        "Please register the customer's RFID number by scanning the"
+        + " RFID card. While this customer account is registered, it is"
+        + " currently inactive and unusable without a registered RFID number."
+    );
+    public final APP_AccentButton registerRfidButton = new APP_AccentButton("Register RFID");
+    public final JLabel infoLabel1 = new JLabel("<html><i>*Required fields</i></html>");
+    public final JButton updateButton = new APP_ContrastButton("Submit");
 
-    public final JTextField[] fields = {
-        rfidNoField,
-        studentNoField,
+    public final JTextField[] requiredFields = {
         customerNameField,
         amountDepositedField.getTextField()
     };
 
+    public final DocumentListener rfidFieldListener = new DocumentListener() {
+
+        @Override
+        public void insertUpdate(DocumentEvent e) {
+            changed();
+        }
+
+        @Override
+        public void removeUpdate(DocumentEvent e) {
+            changed();
+        }
+
+        @Override
+        public void changedUpdate(DocumentEvent e) {
+            changed();
+        }
+
+        private void changed() {
+            if (rfidNoField.getText().equals("")) {
+                activatedCheckBox.setEnabled(false);
+                activatedCheckBox.setSelected(false);
+            } else {
+                activatedCheckBox.setEnabled(true);
+            }
+        }
+        
+    };
+
+
     public Customers_EditPopupWindow() {
-        super(Main.app.DASHBOARD_FRAME);
+        super(Main.app.DASHBOARD_FRAME, "Edit Customer details");
         compile();
     }
 
@@ -746,26 +877,64 @@ class Customers_EditPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
 
     @Override
     public void prepareComponents() {
-        GUIHelpers.setButtonTriggerOnAllFields(updateButton, fields);
-        updateButton.setEnabled(false);
-
-        // Disable text fields that should not be allowed to update
-        customerIDField.setEnabled(false);
-        rfidNoField.setEnabled(false);
+        GUIHelpers.setButtonTriggerOnAllFields(updateButton, requiredFields);
+        
+        if (LoginManager.getCurrentAccessLevelMode() == LoginManager.ACCESS_LEVEL_SUPERADMIN) {
+            rfidNoField.setEnabled(true);
+        } else {
+            rfidNoField.setEnabled(false);
+        }
 
         header.setFont(StylesConfig.HEADING3);
         form.setOpaque(false);
-    
+        customerIDField.setEnabled(false);
+        rfidNoField.getDocument().addDocumentListener(rfidFieldListener);
+        rfidNoField.setEnabled(false);
+        amountDepositedField.setText("100");
+        activatedCheckBox.setEnabled(false);
+        activatedCheckBox.setOpaque(false);
+        activationHeader.setFont(StylesConfig.LEAD);
+        infoArea1.setEditable(false);
+        infoArea1.setFocusable(false);
+        infoArea1.setFont(StylesConfig.DETAIL);
+        infoArea1.setHighlighter(null);
+        infoArea1.setLineWrap(true);
+        infoArea1.setOpaque(false);
+        infoArea1.setWrapStyleWord(true);
+        infoLabel1.setFont(StylesConfig.DETAIL);
+        registerRfidButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // TODO Auto-generated method stub
+                
+            }
+        });
+        updateButton.setEnabled(false);
         updateButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Retrieve inputs
-                final int retrievedCustomerID           = Integer.valueOf(customerIDField.getText());
-                final int retrievedRfidNo               = Integer.valueOf(rfidNoField.getText());
-                final int retrievedStudentNo            = Integer.valueOf(studentNoField.getText());
-                final String retrievedCustomerName      = customerNameField.getText();
-                final float retrievedAmountDeposited    = Float.parseFloat(amountDepositedField.getText());
+                final String retrievedCustomerID    = customerIDField.getText();
+                final String retrievedRFIDNo        = rfidNoField.getText();
+                final String retrievedStudentNo     = studentNoField.getText();
+                final String retrievedCustomerName  = customerNameField.getText();
+                final float retrievedAmountDeposit  = Float.parseFloat(amountDepositedField.getText());
                 final int retrievedActivated;
+
+                final String inferredRFIDNo;
+                final String inferredStudentNo;
+
+                if (retrievedRFIDNo == null || retrievedRFIDNo.isBlank() || retrievedRFIDNo.isEmpty()) {
+                    inferredRFIDNo = null;
+                } else {
+                    inferredRFIDNo = retrievedRFIDNo;
+                }
+
+                if (retrievedStudentNo == null || retrievedStudentNo.isBlank() || retrievedStudentNo.isEmpty()) {
+                    inferredStudentNo = "0";
+                } else {
+                    inferredStudentNo = retrievedStudentNo;
+                }
 
                 if (activatedCheckBox.isSelected()) {
                     retrievedActivated = 1;
@@ -774,11 +943,11 @@ class Customers_EditPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
                 }
 
                 // Variables reserved for query
-                String queryCustomerID      = String.valueOf(retrievedCustomerID);
-                String queryRfidNo          = String.valueOf(retrievedRfidNo);
-                String queryStudentNo       = String.valueOf(retrievedStudentNo);
+                String queryCustomerID      = retrievedCustomerID;
+                String queryRfidNo         = inferredRFIDNo;
+                String queryStudentNo      = inferredStudentNo;
                 String queryCustomerName    = retrievedCustomerName;
-                String queryAmountDeposited = String.valueOf(retrievedAmountDeposited);
+                String queryAmountDeposited  = String.valueOf(retrievedAmountDeposit);
                 String queryActivated       = String.valueOf(retrievedActivated);
 
                 try {
@@ -830,6 +999,7 @@ class Customers_EditPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
         add(form, gbc);
         
         {
+            gbc.anchor = GridBagConstraints.WEST;
             gbc.gridx = 0;
             gbc.gridy = 0;
             gbc.insets = new Insets(InsetsConfig.S, 0, 0, 0);
@@ -840,7 +1010,7 @@ class Customers_EditPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
             
             gbc.gridy = GridBagConstraints.RELATIVE;
             form.add(studentNoLabel, gbc);
-
+            
             gbc.gridy = GridBagConstraints.RELATIVE;
             form.add(customerNameLabel, gbc);
 
@@ -872,20 +1042,57 @@ class Customers_EditPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
             gbc.gridy = GridBagConstraints.RELATIVE;
             form.add(activatedCheckBox, gbc);
         }
+
+        String rfidNo = Main.app.CUSTOMERS_VIEW.TABLE_PANEL.table.getValueAt(Main.app.CUSTOMERS_VIEW.TABLE_PANEL.table.getSelectedRow(), 1).toString();
+
+        if (rfidNo == null || rfidNo.isEmpty() || rfidNo.isBlank()) {
+            gbc.anchor = GridBagConstraints.EAST;
+            gbc.fill = GridBagConstraints.NONE;
+            gbc.gridx = 0;
+            gbc.gridy = GridBagConstraints.RELATIVE;
+            gbc.insets = new Insets(InsetsConfig.S, InsetsConfig.XXL, 0, InsetsConfig.XXL);
+            gbc.weightx = 1;
+            gbc.weighty = 1;
+            add(infoLabel1, gbc);
+            
+            gbc.anchor = GridBagConstraints.NORTHWEST;
+            gbc.insets = new Insets(InsetsConfig.XL, InsetsConfig.XXL, 0, InsetsConfig.XXL);
+            gbc.fill = GridBagConstraints.HORIZONTAL;
+            gbc.gridy = GridBagConstraints.RELATIVE;
+            add(activationHeader, gbc);
+            
+            gbc.gridy = GridBagConstraints.RELATIVE;
+            gbc.insets = new Insets(InsetsConfig.M, InsetsConfig.XXL, 0, InsetsConfig.XXL);
+            add(infoArea1, gbc);
+            
+            gbc.fill = GridBagConstraints.NONE;
+            gbc.gridy = GridBagConstraints.RELATIVE;
+            gbc.insets = new Insets(InsetsConfig.L, InsetsConfig.XXL, 0, InsetsConfig.XXL);
+            add(registerRfidButton, gbc);
+        }
         
-        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.anchor = GridBagConstraints.EAST;
         gbc.fill = GridBagConstraints.NONE;
         gbc.gridx = 0;
-        gbc.gridy = 2;
-        gbc.insets = new Insets(InsetsConfig.XL, InsetsConfig.XXL, InsetsConfig.XXL, InsetsConfig.XXL);
+        gbc.gridy = GridBagConstraints.RELATIVE;
+        gbc.insets = new Insets(InsetsConfig.XXL, InsetsConfig.XXL, InsetsConfig.XXL, InsetsConfig.XXL);
+        gbc.weightx = 1;
+        gbc.weighty = 1;
         add(updateButton, gbc);
     }
 
     @Override
     public void finalizePrepare() {
+        prepackTextAreas();
         pack();
         setLocationRelativeTo(null);
         setResizable(false);
+    }
+
+    
+    private void prepackTextAreas() {
+        pack();
+        infoArea1.setSize(infoArea1.getSize());
     }
 }
 
