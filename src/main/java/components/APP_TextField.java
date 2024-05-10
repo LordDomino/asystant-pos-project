@@ -23,4 +23,16 @@ public class APP_TextField extends JTextField {
             new LineBorder(ColorConfig.BG, 2)
         ));
     }
+
+    @Override
+    public void setEnabled(boolean b) {
+        super.setEnabled(b);
+        if (!b) {
+            setBorder(new CompoundBorder(
+                new LineBorder(ColorConfig.ACCENT_3),
+                new LineBorder(ColorConfig.ACCENT_1, 2)
+            ));
+            setBackground(ColorConfig.ACCENT_1);
+        }
+    }
 }

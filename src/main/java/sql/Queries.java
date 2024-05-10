@@ -18,7 +18,7 @@ public class Queries {
         return result;
     }
 
-    public static ResultSet getExistingCustomersOfrfidNo(String rfid_no) throws SQLException {
+    public static ResultSet getExistingCustomersOfRfidNo(String rfid_no) throws SQLException {
         String query = "SELECT * FROM " + DBReferences.TBL_CUSTOMERS + " WHERE rfid_no = \"" + rfid_no + "\";";
         Statement statement = SQLConnector.connection.createStatement();
         System.out.println(query);
@@ -107,26 +107,44 @@ public class Queries {
     }
 
     public static void registerCustomer(String rfid_no, String student_no, String customer_name,
-    String amount_deposited) throws SQLException {
+    String amount_deposited, String activated) throws SQLException {
 
         final String[] fieldNames = {
             "rfid_no",
             "student_no",
             "customer_name",
-            "amount_deposited"
+            "amount_deposited",
+            "activated"
         };
-    
+
+        final String[] fieldValues = {
+            rfid_no,
+            student_no,
+            customer_name,
+            amount_deposited,
+            activated
+        };
+
         String query = "INSERT INTO " + DBReferences.TBL_CUSTOMERS + " (";
-    
-        for (String field : fieldNames) {
+
+        List<String> fields = Arrays.asList(fieldNames);
+        List<String> values = Arrays.asList(fieldValues);
+        
+        for (String field : fields) {
             query = query + " `" + field + "`,";
         }
-    
+
         query = query.substring(0, query.length()-1) + " ) VALUES (";
-        query = query + " \"" + rfid_no             + "\", ";
-        query = query + " \"" + student_no             + "\", ";
-        query = query + " \"" + customer_name      + "\", ";
-        query = query + " \"" + amount_deposited        + "\");";
+        
+        for (Object value : values) {
+            if (value == null) {
+                query = query + " NULL, ";
+            } else {
+                query = query + " \"" + value + "\", ";
+            }
+        }
+        
+        query = query.substring(0, query.length()-2) + " );";
 
         Statement statement = SQLConnector.connection.createStatement();
         System.out.println(query);
@@ -134,20 +152,22 @@ public class Queries {
     }
 
     public static void updateCustomer(int id, String rfid_no, String student_no, String customer_name,
-    String amount_deposited) throws SQLException {
+    String amount_deposited, String activated) throws SQLException {
 
         final String[] fieldNames = {
             "rfid_no",
             "student_no",
             "customer_name",
-            "amount_deposited"
+            "amount_deposited",
+            "activated"
         };
 
         final String[] fieldValues = {
             rfid_no,
             student_no,
             customer_name,
-            amount_deposited
+            amount_deposited,
+            activated
         };
 
         String query = "UPDATE " + DBReferences.TBL_CUSTOMERS + " SET ";
@@ -157,7 +177,7 @@ public class Queries {
 
         for (int i = 0; i < fields.size(); i++) {
             String columnName = fields.get(i);
-            Object value = values.get(i);
+            String value = values.get(i).toString();
             query = query + " " + columnName + " = \"" + value + "\",";
         }
 
