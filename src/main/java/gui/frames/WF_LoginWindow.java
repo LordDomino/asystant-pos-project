@@ -258,76 +258,99 @@ class LoginActionListener implements ActionListener {
              * with the help of the LoginManager class.
              * 
              * The super administrator account is first attempted to be
-             * logged in regardless of illegal characters in the
-             * superadmin's account credentials. We (developers) may opt
-             * to use special characters that should only be allowed
-             * when logging in as the superadmin.
+             * logged in regardless of illegal characters in the user's
+             * inputs. We (developers) may opt to use special characters
+             * that should only be allowed when logging in as the
+             * superadmin.
              */
             if (LoginManager.validateSuperAdminUsername(username)) {
                 permitLogin = true;
+            }
 
             /**
              * If the string inputs do not match the super administrator
              * credentials, then the code infers that the user tries to
              * access a standard administrator or user account. Thus,
-             * the rule for illegal characters applies. The code should
-             * then check if the string inputs are valid. 
+             * fetch all existing accounts in the database. The code
+             * only needs to know if an existing account of the given
+             * inputs is available.
              * 
-             *  --> If valid: Assume that the user will eventually be
+             *  --> If there is: Assume that the user will eventually be
              *      authenticated to log in, so set permitLogin to true.
              */
-            } else if (LoginManager.validateUsername(username)) {
+            else if (LoginManager.validateUsername(username)) {
                 permitLogin = true;
+            }
 
             /**
-             *  --> If invalid: Forbid the user from authenticating to
-             *      log in, so set permitLogin to false. Also notify via
-             *      an error pop up window.
+             *  --> If no existing account reflects from the database:
+             *      Forbid the user from authenticating to log in, so
+             *      set permitLogin to false. Also notify via an error
+             *      pop up window.
              */
-            } else {
+            else {
                 permitLogin = false;
-
                 Component parent = SwingUtilities.getWindowAncestor(Main.app.LOGIN_WINDOW.loginButton);
                 JOptionPane.showMessageDialog(
                     parent,
                     "Account of username \"" + username + "\" does not exist.",
                     "Error",
                     JOptionPane.ERROR_MESSAGE
-                    );
-            }
-            
-            // Counter-check for illegal usernames.
-            // This ensures that illegal usernames that have
-            // bypassed the SQL database cannot be logged on.
-            if (!LoginManager.isUsernameLegal(username)) {
-                // Error message goes here
+                );
             }
 
-            if (!LoginManager.isAccountActivated(username)) {
-                // Account has valid credentials but is not activated
+            /**
+             * Restrictions for illegal usernames (usernames containing
+             * illegal characters) should already be enforced during
+             * account creation. However, here the code counterchecks
+             * for any potential bypasses that might allow illegal
+             * usernames to be recorded in the database.
+             * 
+             * If an illegal username is found, forbid authentication
+             * and display an error pop up window.
+             */
+            if (!LoginManager.isUsernameLegal(username)) {
                 permitLogin = false;
-                
                 Component parent = SwingUtilities.getWindowAncestor(Main.app.LOGIN_WINDOW.loginButton);
                 JOptionPane.showMessageDialog(
                     parent,
-                    "Account \"" + username + "\" is not activated or is locked. Contact administrator for activation.",
+                    "Account of username \"" + username + "\" is illegal.",
                     "Error",
                     JOptionPane.ERROR_MESSAGE
-                    );
-                } else if (!LoginManager.isAccountPasswordCorrect(username, password)) {
-                    // An account of the correct username was found
-                    // but an incorrect password was given
-                    permitLogin = false;
+                );
+            }
+
+            /**
+             * If the input strings and the account credentials pass the
+             * previous validations, we then check if the user's given
+             * inputs (i.e., the username and password) are correct.
+             * Regardless of whether or not the account is active, input
+             * checking should always go first. 
+             * 
+             *  --> If the input credentials are incorrect: Forbid user
+             *      from authenticating via permitLogin = false.
+             * 
+             *      The number of incorrect attempts should also be
+             *      incremented via the helper method
+             *      LoginManager.incrementIncorrectAttempts(). If the
+             *      number of incorrect attempts hits 3 times, the
+             *      requested account is locked and a notification will
+             *      display, otherwise, the user is warned via a pop up.
+             */
+            if (!LoginManager.isAccountPasswordCorrect(username, password)) {
+                permitLogin = false;  // An account of the correct username was found
+                                      // but an incorrect password was given
+                LoginManager.incrementIncorrectAttempts(username);
                     
-                    LoginManager.incrementIncorrectAttempts(username);
-                    
-                    String errorMessage;
-                    if (!LoginManager.isAccountActivated(username)) {
+                String errorMessage;
+                if (!LoginManager.isAccountActivated(username)) {
                     errorMessage = "Account \"" + username + "\" has been locked after three login attempts failed."
                                  + " Contact administrator for reactivation.";
                 } else {
                     int remaining = LoginManager.getRemainingAttempts(username);
+                    
                     errorMessage = "Incorrect password for \"" + username + "\".";
+
                     if (remaining == 1) {
                         errorMessage = errorMessage + " Only " + LoginManager.getRemainingAttempts(username)
                                      + " login attempt is remaining.";
@@ -335,6 +358,7 @@ class LoginActionListener implements ActionListener {
                         errorMessage = errorMessage + " There are " + LoginManager.getRemainingAttempts(username)
                                      + " login attempts remaining.";
                     }
+
                     errorMessage = errorMessage + " If all login attempt fails, the account \""
                                  + username + "\" will be locked.";
                 }
@@ -345,15 +369,43 @@ class LoginActionListener implements ActionListener {
                     errorMessage,
                     "Error",
                     JOptionPane.ERROR_MESSAGE
-                    );
-                }
+                );
+            }
+            
+            /**
+             * The user's input credentials may be correct, but the
+             * requested account is currently inactive or deactivated.
+             * 
+             *  --> If the account is inactive: Show an error message
+             *      via an error pop up.
+             */
+            else if (!LoginManager.isAccountActivated(username)) {            
+                permitLogin = false;  // Account has valid credentials but is not activated
+               
+                Component parent = SwingUtilities.getWindowAncestor(Main.app.LOGIN_WINDOW.loginButton);
+                JOptionPane.showMessageDialog(
+                    parent,
+                    "Account \"" + username + "\" is not activated or is locked. Contact administrator for activation.",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
+                );
+            } 
 
+            /**
+             * Account login authentication always bases on the
+             * permitLogin boolean flag to determine whether or not to
+             * allow the user to login.
+             * 
+             * If a user successfully passes the validation processes,
+             * reset its login attempts back to zero and then
+             * authenticate it via LoginManager.resetLoginAttempts().
+             */
             if (permitLogin) {
                 LoginManager.resetLoginAttempts(username);
                 Main.app.LOGIN_WINDOW.authenticateLogin();
             } else {
                 // Execute when all user account type login attempts fail
-                // Perform counter operation
+                // Perform counter operation; maybe try alternative methods for future features
             }
 
         } catch (SQLException exception) {
@@ -364,14 +416,24 @@ class LoginActionListener implements ActionListener {
                 exception.toString(),
                 "Error",
                 JOptionPane.ERROR_MESSAGE
-                );
+            );
         }
     }
 
+    /**
+     * Returns the input string provided in the username field of the 
+     * login form.
+     * @return the username input string
+     */
     private String getInputUsername() {
         return Main.app.LOGIN_WINDOW.usernameField.getText();
     }
 
+    /**
+     * Returns the input string provided in the password field of the
+     * login form.
+     * @return the password input string
+     */
     private String getInputPassword() {
         return new String(Main.app.LOGIN_WINDOW.passwordField.getPassword());
     }
