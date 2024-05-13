@@ -889,7 +889,6 @@ class Customers_EditPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
         form.setOpaque(false);
         customerIDField.setEnabled(false);
         rfidNoField.getDocument().addDocumentListener(rfidFieldListener);
-        rfidNoField.setEnabled(false);
         amountDepositedField.setText("100");
         activatedCheckBox.setEnabled(false);
         activatedCheckBox.setOpaque(false);

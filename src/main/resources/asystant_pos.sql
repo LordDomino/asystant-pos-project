@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 29, 2024 at 07:09 AM
+-- Generation Time: May 13, 2024 at 07:00 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -66,18 +66,22 @@ DELIMITER ;
 
 CREATE TABLE `customers_tbl` (
   `id` int(11) NOT NULL,
-  `rfid_no` int(100) NOT NULL,
-  `student_no` int(100) NOT NULL,
+  `rfid_no` int(100) DEFAULT NULL,
+  `student_no` int(100) DEFAULT NULL,
   `customer_name` varchar(100) NOT NULL,
-  `amount_deposited` decimal(64,4) NOT NULL
+  `amount_deposited` decimal(64,4) NOT NULL,
+  `activated` int(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `customers_tbl`
 --
 
-INSERT INTO `customers_tbl` (`id`, `rfid_no`, `student_no`, `customer_name`, `amount_deposited`) VALUES
-(4, 456789, 12345, 'Loui', 1000.0000);
+INSERT INTO `customers_tbl` (`id`, `rfid_no`, `student_no`, `customer_name`, `amount_deposited`, `activated`) VALUES
+(4, NULL, 0, 'Loui Dominic Naquita', 50.0000, 0),
+(5, NULL, 0, 'Lance Resurreccion', 50.0000, 0),
+(6, NULL, 0, 'Ryl Pangilinan', 50.0000, 0),
+(7, NULL, 0, 'Zeamon Cruz', 50.0000, 0);
 
 -- --------------------------------------------------------
 
@@ -127,15 +131,6 @@ CREATE TABLE `stocks_inventory_tbl` (
   `markup_price` decimal(65,4) NOT NULL,
   `unit_price` decimal(65,4) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `stocks_inventory_tbl`
---
-
-INSERT INTO `stocks_inventory_tbl` (`id`, `product_code`, `name`, `description`, `category`, `unit_cost`, `stock_quantity`, `markup_price`, `unit_price`) VALUES
-(20, 123456, 'Item1', '', 'Uncategorized', 100.0000, 99, 2.0000, 102.0000),
-(21, 123457, 'Item2', '', 'Uncategorized', 100.0000, 88, 2.0000, 102.0000),
-(22, 123458, 'Item3', '', 'Uncategorized', 100.0000, 100, 2.0000, 102.0000);
 
 -- --------------------------------------------------------
 
@@ -200,7 +195,7 @@ ALTER TABLE `user_accounts`
 -- AUTO_INCREMENT for table `customers_tbl`
 --
 ALTER TABLE `customers_tbl`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `sales_tbl`

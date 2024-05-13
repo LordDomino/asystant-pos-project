@@ -1146,10 +1146,7 @@ class Inventory_DeletePopUpWindow extends APP_PopUpFrame<WF_Dashboard> {
         addWindowListener(new WindowListener() {
 
             @Override
-            public void windowOpened(WindowEvent e) {
-                // TODO Auto-generated method stub
-                throw new UnsupportedOperationException("Unimplemented method 'windowOpened'");
-            }
+            public void windowOpened(WindowEvent e) {}
 
             @Override
             public void windowClosing(WindowEvent e) {
@@ -1158,34 +1155,19 @@ class Inventory_DeletePopUpWindow extends APP_PopUpFrame<WF_Dashboard> {
             }
 
             @Override
-            public void windowClosed(WindowEvent e) {
-                // TODO Auto-generated method stub
-                throw new UnsupportedOperationException("Unimplemented method 'windowClosed'");
-            }
+            public void windowClosed(WindowEvent e) {}
 
             @Override
-            public void windowIconified(WindowEvent e) {
-                // TODO Auto-generated method stub
-                throw new UnsupportedOperationException("Unimplemented method 'windowIconified'");
-            }
+            public void windowIconified(WindowEvent e) {}
 
             @Override
-            public void windowDeiconified(WindowEvent e) {
-                // TODO Auto-generated method stub
-                throw new UnsupportedOperationException("Unimplemented method 'windowDeiconified'");
-            }
+            public void windowDeiconified(WindowEvent e) {}
 
             @Override
-            public void windowActivated(WindowEvent e) {
-                // TODO Auto-generated method stub
-                throw new UnsupportedOperationException("Unimplemented method 'windowActivated'");
-            }
+            public void windowActivated(WindowEvent e) {}
 
             @Override
-            public void windowDeactivated(WindowEvent e) {
-                // TODO Auto-generated method stub
-                throw new UnsupportedOperationException("Unimplemented method 'windowDeactivated'");
-            }
+            public void windowDeactivated(WindowEvent e) {}
             
         });
     }
