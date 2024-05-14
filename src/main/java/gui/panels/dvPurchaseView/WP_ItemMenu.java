@@ -28,7 +28,7 @@ import main.java.sql.SQLConnector;
 public class WP_ItemMenu extends APP_Panel {
 
     public WP_ItemMenu() {
-        super(new GridLayout(0, 2, InsetsConfig.XXL, InsetsConfig.XXL));
+        super(new GridLayout(0, 1, InsetsConfig.XXL, InsetsConfig.XXL));
         compile();
     }
     

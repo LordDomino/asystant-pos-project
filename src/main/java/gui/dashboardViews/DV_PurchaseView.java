@@ -5,6 +5,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.border.MatteBorder;
 
 import main.java.components.APP_Panel;
@@ -18,8 +19,9 @@ public class DV_PurchaseView extends APP_Panel {
 
     protected final JPanel centerPanel = new JPanel(new GridBagLayout());
     protected final JPanel rightPanel = new JPanel(new GridBagLayout());
-
+    
     public final WP_ItemMenu ITEM_MENU = new WP_ItemMenu();
+    protected final JScrollPane scrollArea = new JScrollPane(ITEM_MENU, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     public final WP_CheckoutPanel CHECKOUT = new WP_CheckoutPanel();
     protected final JPanel CALCULATOR = new WP_Calculator();
 
@@ -44,7 +46,7 @@ public class DV_PurchaseView extends APP_Panel {
         GridBagConstraints gbc = new GridBagConstraints();
 
         gbc.anchor = GridBagConstraints.NORTHWEST;
-        gbc.fill = GridBagConstraints.NONE;
+        gbc.fill = GridBagConstraints.BOTH;
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.weightx = 1;
@@ -53,33 +55,37 @@ public class DV_PurchaseView extends APP_Panel {
 
         {
             // Item Menu
+            gbc.anchor = GridBagConstraints.NORTHWEST;
+            gbc.fill = GridBagConstraints.BOTH;
             gbc.gridx = 0;
             gbc.gridy = 0;
             gbc.insets = new Insets(InsetsConfig.XXL, InsetsConfig.XXL, InsetsConfig.XXL, InsetsConfig.XXL);
-            gbc.weightx = 0;
-            gbc.weighty = 0;
-            centerPanel.add(ITEM_MENU, gbc);
+            gbc.weightx = 1;
+            gbc.weighty = 1;
+            centerPanel.add(scrollArea, gbc);
         }
-
+        
         gbc.anchor = GridBagConstraints.NORTHEAST;
         gbc.fill = GridBagConstraints.VERTICAL;
         gbc.gridx = 2;
         gbc.gridy = 0;
         gbc.insets = new Insets(0, 0, 0, 0);
-        gbc.weightx = 0;
+        gbc.weightx = 1;
         gbc.weighty = 1;
         add(rightPanel, gbc);
 
         {
             // Checkout Panel
             gbc.anchor = GridBagConstraints.NORTHEAST;
-            gbc.fill = GridBagConstraints.NONE;
+            gbc.fill = GridBagConstraints.HORIZONTAL;
             gbc.gridx = 0;
             gbc.gridy = 0;
             gbc.insets = new Insets(InsetsConfig.XL, InsetsConfig.L, 0, InsetsConfig.L);
-            gbc.weightx = 0;
+            gbc.weightx = 1;
             gbc.weighty = 1;
             rightPanel.add(CHECKOUT, gbc);
+
+            rightPanel.setMinimumSize(getSize());
             
             // Calculator
             gbc.anchor = GridBagConstraints.SOUTHEAST;
@@ -90,6 +96,7 @@ public class DV_PurchaseView extends APP_Panel {
             gbc.weighty = 1;
             // rightPanel.add(CALCULATOR, gbc);
         }
+
     }
 
     public void finalizePrepare() {}
