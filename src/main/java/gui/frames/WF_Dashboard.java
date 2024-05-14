@@ -72,6 +72,8 @@ public class WF_Dashboard extends APP_Frame {
         gbc.weightx = 0;
         gbc.weighty = 1;
         add(leftPanel, gbc);
+
+        pack();
     }
 
     @Override

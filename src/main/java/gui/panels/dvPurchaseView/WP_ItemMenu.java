@@ -12,6 +12,7 @@ import javax.swing.JPanel;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -27,8 +28,10 @@ import main.java.sql.SQLConnector;
 
 public class WP_ItemMenu extends APP_Panel {
 
+    private JPanel contentArea = new JPanel(new GridLayout(0, 1, InsetsConfig.XXL, InsetsConfig.XXL));
+
     public WP_ItemMenu() {
-        super(new GridLayout(0, 1, InsetsConfig.XXL, InsetsConfig.XXL));
+        super(new GridBagLayout());
         compile();
     }
     
@@ -36,9 +39,19 @@ public class WP_ItemMenu extends APP_Panel {
         setBackground(ColorConfig.BG);
     }
 
-    public void prepareComponents() {}
+    public void prepareComponents() {
+        contentArea.setOpaque(false);
+    }
 
-    public void addComponents() {}
+    public void addComponents() {
+        GridBagConstraints gbc = new GridBagConstraints();
+
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+        gbc.insets = new Insets(InsetsConfig.XXL, InsetsConfig.XXL, InsetsConfig.XXL, InsetsConfig.XXL);
+        gbc.weightx = 1;
+        gbc.weighty = 1;
+        add(contentArea, gbc);
+    }
 
     public void finalizePrepare() {
         generateCategoryPanels();
@@ -160,6 +173,10 @@ public class WP_ItemMenu extends APP_Panel {
 
                     contentPanel.add(itemButton);
 
+                    setMaximumSize(new Dimension(500, 0));
+                    setMinimumSize(new Dimension(500, 0));
+                    setPreferredSize(getMaximumSize());
+
                     // The gridx and gridy formatting should be incremented after adding the item button
                     // But we need to check if the gridx is 3
                     if (categoryPanelsGridx.get(currentCategory) >= 3) {
@@ -178,7 +195,7 @@ public class WP_ItemMenu extends APP_Panel {
                 JPanel contentPanel = contentPanels.get(categoryNames.get(i));
                 categoryPanel.setOpaque(false);
                 contentPanel.setOpaque(false);
-                add(categoryPanel);
+                contentArea.add(categoryPanel);
             }
 
         } catch (SQLException e) {

@@ -1,5 +1,6 @@
 package main.java.gui.dashboardViews;
 
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -35,11 +36,11 @@ public class DV_PurchaseView extends APP_Panel {
     }
 
     public void prepareComponents() {
-        CALCULATOR.setOpaque(false);
         centerPanel.setBackground(ColorConfig.BG);
         rightPanel.setBackground(ColorConfig.ACCENT_1);
-
         rightPanel.setBorder(new MatteBorder(0, 1, 0, 0, ColorConfig.ACCENT_BUTTON_OUTLINE));
+        scrollArea.setPreferredSize(new Dimension(200, 200));
+        scrollArea.setBorder(null);
     }
 
     public void addComponents() {
@@ -59,7 +60,7 @@ public class DV_PurchaseView extends APP_Panel {
             gbc.fill = GridBagConstraints.BOTH;
             gbc.gridx = 0;
             gbc.gridy = 0;
-            gbc.insets = new Insets(InsetsConfig.XXL, InsetsConfig.XXL, InsetsConfig.XXL, InsetsConfig.XXL);
+            gbc.insets = new Insets(0, 0, 0, 0);
             gbc.weightx = 1;
             gbc.weighty = 1;
             centerPanel.add(scrollArea, gbc);
@@ -70,7 +71,7 @@ public class DV_PurchaseView extends APP_Panel {
         gbc.gridx = 2;
         gbc.gridy = 0;
         gbc.insets = new Insets(0, 0, 0, 0);
-        gbc.weightx = 1;
+        gbc.weightx = 0;
         gbc.weighty = 1;
         add(rightPanel, gbc);
 
@@ -80,7 +81,7 @@ public class DV_PurchaseView extends APP_Panel {
             gbc.fill = GridBagConstraints.HORIZONTAL;
             gbc.gridx = 0;
             gbc.gridy = 0;
-            gbc.insets = new Insets(InsetsConfig.XL, InsetsConfig.L, 0, InsetsConfig.L);
+            gbc.insets = new Insets(InsetsConfig.XL, InsetsConfig.L, InsetsConfig.XL, InsetsConfig.L);
             gbc.weightx = 1;
             gbc.weighty = 1;
             rightPanel.add(CHECKOUT, gbc);

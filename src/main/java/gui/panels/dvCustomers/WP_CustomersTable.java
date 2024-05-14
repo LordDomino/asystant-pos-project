@@ -139,6 +139,7 @@ public class WP_CustomersTable extends APP_Panel {
         footerButtonsPanel.setOpaque(false);
 
         tablePanel.setBackground(ColorConfig.BG);
+        table.getTableHeader().setReorderingAllowed(false);
         table.setBackground(ColorConfig.BG);
         scrollPane.getViewport().setBackground(ColorConfig.BG);
         scrollPane.setBackground(ColorConfig.BG);

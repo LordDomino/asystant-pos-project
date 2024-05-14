@@ -66,14 +66,14 @@ public class WP_StockInventory extends APP_Panel {
     }
 
     public static ArrayList<ArrayList<String>> pendingDeletedRows = new ArrayList<>();
-    public final DefaultTableModel inventoryModel = new DefaultTableModel(new Vector<String>(fieldMappings.keySet()), 0) {
+    public final DefaultTableModel tableModel = new DefaultTableModel(new Vector<String>(fieldMappings.keySet()), 0) {
         @Override
         public boolean isCellEditable(int row, int column) {
             return false;
         }
     };
 
-    public final JTable inventoryTable = new JTable(inventoryModel);
+    public final JTable table = new JTable(tableModel);
 
     // Layout components
     public final JPanel headerPanel     = new JPanel(new GridBagLayout());
@@ -82,7 +82,7 @@ public class WP_StockInventory extends APP_Panel {
     public final JPanel footerPanel     = new JPanel(new GridBagLayout());
     public final JPanel footerButtonsPanel = new JPanel(new GridBagLayout());
 
-    public final JScrollPane scrollPane         = new JScrollPane(inventoryTable);
+    public final JScrollPane scrollPane         = new JScrollPane(table);
     public final WP_DetailsPanel detailsPanel   = new WP_DetailsPanel();
     
     public static final ArrayList<ArrayList<String>> pendingDeletedProducts = new ArrayList<>();
@@ -93,7 +93,7 @@ public class WP_StockInventory extends APP_Panel {
 
         @Override
         public void fireValueChanged() {
-            final int[] selectedIndices = inventoryTable.getSelectionModel().getSelectedIndices();
+            final int[] selectedIndices = table.getSelectionModel().getSelectedIndices();
             if (selectedIndices.length == 1) {
                 setEnabled(true);    
             } else {
@@ -106,7 +106,7 @@ public class WP_StockInventory extends APP_Panel {
 
         @Override
         public void fireValueChanged() {
-            int[] selectedIndices = inventoryTable.getSelectionModel().getSelectedIndices();
+            int[] selectedIndices = table.getSelectionModel().getSelectedIndices();
 
             if (selectedIndices.length > 0) {
                 setEnabled(true);
@@ -140,14 +140,15 @@ public class WP_StockInventory extends APP_Panel {
         footerPanel.setOpaque(false);
         footerButtonsPanel.setOpaque(false);
 
+        table.getTableHeader().setReorderingAllowed(false);
         tablePanel.setBackground(ColorConfig.BG);
-        inventoryTable.setBackground(ColorConfig.BG);
+        table.setBackground(ColorConfig.BG);
         scrollPane.getViewport().setBackground(ColorConfig.BG);
         scrollPane.setBackground(ColorConfig.BG);
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
         detailsPanel.setBackground(ColorConfig.ACCENT_1);
 
-        inventoryTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+        table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent event) {
                 try {
                     editButton.fireValueChanged();
@@ -173,14 +174,14 @@ public class WP_StockInventory extends APP_Panel {
             public void actionPerformed(ActionEvent e) {
                 Inventory_EditPopupWindow popUp = new Inventory_EditPopupWindow();
 
-                int selectedRowIndex = inventoryTable.getSelectedRow();
-                String selectedProductCode      = inventoryTable.getValueAt(selectedRowIndex, 0).toString();
-                String selectedName             = inventoryTable.getValueAt(selectedRowIndex, 1).toString();
-                String selectedCategory         = inventoryTable.getValueAt(selectedRowIndex, 2).toString();
-                String selectedUnitCost         = inventoryTable.getValueAt(selectedRowIndex, 3).toString();
-                String selectedStockQuantity    = inventoryTable.getValueAt(selectedRowIndex, 4).toString();
-                String selectedMarkupPrice      = inventoryTable.getValueAt(selectedRowIndex, 5).toString();
-                String selectedUnitPrice        = inventoryTable.getValueAt(selectedRowIndex, 6).toString();
+                int selectedRowIndex = table.getSelectedRow();
+                String selectedProductCode      = table.getValueAt(selectedRowIndex, 0).toString();
+                String selectedName             = table.getValueAt(selectedRowIndex, 1).toString();
+                String selectedCategory         = table.getValueAt(selectedRowIndex, 2).toString();
+                String selectedUnitCost         = table.getValueAt(selectedRowIndex, 3).toString();
+                String selectedStockQuantity    = table.getValueAt(selectedRowIndex, 4).toString();
+                String selectedMarkupPrice      = table.getValueAt(selectedRowIndex, 5).toString();
+                String selectedUnitPrice        = table.getValueAt(selectedRowIndex, 6).toString();
 
                 popUp.productCodeField.setText(selectedProductCode);
                 popUp.nameField.setText(selectedName);
@@ -199,23 +200,23 @@ public class WP_StockInventory extends APP_Panel {
         deleteButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int[] selectedRows = inventoryTable.getSelectedRows();
+                int[] selectedRows = table.getSelectedRows();
 
                 for (int rowID : selectedRows) {
                     ArrayList<String> pendingRowValues = new ArrayList<>();
-                    pendingRowValues.add(inventoryTable.getValueAt(rowID, 0).toString());
-                    pendingRowValues.add(inventoryTable.getValueAt(rowID, 1).toString());
-                    pendingRowValues.add(inventoryTable.getValueAt(rowID, 2).toString());
-                    pendingRowValues.add(inventoryTable.getValueAt(rowID, 3).toString());
-                    pendingRowValues.add(inventoryTable.getValueAt(rowID, 4).toString());
-                    pendingRowValues.add(inventoryTable.getValueAt(rowID, 5).toString());
-                    pendingRowValues.add(inventoryTable.getValueAt(rowID, 6).toString());
+                    pendingRowValues.add(table.getValueAt(rowID, 0).toString());
+                    pendingRowValues.add(table.getValueAt(rowID, 1).toString());
+                    pendingRowValues.add(table.getValueAt(rowID, 2).toString());
+                    pendingRowValues.add(table.getValueAt(rowID, 3).toString());
+                    pendingRowValues.add(table.getValueAt(rowID, 4).toString());
+                    pendingRowValues.add(table.getValueAt(rowID, 5).toString());
+                    pendingRowValues.add(table.getValueAt(rowID, 6).toString());
                     pendingDeletedRows.add(pendingRowValues);
                 }
                 
                 if (selectedRows.length > 0) {
                     for (int i = selectedRows.length - 1; i >= 0; i--) {
-                        inventoryModel.removeRow(selectedRows[i]);
+                        tableModel.removeRow(selectedRows[i]);
                     }
 
                     submitChangesButton.setEnabled(true);
@@ -255,14 +256,14 @@ public class WP_StockInventory extends APP_Panel {
         gbc.fill = GridBagConstraints.NONE;
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.insets = new Insets(InsetsConfig.XXL, InsetsConfig.XXL, 0, InsetsConfig.XXL);
+        gbc.insets = new Insets(InsetsConfig.XXL, 0, 0, 0);
         add(headerPanel, gbc);
 
         gbc.anchor = GridBagConstraints.WEST;
         gbc.fill = GridBagConstraints.NONE;
         gbc.gridx = 0;
         gbc.gridy = 1;
-        gbc.insets = new Insets(InsetsConfig.XL, InsetsConfig.XXL, 0, InsetsConfig.XXL);
+        gbc.insets = new Insets(InsetsConfig.XL, 0, 0, 0);
         add(buttonsPanel, gbc);
         
         if (LoginManager.getCurrentAccessLevelMode() == LoginManager.ACCESS_LEVEL_SUPERADMIN) {
@@ -306,7 +307,7 @@ public class WP_StockInventory extends APP_Panel {
         gbc.fill = GridBagConstraints.BOTH;
         gbc.gridx = 0;
         gbc.gridy = 2;
-        gbc.insets = new Insets(InsetsConfig.M, InsetsConfig.XXL, 0, InsetsConfig.XXL);
+        gbc.insets = new Insets(InsetsConfig.M, 0, 0, 0);
         gbc.weightx = 1;
         gbc.weighty = 1;
         add(tablePanel, gbc);
@@ -332,7 +333,7 @@ public class WP_StockInventory extends APP_Panel {
         gbc.fill = GridBagConstraints.NONE;
         gbc.gridx = 0;
         gbc.gridy = 3;
-        gbc.insets = new Insets(InsetsConfig.M, InsetsConfig.M, InsetsConfig.XXL, InsetsConfig.XXL);
+        gbc.insets = new Insets(InsetsConfig.M, 0, 0, 0);
         gbc.weightx = 1;
         gbc.weighty = 0;
         add(footerPanel, gbc);
@@ -376,12 +377,12 @@ public class WP_StockInventory extends APP_Panel {
         // Loop through the pendingDeletedUsernames and remove the
         // rows which are in the purgatory of deleted accounts
         for (ArrayList<String> row : pendingDeletedRows) {
-            Vector<Vector> tableData = inventoryModel.getDataVector();
+            Vector<Vector> tableData = tableModel.getDataVector();
 
             for (int i = 0; i < tableData.size(); i++) {
                 Vector tableRow = tableData.get(i);
                 if (tableRow.get(0).equals(row.get(0))) {
-                    inventoryModel.removeRow(i);
+                    tableModel.removeRow(i);
                 }
             }
         }
@@ -390,7 +391,7 @@ public class WP_StockInventory extends APP_Panel {
     protected void loadFromDatabase() {
         try {
             // Clear the rows
-            inventoryModel.setRowCount(0);
+            tableModel.setRowCount(0);
 
             // Establish the SQL connection first
             SQLConnector.establishConnection();
@@ -427,7 +428,7 @@ public class WP_StockInventory extends APP_Panel {
 
                     String[] rowData = {productCode, name, category, unitCost, stockQuantity, markupPrice, unitPrice};
 
-                    inventoryModel.addRow(rowData);
+                    tableModel.addRow(rowData);
                     i++;
                 }    
             }

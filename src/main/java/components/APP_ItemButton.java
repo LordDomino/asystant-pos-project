@@ -47,7 +47,7 @@ public class APP_ItemButton extends JButton {
         // the layout
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        JLabel itemLabel = new JLabel(itemName);
+        JLabel itemLabel = new JLabel("<html>" + itemName + "</html>");
         JLabel priceLabel = new JLabel("Php" + String.valueOf(priceTag));
 
         itemLabel.setFont(StylesConfig.ITEM_LABEL);

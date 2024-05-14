@@ -34,9 +34,9 @@ public abstract class APP_Panel extends JPanel {
     public abstract void finalizePrepare();
 
     public void compile() {
-        prepareComponents();
         prepare();
         addComponents();
+        prepareComponents();
         finalizePrepare();
     }
 }

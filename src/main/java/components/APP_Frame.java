@@ -52,8 +52,8 @@ public abstract class APP_Frame extends JFrame {
      */
     public void compile() {
         prepare();
-        prepareComponents();
         addComponents();
+        prepareComponents();
         finalizePrepare();
     }
 }

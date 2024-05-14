@@ -1,5 +1,6 @@
 package main.java.gui.panels.dvPurchaseView;
 
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -113,13 +114,13 @@ public class WP_CheckoutPanel extends APP_Panel {
         
         headerButtonsPanel.setOpaque(false);
         footerPanel.setOpaque(false);
-        
+
+        header.setFont(StylesConfig.HEADING2);
+        scrollPane.setPreferredSize(new Dimension(getPreferredSize().width, 300));
+        table.getTableHeader().setReorderingAllowed(false);
         table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        header.setFont(StylesConfig.HEADING2);
-
         totalAmount.setFont(StylesConfig.HEADING3);
-
         totalAmountLabel.setFont(StylesConfig.LEAD);
 
         // proceedToPaymentButton.addActionListener(new ActionListener() {
