@@ -600,7 +600,7 @@ final class Customers_AddPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
         header.setFont(StylesConfig.HEADING3);
         form.setOpaque(false);
         rfidNoField.getDocument().addDocumentListener(rfidFieldListener);
-        amountDepositedField.setText("100");
+        amountDepositedField.setText("50");
         activatedCheckBox.setEnabled(false);
         activatedCheckBox.setOpaque(false);
         activationHeader.setFont(StylesConfig.LEAD);
