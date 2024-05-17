@@ -151,13 +151,6 @@ CREATE TABLE `sales_tbl` (
 -- Dumping data for table `sales_tbl`
 --
 
-INSERT INTO `sales_tbl` (`id`, `sales_id`, `product_code`, `item_name`, `quantity`, `total_price`, `status`, `created_by`, `created_datetime`, `completed_datetime`, `customer_id`) VALUES
-(1, '', 123456, 'Item1', 1, 102.0000, 2, 'user', '2024-04-26 23:47:57', NULL, NULL),
-(2, NULL, 123457, 'Item2', 1, 102.0000, 2, 'user', '2024-04-26 23:50:09', '2024-04-26 23:50:09', NULL),
-(3, NULL, 123457, 'Item2', 10, 2020.0000, 2, 'user', '2024-04-26 23:51:11', '2024-04-26 23:51:11', NULL),
-(4, NULL, 123457, 'Item2', 1, 102.0000, 2, 'user', '2024-04-26 23:51:28', '2024-04-26 23:51:28', NULL),
-(5, NULL, 123458, 'Item3', 1, 102.0000, NULL, 'user', '2024-04-26 23:51:38', '2024-04-26 23:51:38', NULL);
-
 -- --------------------------------------------------------
 
 --

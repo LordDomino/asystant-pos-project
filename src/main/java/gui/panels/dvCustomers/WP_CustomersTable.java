@@ -6,6 +6,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
@@ -34,10 +35,14 @@ import java.util.Vector;
 import main.java.Main;
 import main.java.components.APP_AccentButton;
 import main.java.components.APP_ContrastButton;
+import main.java.components.APP_Frame;
 import main.java.components.APP_LabeledTextField;
 import main.java.components.APP_Panel;
+import main.java.components.APP_PasswordField;
 import main.java.components.APP_PopUpFrame;
 import main.java.components.APP_TextField;
+import main.java.components.RFIDPopUp;
+import main.java.components.RfidReceivable;
 import main.java.configs.ColorConfig;
 import main.java.configs.InsetsConfig;
 import main.java.configs.StylesConfig;
@@ -518,7 +523,7 @@ public class WP_CustomersTable extends APP_Panel {
     }
 }
 
-final class Customers_AddPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
+final class Customers_AddPopupWindow extends APP_PopUpFrame<WF_Dashboard> implements RfidReceivable {
 
     public final JLabel header = new JLabel("Register customer");
     public final JPanel form = new JPanel(new GridBagLayout());
@@ -615,8 +620,9 @@ final class Customers_AddPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
         registerRfidButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // TODO Auto-generated method stub
-                
+                Customers_AddPopupWindow parentFrame = (Customers_AddPopupWindow) SwingUtilities.getWindowAncestor(registerRfidButton);
+                RFIDPopUp<Customers_AddPopupWindow> popUp = new RFIDPopUp<Customers_AddPopupWindow>(parentFrame);
+                popUp.setVisible(true);
             }
         });
         submitButton.setEnabled(false);
@@ -800,9 +806,14 @@ final class Customers_AddPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
         pack();
         infoArea1.setSize(infoArea1.getSize());
     }
+
+    @Override
+    public void setRfidNo(int rfidNo) {
+        rfidNoField.setText(String.valueOf(rfidNo));
+    }
 }
 
-class Customers_EditPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
+class Customers_EditPopupWindow extends APP_PopUpFrame<WF_Dashboard> implements RfidReceivable {
 
     public final JLabel header = new JLabel("Edit customer details");
     public final JPanel form = new JPanel(new GridBagLayout());
@@ -905,8 +916,9 @@ class Customers_EditPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
         registerRfidButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // TODO Auto-generated method stub
-                
+                Customers_EditPopupWindow parentFrame = (Customers_EditPopupWindow) SwingUtilities.getWindowAncestor(registerRfidButton);
+                RFIDPopUp<Customers_EditPopupWindow> popUp = new RFIDPopUp<Customers_EditPopupWindow>(parentFrame);
+                popUp.setVisible(true);
             }
         });
         updateButton.setEnabled(false);
@@ -1093,6 +1105,11 @@ class Customers_EditPopupWindow extends APP_PopUpFrame<WF_Dashboard> {
     private void prepackTextAreas() {
         pack();
         infoArea1.setSize(infoArea1.getSize());
+    }
+
+    @Override
+    public void setRfidNo(int rfidNo) {
+        rfidNoField.setText(String.valueOf(rfidNo));
     }
 }
 

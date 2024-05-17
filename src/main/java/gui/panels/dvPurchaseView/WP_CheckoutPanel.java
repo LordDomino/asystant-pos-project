@@ -21,15 +21,18 @@ import javax.swing.table.DefaultTableModel;
 
 import main.java.Main;
 import main.java.components.APP_AccentButton;
+import main.java.components.APP_Frame;
 import main.java.components.APP_ItemButton;
 import main.java.components.APP_Panel;
+import main.java.components.RFIDPopUp;
+import main.java.components.RfidReceivable;
 import main.java.configs.ColorConfig;
 import main.java.configs.InsetsConfig;
 import main.java.configs.StylesConfig;
 
 import javax.swing.JScrollPane;
 
-public class WP_CheckoutPanel extends APP_Panel {
+public class WP_CheckoutPanel extends APP_Panel implements RfidReceivable {
 
     /**
      * The map of current items added to the checkout table in the
@@ -48,6 +51,7 @@ public class WP_CheckoutPanel extends APP_Panel {
 
     // Components
     public final JLabel header = new JLabel("Checkout");
+    public int currentRFIDNumber;
     public final APP_AccentButton removeProductButton = new APP_AccentButton("Subtract 1") {
         
         @Override
@@ -123,12 +127,15 @@ public class WP_CheckoutPanel extends APP_Panel {
         totalAmount.setFont(StylesConfig.HEADING3);
         totalAmountLabel.setFont(StylesConfig.LEAD);
 
-        // proceedToPaymentButton.addActionListener(new ActionListener() {
-        //     @Override
-        //     public void actionPerformed(ActionEvent e) {
-        //         // TO DO -- RFID tapping process
-        //     }
-        // });
+         proceedToPaymentButton.addActionListener(new ActionListener() {
+             @Override
+             public void actionPerformed(ActionEvent e) {
+                
+                RFIDPopUp<WP_CheckoutPanel> popUp = new RFIDPopUp<WP_CheckoutPanel>(Main.app.PURCHASE_VIEW.CHECKOUT);
+                popUp.setVisible(true);
+                 // TO DO -- RFID tapping process
+             }
+         });
 
         tableModel.addTableModelListener(new TableModelListener() {
             @Override
@@ -339,4 +346,45 @@ public class WP_CheckoutPanel extends APP_Panel {
             return false;
         }
     }
+
+    @Override
+    public void setRfidNo(int rfidNo) {
+        currentRFIDNumber = rfidNo;
+        System.out.println(currentRFIDNumber);
+    }
+}
+
+class PaymentScreen extends APP_Frame implements RfidReceivable {
+
+    @Override
+    public void setRfidNo(int rfidNo) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setRfidNo'");
+    }
+
+    @Override
+    public void prepare() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'prepare'");
+    }
+
+    @Override
+    public void prepareComponents() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'prepareComponents'");
+    }
+
+    @Override
+    public void addComponents() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'addComponents'");
+    }
+
+    @Override
+    public void finalizePrepare() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'finalizePrepare'");
+    }
+
+    
 }
