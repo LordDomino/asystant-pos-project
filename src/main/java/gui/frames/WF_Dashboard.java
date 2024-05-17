@@ -105,11 +105,11 @@ public class WF_Dashboard extends APP_Frame {
             gbc.weightx = 1;
             add(viewingPanel, gbc);
 
-            updateComponent();
+            updateDashboard();
         } else {
             remove(viewingPanel);
 
-            updateComponent();
+            updateDashboard();
 
             viewingPanel = view;
             viewingPanel.revalidate();
@@ -122,7 +122,7 @@ public class WF_Dashboard extends APP_Frame {
             gbc.weightx = 1;
             add(viewingPanel, gbc);
 
-            updateComponent();
+            updateDashboard();
         }
         setMinimumSize(getPreferredSize());
     }
@@ -152,7 +152,7 @@ public class WF_Dashboard extends APP_Frame {
     /**Convenience method for calling {@code revalidate()} and
      * {@code repaint()} for this component.
      */
-    public void updateComponent() {
+    public void updateDashboard() {
         revalidate();
         repaint();
     }

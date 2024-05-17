@@ -104,7 +104,6 @@ public class DV_PurchaseView extends APP_Panel {
 
     /**Re-renders the items shown in the item menu. */
     public void refreshItemMenu() {
-        ITEM_MENU.removeAll();
-        ITEM_MENU.generateCategoryPanels();
+        ITEM_MENU.regenerateCategoryPanels();
     }
 }

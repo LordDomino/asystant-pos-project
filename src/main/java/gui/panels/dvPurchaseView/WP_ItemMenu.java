@@ -54,10 +54,11 @@ public class WP_ItemMenu extends APP_Panel {
     }
 
     public void finalizePrepare() {
-        generateCategoryPanels();
+        regenerateCategoryPanels();
     }
 
-    public void generateCategoryPanels() {
+    public void regenerateCategoryPanels() {
+        contentArea.removeAll();
         // Get data from SQL db first
         try {
             SQLConnector.establishConnection();
@@ -173,9 +174,9 @@ public class WP_ItemMenu extends APP_Panel {
 
                     contentPanel.add(itemButton);
 
-                    setMaximumSize(new Dimension(500, 0));
-                    setMinimumSize(new Dimension(500, 0));
-                    setPreferredSize(getMaximumSize());
+                     setMaximumSize(new Dimension(500, 0));
+                     setMinimumSize(new Dimension(500, 0));
+                     setPreferredSize(getMaximumSize());
 
                     // The gridx and gridy formatting should be incremented after adding the item button
                     // But we need to check if the gridx is 3
