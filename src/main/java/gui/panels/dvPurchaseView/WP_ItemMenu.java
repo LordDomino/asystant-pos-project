@@ -202,6 +202,5 @@ public class WP_ItemMenu extends APP_Panel {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        System.out.println(contentArea.getPreferredSize());
     }
 }
