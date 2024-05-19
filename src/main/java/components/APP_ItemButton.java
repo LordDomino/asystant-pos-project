@@ -1,5 +1,6 @@
 package main.java.components;
 
+import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -71,6 +72,9 @@ public class APP_ItemButton extends JButton {
                 setBackground(ColorConfig.ACCENT_BUTTON_BG);
             }
         });
+
+        itemLabel.setPreferredSize(new Dimension(150, getHeightFromFixedWidth(150, itemLabel.getPreferredSize().width, itemLabel.getPreferredSize().height)));
+        itemLabel.setSize(getPreferredSize());
     }
 
     public void setLabels(String itemName, float priceTag) {
@@ -100,5 +104,15 @@ public class APP_ItemButton extends JButton {
 
     public void setPriceTag(float priceTag) {
         this.priceTag = priceTag;
+    }
+
+    private int getHeightFromFixedWidth(int fixedWidth, int preferredWidth, int preferredHeight) {
+        final int minimumArea = fixedWidth * preferredHeight;
+        final int area = preferredWidth * preferredHeight;
+        if (area <= minimumArea) {
+            return preferredHeight;
+        } else {
+            return 23*2;
+        }
     }
 }

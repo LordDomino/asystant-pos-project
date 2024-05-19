@@ -12,7 +12,7 @@ import javax.swing.JPanel;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.Dimension;
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -28,7 +28,7 @@ import main.java.sql.SQLConnector;
 
 public class WP_ItemMenu extends APP_Panel {
 
-    private JPanel contentArea = new JPanel(new GridLayout(0, 1, InsetsConfig.XXL, InsetsConfig.XXL));
+    private JPanel contentArea = new JPanel(new GridBagLayout());
 
     public WP_ItemMenu() {
         super(new GridBagLayout());
@@ -107,6 +107,7 @@ public class WP_ItemMenu extends APP_Panel {
                     // Also create a specific JPanel for this category panel
                     // This is where we add the item buttons later
                     currentCategoryPanel = new JPanel(new GridBagLayout());
+                    currentCategoryPanel.setBackground(Color.CYAN);
                     contentPanel = new JPanel(new GridLayout(0, 3, InsetsConfig.M, InsetsConfig.M));
 
                     // Generate the initial design for the category JPanel
@@ -164,7 +165,7 @@ public class WP_ItemMenu extends APP_Panel {
                     // Layouting
                     final GridBagConstraints gbc = new GridBagConstraints();
                     gbc.anchor = GridBagConstraints.NORTHWEST;
-                    gbc.fill = GridBagConstraints.BOTH;
+                    gbc.fill = GridBagConstraints.NONE;
                     gbc.gridwidth = 1;
                     gbc.gridx = currentGridx;
                     gbc.gridy = currentGridy;
@@ -173,10 +174,6 @@ public class WP_ItemMenu extends APP_Panel {
                     gbc.weighty = 0;
 
                     contentPanel.add(itemButton);
-
-                     setMaximumSize(new Dimension(500, 0));
-                     setMinimumSize(new Dimension(500, 0));
-                     setPreferredSize(getMaximumSize());
 
                     // The gridx and gridy formatting should be incremented after adding the item button
                     // But we need to check if the gridx is 3
@@ -196,11 +193,15 @@ public class WP_ItemMenu extends APP_Panel {
                 JPanel contentPanel = contentPanels.get(categoryNames.get(i));
                 categoryPanel.setOpaque(false);
                 contentPanel.setOpaque(false);
-                contentArea.add(categoryPanel);
+                GridBagConstraints gbc = new GridBagConstraints();
+                gbc.gridy = i;
+                gbc.insets = new Insets(0, 0, InsetsConfig.XXL, 0);
+                contentArea.add(categoryPanel, gbc);
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        System.out.println(contentArea.getPreferredSize());
     }
 }
