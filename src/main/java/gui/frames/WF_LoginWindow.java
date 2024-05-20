@@ -47,7 +47,7 @@ public final class WF_LoginWindow extends APP_Frame {
     // Components
     private final JLabel titleText = new JLabel("Asystant - POS System");
     private final JLabel subtitleText = new JLabel("Developed by Grade 12 ICT (S.Y. 2023-24)");
-    private final JLabel versionInfo = new JLabel("Version 0.5.2");
+    private final JLabel versionInfo = new JLabel("Version 1.0");
 
     private final JLabel usernameLabel = new JLabel("Username");
     private final JLabel passwordLabel = new JLabel("Password");
