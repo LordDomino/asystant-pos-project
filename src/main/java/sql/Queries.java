@@ -1,6 +1,9 @@
 package main.java.sql;
 
 import java.util.List;
+
+import main.java.gui.panels.dvPurchaseView.CheckoutTableData;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -218,4 +221,44 @@ public class Queries {
 
         return categories;
     }
+
+    public static void createOrder(int rfid_no, CheckoutTableData data) throws SQLException{
+        
+        final String[] fieldNames = {
+            "sales_id",
+            "item_code",
+            "item_name",
+            "quantity",
+            "total_price",
+            "status",
+            "created_by",
+            "created_datetime",
+            "completed_datetime",
+            "customer_id"
+        };
+
+        ResultSet customerInfo = getCustomerBasedOnRFID(rfid_no);
+        final String[] fieldValues = {
+        "NULL" , 
+
+        };
+
+        
+        String query = "INSERT INTO " + DBReferences.TBL_SALES + " ( ";
+
+
+
+    }
+
+    public static ResultSet getCustomerBasedOnRFID(int rfid_no) throws SQLException{
+        String query = "SELECT * FROM " + DBReferences.TBL_CUSTOMERS +
+    "WHERE rfid_no = " + rfid_no + ";";   
+     
+    Statement statement = SQLConnector.connection.createStatement(
+            ResultSet.TYPE_SCROLL_INSENSITIVE,
+            ResultSet.CONCUR_READ_ONLY
+        );
+        return statement.executeQuery(query);
+    }
 }
+

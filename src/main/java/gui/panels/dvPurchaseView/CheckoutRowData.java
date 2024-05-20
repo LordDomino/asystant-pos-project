@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class CheckoutRowData<T> {
 
-    private ArrayList<T> data;
+    private ArrayList<T> data = new ArrayList<>();
 
     public CheckoutRowData() {}
 

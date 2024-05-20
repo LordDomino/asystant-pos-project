@@ -1,5 +1,5 @@
 package main.java.gui.panels.dvPurchaseView;
-
+ 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -135,15 +135,8 @@ public class WP_CheckoutPanel extends APP_Panel implements RfidReceivable {
                 popUp.setVisible(true);
 
                 // Get values from JTable
-                CheckoutTableData tableData = new CheckoutTableData();
-
-                for (int r = 0; r < table.getRowCount(); r++) {
-                    CheckoutRowData row = new CheckoutRowData<>();
-
-                    for (int c = 0; c < table.getColumnCount(); c++) {
-                        
-                    }
-                }
+               
+                System.out.println();
             }
          });
 
@@ -361,6 +354,28 @@ public class WP_CheckoutPanel extends APP_Panel implements RfidReceivable {
     public void setRfidNo(int rfidNo) {
         currentRFIDNumber = rfidNo;
         System.out.println(currentRFIDNumber);
+        getOrdersFromCheckOut();
+    }
+
+    private CheckoutTableData getOrdersFromCheckOut() {
+
+        
+        CheckoutTableData tableData = new CheckoutTableData();
+
+        for (int r = 0; r < table.getRowCount(); r++) {
+            CheckoutRowData<String> row = new CheckoutRowData<>();
+
+            for (int c = 0; c < table.getColumnCount(); c++) {
+                
+                row.addValue(table.getValueAt(r, c).toString());
+
+        
+            }
+
+            tableData.addRow(row);
+
+        }
+        return tableData;
     }
 }
 
