@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 17, 2024 at 08:59 AM
+-- Generation Time: May 20, 2024 at 08:18 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -147,10 +147,6 @@ CREATE TABLE `sales_tbl` (
   `customer_id` varchar(30) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `sales_tbl`
---
-
 -- --------------------------------------------------------
 
 --
@@ -174,18 +170,18 @@ CREATE TABLE `stocks_inventory_tbl` (
 --
 
 INSERT INTO `stocks_inventory_tbl` (`id`, `product_code`, `name`, `description`, `category`, `unit_cost`, `stock_quantity`, `markup_price`, `unit_price`) VALUES
-(23, 101001, 'Nissin Wafer', '', 'Biscuits', 3.1500, 20, 1.8500, 5.0000),
-(24, 102001, 'Pillows', '', 'Snacks', 14.0000, 10, 2.0000, 16.0000),
-(25, 101002, 'Rebisco Strawberry', '', 'Biscuits', 7.0000, 20, 2.0000, 9.0000),
-(26, 102002, 'Tempura', '', 'Snacks', 24.0000, 2, 1.0000, 25.0000),
-(37, 102003, 'Oishi Fishda', '', 'Snacks', 30.0000, 2, 2.0000, 32.0000),
-(47, 102004, 'Tomi', '', 'Snacks', 12.0000, 5, 2.0000, 14.0000),
-(48, 102005, 'EggNog', '', 'Snacks', 15.0000, 5, 1.0000, 16.0000),
-(49, 102006, 'Bread Stix', '', 'Snacks', 15.0000, 5, 1.0000, 16.0000),
-(50, 104001, 'Monde Special Mamon', '', 'Bread', 18.6700, 12, 1.3300, 20.0000),
-(51, 101003, 'SkyFlakes', '', 'Biscuits', 5.8300, 24, 1.1700, 7.0000),
-(52, 102007, 'Choco Mucho', '', 'Snacks', 13.0000, 10, 2.0000, 15.0000),
-(53, 103001, 'Nestea Lemon', '', 'Drinks', 14.0000, 50, 0.0000, 14.0000);
+(23, 101001, 'Nissin Wafer', '', 'Biscuits', 3.1500, 0, 1.8500, 5.0000),
+(24, 102001, 'Pillows', '', 'Snacks', 14.0000, 0, 2.0000, 16.0000),
+(25, 101002, 'Rebisco Strawberry', '', 'Biscuits', 7.0000, 0, 2.0000, 9.0000),
+(26, 102002, 'Tempura', '', 'Snacks', 24.0000, 0, 1.0000, 25.0000),
+(37, 102003, 'Oishi Fishda', '', 'Snacks', 30.0000, 0, 2.0000, 32.0000),
+(47, 102004, 'Tomi', '', 'Snacks', 12.0000, 0, 2.0000, 14.0000),
+(48, 102005, 'EggNog', '', 'Snacks', 15.0000, 0, 1.0000, 16.0000),
+(49, 102006, 'Bread Stix', '', 'Snacks', 15.0000, 0, 1.0000, 16.0000),
+(50, 104001, 'Monde Special Mamon', '', 'Bread', 18.6700, 0, 1.3300, 20.0000),
+(51, 101003, 'SkyFlakes', '', 'Biscuits', 5.8300, 0, 1.1700, 7.0000),
+(52, 102007, 'Choco Mucho', '', 'Snacks', 13.0000, 0, 2.0000, 15.0000),
+(53, 103001, 'Nestea Lemon', '', 'Drinks', 14.0000, 100, 0.0000, 14.0000);
 
 -- --------------------------------------------------------
 
@@ -208,6 +204,7 @@ CREATE TABLE `user_accounts` (
 INSERT INTO `user_accounts` (`username`, `password`, `access_level`, `activated`, `login_attempts`) VALUES
 ('%SUPERADMIN%', '%SUPERADMIN%', 1, 1, 0),
 ('admin', 'admin', 2, 1, 0),
+('smacv', 'smacv', 3, 1, 0),
 ('user', 'user', 3, 1, 0);
 
 --
@@ -250,13 +247,13 @@ ALTER TABLE `user_accounts`
 -- AUTO_INCREMENT for table `customers_tbl`
 --
 ALTER TABLE `customers_tbl`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
 
 --
 -- AUTO_INCREMENT for table `sales_tbl`
 --
 ALTER TABLE `sales_tbl`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=169;
 
 --
 -- AUTO_INCREMENT for table `stocks_inventory_tbl`
