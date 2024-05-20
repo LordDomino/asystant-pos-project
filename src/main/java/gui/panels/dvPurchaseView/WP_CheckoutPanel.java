@@ -128,13 +128,23 @@ public class WP_CheckoutPanel extends APP_Panel implements RfidReceivable {
         totalAmountLabel.setFont(StylesConfig.LEAD);
 
          proceedToPaymentButton.addActionListener(new ActionListener() {
-             @Override
-             public void actionPerformed(ActionEvent e) {
-                
+            @Override
+            public void actionPerformed(ActionEvent e) {
+               
                 RFIDPopUp<WP_CheckoutPanel> popUp = new RFIDPopUp<WP_CheckoutPanel>(Main.app.PURCHASE_VIEW.CHECKOUT);
                 popUp.setVisible(true);
-                 // TO DO -- RFID tapping process
-             }
+
+                // Get values from JTable
+                CheckoutTableData tableData = new CheckoutTableData();
+
+                for (int r = 0; r < table.getRowCount(); r++) {
+                    CheckoutRowData row = new CheckoutRowData<>();
+
+                    for (int c = 0; c < table.getColumnCount(); c++) {
+                        
+                    }
+                }
+            }
          });
 
         tableModel.addTableModelListener(new TableModelListener() {
