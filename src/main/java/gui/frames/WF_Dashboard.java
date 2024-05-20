@@ -155,5 +155,6 @@ public class WF_Dashboard extends APP_Frame {
         revalidate();
         repaint();
         Main.app.INVENTORY_VIEW.refreshUpdate();
+        Main.app.CUSTOMERS_VIEW.refreshUpdate();
     }
 }

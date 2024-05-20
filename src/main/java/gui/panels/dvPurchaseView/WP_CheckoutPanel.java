@@ -1,15 +1,23 @@
 package main.java.gui.panels.dvPurchaseView;
  
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -33,6 +41,7 @@ import main.java.configs.InsetsConfig;
 import main.java.configs.StylesConfig;
 import main.java.sql.Queries;
 import main.java.sql.SQLConnector;
+import main.java.utils.exceptions.ExceedingCreditsException;
 import main.java.utils.exceptions.NonExistentCustomer;
 
 import javax.swing.JScrollPane;
@@ -135,13 +144,8 @@ public class WP_CheckoutPanel extends APP_Panel implements RfidReceivable {
          proceedToPaymentButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-               
                 RFIDPopUp<WP_CheckoutPanel> popUp = new RFIDPopUp<WP_CheckoutPanel>(Main.app.PURCHASE_VIEW.CHECKOUT);
                 popUp.setVisible(true);
-
-                // Get values from JTable
-               
-                System.out.println();
             }
          });
 
@@ -151,7 +155,6 @@ public class WP_CheckoutPanel extends APP_Panel implements RfidReceivable {
                 clearCheckoutButton.fireValueChanged();
                 proceedToPaymentButton.fireValueChanged();
                 totalAmount.setText("Php" + recomputeTotalPrice());
-
             }
         });
 
@@ -365,16 +368,47 @@ public class WP_CheckoutPanel extends APP_Panel implements RfidReceivable {
     @Override
     public void setRfidNo(long rfidNo) throws NonExistentCustomer {
         try {
-            currentRFIDNumber = rfidNo;
-            System.out.println(currentRFIDNumber);
             SQLConnector.establishConnection();
-            Queries.createOrder(rfidNo, getOrdersFromCheckOut());
-            Queries.processOrder();
-            clearCheckoutTable();
-            Main.app.DASHBOARD_FRAME.refreshUpdate();
-            Main.app.PURCHASE_VIEW.ITEM_MENU.regenerateCategoryPanels();
-        } catch (SQLException exception) {
+            ResultSet customer = Queries.getCustomerBasedOnRFID(rfidNo);
+            customer.next();
+
+            if (customer.getInt("activated") == 0) {
+                JOptionPane.showMessageDialog(
+                    Main.app.DASHBOARD_FRAME,
+                    "Customer account " + customer.getString("customer_name") + " is inactive.",
+                    "Customer account inactive",
+                    JOptionPane.ERROR_MESSAGE
+                );
+            } else {
+                currentRFIDNumber = rfidNo;
+                Queries.createOrder(rfidNo, getOrdersFromCheckOut(), recomputeTotalPrice());
+                Queries.processOrder();
+                
+    
+                new ReceiptScreen(
+                    customer.getString("customer_name"),
+                    customer.getInt("id"),
+                    customer.getInt("student_no"),
+                    getOrdersFromCheckOut(),
+                    recomputeTotalPrice()
+                );
+    
+                clearCheckoutTable();
+    
+                Main.app.DASHBOARD_FRAME.refreshUpdate();
+                Main.app.PURCHASE_VIEW.ITEM_MENU.regenerateCategoryPanels();
+            }
+
+        } catch (SQLException | ExceedingCreditsException exception) {
             exception.printStackTrace();
+            if (exception instanceof ExceedingCreditsException) {
+                JOptionPane.showMessageDialog(
+                    Main.app.DASHBOARD_FRAME,
+                    exception.getMessage(),
+                    "Account credit limit warning",
+                    JOptionPane.ERROR_MESSAGE
+                );
+            }
         }
     }
 
@@ -391,37 +425,261 @@ public class WP_CheckoutPanel extends APP_Panel implements RfidReceivable {
     }
 }
 
-class PaymentScreen extends APP_Frame implements RfidReceivable {
+class ReceiptScreen extends APP_Frame {
 
-    @Override
-    public void setRfidNo(long rfidNo) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setRfidNo'");
+    private String customerName;
+    private int customerId;
+    private int studentId;
+    private CheckoutTableData orderData;
+    private double totalPrice;
+
+    private final JPanel contentPanel = new JPanel(new GridBagLayout());
+    private final JPanel headerPanel = new JPanel(new GridBagLayout());
+    private final JLabel header = new JLabel("Digital Receipt");
+    private JLabel customerNameLabel;
+    private JLabel customerIdLabel;
+    private JLabel studentIdLabel;
+    private JLabel totalPriceLabel;
+    
+    private final JPanel footerPanel = new JPanel(new GridBagLayout());
+
+    private JLabel imageIcon;
+    private final JPanel signaturePanel = new JPanel(new GridBagLayout());
+    private final JLabel signatureLabel1 = new JLabel("Provided to you by");
+    private final JLabel signatureLabel2 = new JLabel("The Asystant POS");
+    private final JLabel signatureLabel3 = new JLabel("Developed by L. Naquita, L. Resurreccion, R. Pangilinan, Z. Cruz");
+
+    public ReceiptScreen(String cname, int cid, int studid, CheckoutTableData orderData, double totalPrice) {
+        super("Receipt");
+        this.customerName = cname;
+        this.customerId = cid;
+        this.studentId = studid;
+        this.orderData = orderData;
+        this.totalPrice = totalPrice;
+        compile();
     }
 
     @Override
     public void prepare() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'prepare'");
+        getContentPane().setBackground(ColorConfig.ACCENT_1);
+        setLayout(new GridBagLayout());
     }
 
     @Override
     public void prepareComponents() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'prepareComponents'");
+        initializeImageIcon();
+        initializeHeaderLabels();
+
+        contentPanel.setBackground(ColorConfig.ACCENT_1);
+        headerPanel.setOpaque(false);
+        header.setFont(StylesConfig.HEADING2);
+        totalPriceLabel.setHorizontalAlignment(JLabel.RIGHT);
+        totalPriceLabel.setFont(StylesConfig.HEADING3);
+
+        footerPanel.setBackground(ColorConfig.CONTRAST);
+        signaturePanel.setOpaque(false);
+        signatureLabel1.setForeground(ColorConfig.CONTRAST_BUTTON_FG);
+        signatureLabel1.setFont(new Font("Inter", Font.PLAIN, 12));
+        signatureLabel2.setForeground(ColorConfig.CONTRAST_BUTTON_FG);
+        signatureLabel2.setFont(new Font("Inter", Font.BOLD, 14));
+        signatureLabel3.setForeground(ColorConfig.CONTRAST_BUTTON_FG);
+        signatureLabel3.setFont(new Font("Inter", Font.PLAIN, 10));
+
+
+        imageIcon.setSize(100, 100);
     }
 
     @Override
     public void addComponents() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'addComponents'");
+        GridBagConstraints gbc = new GridBagConstraints();
+
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.gridy = 0;
+        gbc.weightx = 1;
+        add(contentPanel, gbc);
+        
+        {
+            gbc.anchor = GridBagConstraints.WEST;
+            gbc.gridx = 0;
+            gbc.gridy = 0;
+            gbc.insets = new Insets(InsetsConfig.XXL, InsetsConfig.XXL, 0, InsetsConfig.XXL);
+            contentPanel.add(headerPanel, gbc);
+            
+            {
+                gbc.gridx = 0;
+                gbc.gridy = 0;
+                gbc.insets = new Insets(0, 0, 0, 0);
+                headerPanel.add(header, gbc);
+                
+                gbc.gridy = GridBagConstraints.RELATIVE;
+                gbc.insets = new Insets(InsetsConfig.S, 0, 0, 0);
+                headerPanel.add(customerNameLabel, gbc);
+                
+                gbc.gridy = GridBagConstraints.RELATIVE;
+                gbc.insets = new Insets(InsetsConfig.S, 0, 0, 0);
+                headerPanel.add(customerIdLabel, gbc);
+                
+                gbc.gridy = GridBagConstraints.RELATIVE;
+                gbc.insets = new Insets(InsetsConfig.S, 0, 0, 0);
+                headerPanel.add(studentIdLabel, gbc);
+            }
+
+            gbc.gridy = GridBagConstraints.RELATIVE;
+            gbc.insets = new Insets(InsetsConfig.M, InsetsConfig.XXL, 0, InsetsConfig.XXL);
+            JScrollPane sp = generateReceiptInfo();
+            contentPanel.add(sp, gbc);
+            pack();
+            if (sp.getPreferredSize().height > 300) {
+                sp.setPreferredSize(new Dimension(300, 300));
+            }
+
+            gbc.anchor = GridBagConstraints.EAST;
+            gbc.gridy = GridBagConstraints.RELATIVE;
+            gbc.insets = new Insets(InsetsConfig.M, InsetsConfig.XXL, InsetsConfig.XL, InsetsConfig.XXL);
+            contentPanel.add(totalPriceLabel, gbc);
+        }
+        
+        gbc.gridy = GridBagConstraints.RELATIVE;
+        gbc.insets = new Insets(0, 0, 0, 0);
+        add(footerPanel, gbc);
+        
+        {
+            gbc.gridx = 0;
+            gbc.gridy = 0;
+            gbc.insets = new Insets(InsetsConfig.L, InsetsConfig.XL, InsetsConfig.L, 0);
+            footerPanel.add(imageIcon, gbc);
+            
+            gbc.gridx = 1;
+            gbc.insets = new Insets(InsetsConfig.L, InsetsConfig.M, InsetsConfig.L, InsetsConfig.XL);
+            footerPanel.add(signaturePanel, gbc);
+            
+            {
+                gbc.gridx = 0;
+                gbc.gridy = 0;
+                gbc.insets = new Insets(0, 0, 0, 0);
+                signaturePanel.add(signatureLabel1, gbc);
+                
+                gbc.gridy = GridBagConstraints.RELATIVE;
+                signaturePanel.add(signatureLabel2, gbc);
+                
+                gbc.gridy = GridBagConstraints.RELATIVE;
+                signaturePanel.add(signatureLabel3, gbc);
+            }
+        }
     }
 
     @Override
     public void finalizePrepare() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'finalizePrepare'");
+        pack();
+        setLocationRelativeTo(null);
+        setResizable(false);
+        setVisible(true);
     }
 
-    
+    private void initializeImageIcon() {
+        try {
+            BufferedImage myPicture = ImageIO.read(new File("src\\main\\resources\\pos_logo.png"));
+            imageIcon = new JLabel(new ImageIcon(myPicture.getScaledInstance(50, 50, Image.SCALE_SMOOTH)));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void initializeHeaderLabels() {
+        customerNameLabel = new JLabel("Customer: " + customerName);
+        customerIdLabel = new JLabel("Customer ID: " + customerId);
+        studentIdLabel = new JLabel("Student ID: " + studentId);
+        totalPriceLabel = new JLabel("Total: Php" + (float) totalPrice);
+    }
+
+    private JScrollPane generateReceiptInfo() {
+        JPanel superPanel = new JPanel(new GridBagLayout());
+        superPanel.setOpaque(false);
+        JPanel contentPanel = new JPanel(new GridBagLayout());
+        contentPanel.setOpaque(false);
+
+        GridBagConstraints gbc = new GridBagConstraints();
+
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1;
+        gbc.weightx = 1;
+        superPanel.add(contentPanel, gbc);
+
+        JScrollPane sp = new JScrollPane(superPanel);
+        sp.setBorder(null);
+        sp.setOpaque(false);
+        sp.getViewport().setBackground(ColorConfig.ACCENT_1);
+
+        gbc = new GridBagConstraints();
+
+        for (int i = 0; i < orderData.getRows().size(); i++) {
+            JPanel itemPanel = new JPanel(new GridBagLayout());
+            itemPanel.setOpaque(false);
+
+            {
+                final JLabel prodQtyName = new JLabel(
+                    orderData.getValueAt(i, 2).toString()
+                    + " " + orderData.getValueAt(i, 1).toString()
+                );
+                final JLabel prodCost = new JLabel(orderData.getValueAt(i, 3).toString());
+                final JLabel prodId = new JLabel(orderData.getValueAt(i, 0).toString());
+
+                prodQtyName.setFont(new Font("Inter", Font.PLAIN, 16));
+                prodCost.setFont(new Font("Inter", Font.BOLD, 16));
+                prodCost.setHorizontalAlignment(JLabel.RIGHT);
+                prodId.setFont(new Font("Inter", Font.PLAIN, 14));
+
+                GridBagConstraints gbc2 = new GridBagConstraints();
+
+                gbc2.fill = GridBagConstraints.HORIZONTAL;
+                gbc2.anchor = GridBagConstraints.WEST;
+                gbc2.gridx = 0;
+                gbc2.gridy = 0;
+                gbc2.insets = new Insets(5, 5, 0, 5);
+                gbc2.weightx = 1;
+                itemPanel.add(prodQtyName, gbc2);
+                
+                gbc2.anchor = GridBagConstraints.EAST;
+                gbc2.gridx = 1;
+                itemPanel.add(prodCost, gbc2);
+                
+                gbc2.anchor = GridBagConstraints.NORTHWEST;
+                gbc2.gridwidth = 2;
+                gbc2.gridx = 0;
+                gbc2.gridy = 1;
+                gbc2.insets = new Insets(0, 5, 0, 5);
+                itemPanel.add(prodId, gbc2);
+            }
+            
+            gbc.fill = GridBagConstraints.HORIZONTAL;
+            gbc.gridy = i;
+            gbc.insets = new Insets(0, 0, InsetsConfig.L, 0);
+            gbc.weightx = 1;
+            contentPanel.add(itemPanel, gbc);
+        } 
+
+        // sp.setPreferredSize(new Dimension(300, 450));
+        return sp;
+    }
+
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public int getCustomerId() {
+        return customerId;
+    }
+
+    public int getStudentId() {
+        return studentId;
+    }
+
+    public CheckoutTableData getOrderData() {
+        return orderData;
+    }
+
+    public double getTotalPrice() {
+        return totalPrice;
+    }
 }

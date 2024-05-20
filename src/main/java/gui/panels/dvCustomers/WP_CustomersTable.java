@@ -127,13 +127,13 @@ public class WP_CustomersTable extends APP_Panel {
     }
 
     public void prepare() {
-        updateGUI();
+        refreshUpdate();
         setBackground(ColorConfig.BG);
         setLayout(new GridBagLayout());
     }
     
     public void prepareComponents() {
-        updateGUI();
+        refreshUpdate();
 
         headerPanel.setOpaque(false);
         buttonsPanel.setOpaque(false);
@@ -259,7 +259,7 @@ public class WP_CustomersTable extends APP_Panel {
 
         refreshButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
-                updateGUI();
+                refreshUpdate();
             }
         });
     } 
@@ -385,7 +385,7 @@ public class WP_CustomersTable extends APP_Panel {
     public void finalizePrepare() {}
 
     @SuppressWarnings("rawtypes")
-    protected void updateGUI() {
+    public void refreshUpdate() {
         Main.app.DASHBOARD_FRAME.setEnabled(true);
         loadFromDatabase();
 
@@ -472,7 +472,7 @@ public class WP_CustomersTable extends APP_Panel {
 
     protected void purgatoryPardon() {
         pendingDeletedRows.clear();
-        updateGUI();
+        refreshUpdate();
     }
 
     protected void purgatoryPurge() {
@@ -505,7 +505,7 @@ public class WP_CustomersTable extends APP_Panel {
 
             // SQLConnector.connection.close();
 
-            updateGUI();
+            refreshUpdate();
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(
@@ -698,7 +698,7 @@ final class Customers_AddPopupWindow extends APP_PopUpFrame<WF_Dashboard> implem
                     Window popUp = SwingUtilities.getWindowAncestor(submitButton);
                     popUp.dispose();
 
-                    Main.app.CUSTOMERS_VIEW.TABLE_PANEL.updateGUI();
+                    Main.app.CUSTOMERS_VIEW.TABLE_PANEL.refreshUpdate();
                 } catch (SQLException exception) {
                     exception.printStackTrace();
                 }
@@ -807,6 +807,7 @@ final class Customers_AddPopupWindow extends APP_PopUpFrame<WF_Dashboard> implem
     @Override
     public void setRfidNo(long rfidNo) {
         rfidNoField.setText(String.valueOf(rfidNo));
+        activatedCheckBox.setSelected(true);
     }
 }
 
@@ -983,7 +984,7 @@ class Customers_EditPopupWindow extends APP_PopUpFrame<WF_Dashboard> implements 
                     Window popUp = SwingUtilities.getWindowAncestor(updateButton);
                     popUp.dispose();
 
-                    Main.app.CUSTOMERS_VIEW.TABLE_PANEL.updateGUI();
+                    Main.app.CUSTOMERS_VIEW.TABLE_PANEL.refreshUpdate();
                 } catch (SQLException exception) {
                     exception.printStackTrace();
                 }
@@ -1107,6 +1108,7 @@ class Customers_EditPopupWindow extends APP_PopUpFrame<WF_Dashboard> implements 
     @Override
     public void setRfidNo(long rfidNo) {
         rfidNoField.setText(String.valueOf(rfidNo));
+        activatedCheckBox.setSelected(true);
     }
 }
 

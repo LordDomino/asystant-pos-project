@@ -5,6 +5,7 @@ import java.util.List;
 import main.java.gui.panels.dvPurchaseView.CheckoutRowData;
 import main.java.gui.panels.dvPurchaseView.CheckoutTableData;
 import main.java.userAccountSystem.LoginManager;
+import main.java.utils.exceptions.ExceedingCreditsException;
 import main.java.utils.exceptions.NonExistentCustomer;
 
 import java.sql.ResultSet;
@@ -227,7 +228,8 @@ public class Queries {
         return categories;
     }
 
-    public static void createOrder(long rfid_no, CheckoutTableData data) throws SQLException, NonExistentCustomer {
+    public static void createOrder(long rfid_no, CheckoutTableData data, double totalPrice)
+        throws SQLException, NonExistentCustomer, ExceedingCreditsException {
         
         final String[] fieldNames = {
             "sales_id",
@@ -242,6 +244,10 @@ public class Queries {
 
         ResultSet customerInfo = getCustomerBasedOnRFID(rfid_no);
         customerInfo.next();
+
+        if (totalPrice > customerInfo.getFloat("amount_deposited")) {
+            throw new ExceedingCreditsException(customerInfo.getString("customer_name"), customerInfo.getDouble("amount_deposited"));
+        }
 
         LocalDate date = LocalDate.now();
         LocalTime time = LocalTime.now();
@@ -284,10 +290,11 @@ public class Queries {
 
             query = query.substring(0, query.length()-2) + " );";
 
-            System.out.println(query);
             Statement statement = SQLConnector.connection.createStatement();
             statement.executeUpdate(query);
+
         }
+        subtractAmountFromCustomer(customerInfo.getInt("id"), totalPrice);
     }
 
     public static void processOrder() throws SQLException {
@@ -317,6 +324,17 @@ public class Queries {
             return statement.executeQuery(query);
         }
 
+    }
+
+    public static void subtractAmountFromCustomer(int customerId, double amount) throws SQLException {
+        String query = "UPDATE " + DBReferences.TBL_CUSTOMERS + " SET amount_deposited = amount_deposited - " + amount + "WHERE id = " + customerId + ";";   
+ 
+        Statement statement = SQLConnector.connection.createStatement(
+            ResultSet.TYPE_SCROLL_INSENSITIVE,
+            ResultSet.CONCUR_READ_ONLY
+        );
+
+        statement.executeUpdate(query);
     }
 }
 
