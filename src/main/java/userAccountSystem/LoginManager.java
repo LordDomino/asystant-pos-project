@@ -44,6 +44,8 @@ public class LoginManager {
      */
     private static JFrame CURRENT_ACCESS_LEVEL_TARGET_JFRAME;
 
+    private static String CURRENT_USERNAME;
+
     /**
      * The set of illegal characters that are not allowed in account
      * usernames.
@@ -239,6 +241,14 @@ public class LoginManager {
         int remainingAttempts = 3 - result.getInt("login_attempts");
         SQLConnector.closeConnection();
         return remainingAttempts;
+    }
+
+    public static final String getCurrentUsername() {
+        return CURRENT_USERNAME;
+    }
+
+    public static final void setCurrentUsername(String username) {
+        CURRENT_USERNAME = username;
     }
 
     private static final void lockAccount(String username) throws SQLException {

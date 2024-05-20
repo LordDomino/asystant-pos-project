@@ -6,13 +6,14 @@ import java.awt.Insets;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import main.java.Main;
 import main.java.configs.ColorConfig;
 import main.java.configs.InsetsConfig;
 import main.java.configs.StylesConfig;
+import main.java.utils.exceptions.NonExistentCustomer;
 
 public class RFIDPopUp<F extends RfidReceivable> extends APP_Frame {
 
@@ -57,17 +58,29 @@ public class RFIDPopUp<F extends RfidReceivable> extends APP_Frame {
             private void changed() {
                 if (passwordField.getPassword().length == 10) {
                     try {
-                        int rfidNo = Integer.valueOf(String.valueOf(passwordField.getPassword()));
+                        long rfidNo = Long.valueOf(String.valueOf(passwordField.getPassword()));
                         parentFrame.setRfidNo(rfidNo);
                         dispose();
-                    } catch (Exception e) {
+                    } catch (NonExistentCustomer | NumberFormatException e) {
+                        if (e instanceof NonExistentCustomer) {
+                            JOptionPane.showMessageDialog(
+                                Main.app.DASHBOARD_FRAME,
+                                e.getMessage(),
+                                "Please try again",
+                                JOptionPane.ERROR_MESSAGE
+                            );
+                            dispose();
+                        } else if (e instanceof NumberFormatException) {
+                            JOptionPane.showMessageDialog(
+                                Main.app.DASHBOARD_FRAME,
+                                "Invalid RFID number for given input",
+                                "Please try again",
+                                JOptionPane.ERROR_MESSAGE
+                            );
+                        }
                         e.printStackTrace();
-                        JOptionPane.showMessageDialog(
-                            SwingUtilities.getWindowAncestor(passwordField),
-                            e.getMessage(),
-                            "Invalid RFID no",
-                            JOptionPane.ERROR_MESSAGE
-                        );
+                    } finally {
+                        dispose();
                     }
                 }
             }

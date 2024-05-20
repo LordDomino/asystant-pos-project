@@ -6,10 +6,12 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
@@ -29,6 +31,9 @@ import main.java.components.RfidReceivable;
 import main.java.configs.ColorConfig;
 import main.java.configs.InsetsConfig;
 import main.java.configs.StylesConfig;
+import main.java.sql.Queries;
+import main.java.sql.SQLConnector;
+import main.java.utils.exceptions.NonExistentCustomer;
 
 import javax.swing.JScrollPane;
 
@@ -51,8 +56,8 @@ public class WP_CheckoutPanel extends APP_Panel implements RfidReceivable {
 
     // Components
     public final JLabel header = new JLabel("Checkout");
-    public int currentRFIDNumber;
-    public final APP_AccentButton removeProductButton = new APP_AccentButton("Subtract 1") {
+    public long currentRFIDNumber;
+    public final APP_AccentButton subtract1Button = new APP_AccentButton("Subtract 1") {
         
         @Override
         public void fireValueChanged() {
@@ -153,24 +158,25 @@ public class WP_CheckoutPanel extends APP_Panel implements RfidReceivable {
         table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent event) {
                 try {
-                    removeProductButton.fireValueChanged();
+                    subtract1Button.fireValueChanged();
                 } catch (Exception exception) {
                     exception.printStackTrace();
                 }
             }
         });
 
-        removeProductButton.setEnabled(false);
+        subtract1Button.setEnabled(false);
         clearCheckoutButton.setEnabled(false);
         proceedToPaymentButton.setEnabled(false);
 
-        removeProductButton.addActionListener(new ActionListener() {
+        subtract1Button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int originalRowCount = tableModel.getRowCount();
                 int selectedRow = table.getSelectedRow();
                 APP_ItemButton item = new ArrayList<APP_ItemButton>(checkoutItems.keySet()).get(selectedRow);
                 
+                item.addToStock(1);
                 removeItemFromCheckout(item);
                 rerenderCurrentItems();
                 reselectItems(selectedRow, originalRowCount);
@@ -190,9 +196,7 @@ public class WP_CheckoutPanel extends APP_Panel implements RfidReceivable {
         clearCheckoutButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                checkoutItems.clear();
-                tableModel.setRowCount(0);
-
+                clearCheckoutTable();
                 // Allow switching view once checkout is clear
                 Main.app.DASHBOARD_FRAME.sideRibbon.allowViewSwitching();
             }
@@ -224,7 +228,7 @@ public class WP_CheckoutPanel extends APP_Panel implements RfidReceivable {
             
             gbc.gridx = GridBagConstraints.RELATIVE;
             gbc.insets = new Insets(0, 0, 0, 0);
-            headerButtonsPanel.add(removeProductButton, gbc);
+            headerButtonsPanel.add(subtract1Button, gbc);
 
             gbc.gridx = GridBagConstraints.RELATIVE;
             gbc.insets = new Insets(0, InsetsConfig.S, 0, 0);
@@ -338,6 +342,14 @@ public class WP_CheckoutPanel extends APP_Panel implements RfidReceivable {
         return totalPrice;
     }
 
+    public void clearCheckoutTable() {
+        for (APP_ItemButton item : new ArrayList<APP_ItemButton>(checkoutItems.keySet())) {
+            item.addToStock(checkoutItems.get(item));
+        }
+        checkoutItems.clear();
+        tableModel.setRowCount(0);
+    }
+
     /**
      * Returns true if the index of current items are empty.
      * @return if the index of current items are empty
@@ -351,29 +363,29 @@ public class WP_CheckoutPanel extends APP_Panel implements RfidReceivable {
     }
 
     @Override
-    public void setRfidNo(int rfidNo) {
-        currentRFIDNumber = rfidNo;
-        System.out.println(currentRFIDNumber);
-        getOrdersFromCheckOut();
+    public void setRfidNo(long rfidNo) throws NonExistentCustomer {
+        try {
+            currentRFIDNumber = rfidNo;
+            System.out.println(currentRFIDNumber);
+            SQLConnector.establishConnection();
+            Queries.createOrder(rfidNo, getOrdersFromCheckOut());
+            Queries.processOrder();
+            clearCheckoutTable();
+            Main.app.DASHBOARD_FRAME.refreshUpdate();
+            Main.app.PURCHASE_VIEW.ITEM_MENU.regenerateCategoryPanels();
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
     }
 
     private CheckoutTableData getOrdersFromCheckOut() {
-
-        
         CheckoutTableData tableData = new CheckoutTableData();
-
         for (int r = 0; r < table.getRowCount(); r++) {
             CheckoutRowData<String> row = new CheckoutRowData<>();
-
-            for (int c = 0; c < table.getColumnCount(); c++) {
-                
-                row.addValue(table.getValueAt(r, c).toString());
-
-        
+            for (int c = 0; c < table.getColumnCount(); c++) {     
+                row.addValue(table.getValueAt(r, c).toString());       
             }
-
             tableData.addRow(row);
-
         }
         return tableData;
     }
@@ -382,7 +394,7 @@ public class WP_CheckoutPanel extends APP_Panel implements RfidReceivable {
 class PaymentScreen extends APP_Frame implements RfidReceivable {
 
     @Override
-    public void setRfidNo(int rfidNo) {
+    public void setRfidNo(long rfidNo) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'setRfidNo'");
     }

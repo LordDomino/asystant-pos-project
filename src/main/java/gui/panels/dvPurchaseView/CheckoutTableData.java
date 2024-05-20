@@ -24,6 +24,10 @@ public class CheckoutTableData {
         return rows.get(row).getValueAt(col);
     }
 
+    public ArrayList<CheckoutRowData<?>> getRows() {
+        return this.rows;
+    }
+
     public int size() {
         return rows.size();
     }

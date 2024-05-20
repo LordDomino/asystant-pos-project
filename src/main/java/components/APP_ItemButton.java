@@ -20,12 +20,17 @@ public class APP_ItemButton extends JButton {
     private String productCode;
     private String itemName;
     private float priceTag;
+    private int stock;
 
-    public APP_ItemButton(String productCode, String itemName, float priceTag) {
+    private JLabel itemLabel;
+    private JLabel priceLabel;
+
+    public APP_ItemButton(String productCode, String itemName, float priceTag, int stock) {
         super();
         this.productCode = productCode;
         this.itemName = itemName;
         this.priceTag = priceTag;
+        this.stock = stock;
         initialize();
     }
 
@@ -48,9 +53,8 @@ public class APP_ItemButton extends JButton {
         // the layout
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        JLabel itemLabel = new JLabel("<html>" + itemName + "</html>");
-        JLabel priceLabel = new JLabel("Php" + String.valueOf(priceTag));
-
+        itemLabel = new JLabel("<html>" + itemName + "</html>");
+        priceLabel = new JLabel("Php" + String.valueOf(priceTag));
         itemLabel.setFont(StylesConfig.ITEM_LABEL);
         priceLabel.setFont(StylesConfig.ITEM_LABEL);  
         itemLabel.setForeground(ColorConfig.ACCENT_BUTTON_FG);
@@ -65,16 +69,32 @@ public class APP_ItemButton extends JButton {
 
         addMouseListener(new MouseAdapter() {
             public void mouseEntered(MouseEvent e) {
-                setBackground(ColorConfig.ACCENT_BUTTON_BG.brighter());
+                if (isStockEmpty()) {
+                    setEnabled(false);
+                    setBackground(ColorConfig.ACCENT_1);
+                    priceLabel.setForeground(ColorConfig.ACCENT_2);
+                    itemLabel.setForeground(ColorConfig.ACCENT_2);
+                } else {
+                    setBackground(ColorConfig.ACCENT_BUTTON_BG.brighter());
+                }
             }
 
             public void mouseExited(MouseEvent e) {
-                setBackground(ColorConfig.ACCENT_BUTTON_BG);
+                if (isStockEmpty()) {
+                    setEnabled(false);
+                    setBackground(ColorConfig.ACCENT_1);
+                    priceLabel.setForeground(ColorConfig.ACCENT_2);
+                    itemLabel.setForeground(ColorConfig.ACCENT_2);
+                } else {
+                    setBackground(ColorConfig.ACCENT_BUTTON_BG);
+                }
             }
         });
 
         itemLabel.setPreferredSize(new Dimension(150, getHeightFromFixedWidth(150, itemLabel.getPreferredSize().width, itemLabel.getPreferredSize().height)));
         itemLabel.setSize(getPreferredSize());
+
+        refreshStock();
     }
 
     public void setLabels(String itemName, float priceTag) {
@@ -104,6 +124,44 @@ public class APP_ItemButton extends JButton {
 
     public void setPriceTag(float priceTag) {
         this.priceTag = priceTag;
+    }
+
+    public int getStock() {
+        return this.stock;
+    }
+
+    public void addToStock(int amount) {
+        this.stock = this.stock + amount;
+        refreshStock();
+    }
+
+    public void getFromStock(int amount) {
+        if (!isStockEmpty()) {
+            this.stock = this.stock - amount;
+        }
+        refreshStock();
+    }
+
+    public boolean isStockEmpty() {
+        if (this.stock <= 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private void refreshStock() {
+        if (isStockEmpty()) {
+            setEnabled(false);
+            setBackground(ColorConfig.ACCENT_1);
+            itemLabel.setForeground(ColorConfig.ACCENT_2);
+            priceLabel.setForeground(ColorConfig.ACCENT_2);
+        } else {
+            setEnabled(true);
+            setBackground(ColorConfig.ACCENT_2); 
+            itemLabel.setForeground(ColorConfig.ACCENT_BUTTON_FG);
+            priceLabel.setForeground(ColorConfig.ACCENT_BUTTON_FG);  
+        }
     }
 
     private int getHeightFromFixedWidth(int fixedWidth, int preferredWidth, int preferredHeight) {

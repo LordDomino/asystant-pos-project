@@ -58,4 +58,8 @@ public class DV_Inventory extends APP_Panel {
         // this will be inputted when the stock and profit are working
     
     }
+
+    public void refreshUpdate() {
+        TABLE_PANEL.refreshUpdate();
+    }
 }

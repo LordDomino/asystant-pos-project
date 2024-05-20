@@ -149,13 +149,15 @@ public class WP_ItemMenu extends APP_Panel {
                     final APP_ItemButton itemButton = new APP_ItemButton(
                         result.getString("product_code"),
                         result.getString("name"), // "name" instead of "item_name" because we're referencing from stocks inventory
-                        result.getFloat("unit_price")
+                        result.getFloat("unit_price"),
+                        result.getInt("stock_quantity")
                     );
                     
                     // Action listener
                     itemButton.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
+                            itemButton.getFromStock(1);
                             Main.app.PURCHASE_VIEW.CHECKOUT.addItemToCheckout(itemButton);
                             Main.app.PURCHASE_VIEW.CHECKOUT.tableModel.setRowCount(0);
                             Main.app.PURCHASE_VIEW.CHECKOUT.rerenderCurrentItems();

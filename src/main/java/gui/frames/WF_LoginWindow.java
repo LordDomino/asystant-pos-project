@@ -402,6 +402,7 @@ class LoginActionListener implements ActionListener {
              */
             if (permitLogin) {
                 LoginManager.resetLoginAttempts(username);
+                LoginManager.setCurrentUsername(username);
                 Main.app.LOGIN_WINDOW.authenticateLogin();
             } else {
                 // Execute when all user account type login attempts fail

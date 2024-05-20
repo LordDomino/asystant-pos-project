@@ -805,7 +805,7 @@ final class Customers_AddPopupWindow extends APP_PopUpFrame<WF_Dashboard> implem
     }
 
     @Override
-    public void setRfidNo(int rfidNo) {
+    public void setRfidNo(long rfidNo) {
         rfidNoField.setText(String.valueOf(rfidNo));
     }
 }
@@ -1105,7 +1105,7 @@ class Customers_EditPopupWindow extends APP_PopUpFrame<WF_Dashboard> implements 
     }
 
     @Override
-    public void setRfidNo(int rfidNo) {
+    public void setRfidNo(long rfidNo) {
         rfidNoField.setText(String.valueOf(rfidNo));
     }
 }

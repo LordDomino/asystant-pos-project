@@ -2,7 +2,10 @@ package main.java.sql;
 
 import java.util.List;
 
+import main.java.gui.panels.dvPurchaseView.CheckoutRowData;
 import main.java.gui.panels.dvPurchaseView.CheckoutTableData;
+import main.java.userAccountSystem.LoginManager;
+import main.java.utils.exceptions.NonExistentCustomer;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -10,6 +13,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 public class Queries {
 
@@ -222,43 +227,96 @@ public class Queries {
         return categories;
     }
 
-    public static void createOrder(int rfid_no, CheckoutTableData data) throws SQLException{
+    public static void createOrder(long rfid_no, CheckoutTableData data) throws SQLException, NonExistentCustomer {
         
         final String[] fieldNames = {
             "sales_id",
-            "item_code",
+            "product_code",
             "item_name",
             "quantity",
             "total_price",
             "status",
             "created_by",
-            "created_datetime",
-            "completed_datetime",
             "customer_id"
         };
 
         ResultSet customerInfo = getCustomerBasedOnRFID(rfid_no);
-        final String[] fieldValues = {
-        "NULL" , 
+        customerInfo.next();
 
-        };
+        LocalDate date = LocalDate.now();
+        LocalTime time = LocalTime.now();
 
-        
-        String query = "INSERT INTO " + DBReferences.TBL_SALES + " ( ";
+        // All items of the same order has the same sales ID
+        final String salesId = date.toString().replace("-", "")
+            + "-"
+            + time.toString().replace(":", "").substring(0, 6);
 
+        for (CheckoutRowData<?> row : data.getRows()) {   
+            final String[] fieldValues = {
+                salesId,
+                row.getValueAt(0).toString(),
+                row.getValueAt(1).toString(),
+                row.getValueAt(2).toString(),
+                row.getValueAt(3).toString().substring(3, row.getValueAt(3).toString().length()).toString(),
+                "1",
+                LoginManager.getCurrentUsername(),
+                customerInfo.getString("id")
+            };
 
+            String query = "INSERT INTO " + DBReferences.TBL_SALES + " ( ";
 
+            List<String> fields = Arrays.asList(fieldNames);
+            List<String> values = Arrays.asList(fieldValues);
+            
+            for (String field : fields) {
+                query = query + " `" + field + "`,";
+            }
+
+            query = query.substring(0, query.length()-1) + " ) VALUES (";
+
+            for (String value : values) {
+                if (value == null) {
+                    query = query + " NULL, ";
+                } else {
+                query = query + " \"" + value + "\", ";
+                }
+            }
+
+            query = query.substring(0, query.length()-2) + " );";
+
+            System.out.println(query);
+            Statement statement = SQLConnector.connection.createStatement();
+            statement.executeUpdate(query);
+        }
     }
 
-    public static ResultSet getCustomerBasedOnRFID(int rfid_no) throws SQLException{
+    public static void processOrder() throws SQLException {
+        String query = "CALL spRecomputeInventory();";
+        Statement statement = SQLConnector.connection.createStatement();
+        statement.executeUpdate(query);
+
+        query = "CALL spProcessOrderInventory();";
+        statement.executeUpdate(query);
+    }
+
+    public static ResultSet getCustomerBasedOnRFID(long rfid_no) throws SQLException, NonExistentCustomer {
         String query = "SELECT * FROM " + DBReferences.TBL_CUSTOMERS +
-    "WHERE rfid_no = " + rfid_no + ";";   
+            " WHERE rfid_no = " + rfid_no + ";";   
      
-    Statement statement = SQLConnector.connection.createStatement(
+        Statement statement = SQLConnector.connection.createStatement(
             ResultSet.TYPE_SCROLL_INSENSITIVE,
             ResultSet.CONCUR_READ_ONLY
         );
-        return statement.executeQuery(query);
+
+        ResultSet result = statement.executeQuery(query);
+        result.last();
+        int size = result.getRow();
+        if (size == 0) {
+            throw new NonExistentCustomer(rfid_no);
+        } else {
+            return statement.executeQuery(query);
+        }
+
     }
 }
 
